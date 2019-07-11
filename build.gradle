@@ -1,0 +1,34 @@
+subprojects {
+    group = 'eu.xenit.alfred.telemetry'
+    version = '0.1.0'
+
+    boolean isRelease = System.env.BRANCH_NAME?.startsWith("release")
+    if (!isRelease)
+        version += "-SNAPSHOT"
+
+    ext {
+        micrometerVersion = '1.0.6'
+        jvmExtrasVersion = '0.1.2'
+
+        junitJupiterVersion = '5.4.2'
+        mockitoVersion = '2.27.0'
+        hamcrestVersion = '1.3'
+        restAssuredVersion = '4.0.0'
+    }
+
+    repositories {
+        mavenCentral()
+        maven {
+            url 'https://artifacts.alfresco.com/nexus/content/groups/public'
+        }
+        maven {
+            url 'https://artifacts.alfresco.com/nexus/content/groups/private'
+            credentials {
+                username project.property('org.alfresco.maven.nexus.username')
+                password project.property('org.alfresco.maven.nexus.password')
+            }
+        }
+    }
+
+    apply from: "${rootProject.projectDir}/publish.gradle"
+}

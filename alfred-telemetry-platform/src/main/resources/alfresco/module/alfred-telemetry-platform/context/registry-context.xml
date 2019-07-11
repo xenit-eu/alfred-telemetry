@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+
+    <!--
+        XML Context required to add MeterRegistry instance to the global Micrometer MeterRegistry
+        (see: Metrics#globalRegistry)
+        -->
+
+    <bean id="meterRegistry" class="eu.xenit.alfred.telemetry.registry.MeterRegistryFactoryBean"/>
+
+    <bean id="alfred-telemetry.RegistryRegistrar"
+            class="eu.xenit.alfred.telemetry.registry.RegistryRegistrar">
+        <constructor-arg ref="meterRegistry"/>
+        <constructor-arg>
+            <list>
+                <ref bean="alfred-telemetry.SimpleRegistryFactoryWrapper"/>
+                <ref bean="alfred-telemetry.JmxRegistryFactoryWrapper"/>
+                <ref bean="alfred-telemetry.GraphiteRegistryFactoryWrapper"/>
+                <ref bean="alfred-telemetry.PrometheusRegistryFactoryWrapper"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <!-- Simple Meter registry -->
+
+    <bean id="alfred-telemetry.SimpleRegistryConfig"
+            class="eu.xenit.alfred.telemetry.registry.simple.SimpleRegistryConfig">
+        <property name="enabled" value="${alfred.telemetry.export.simple.enabled}"/>
+    </bean>
+
+    <bean id="alfred-telemetry.SimpleRegistryFactoryWrapper"
+            class="eu.xenit.alfred.telemetry.registry.simple.SimpleRegistryFactoryWrapper">
+        <constructor-arg ref="alfred-telemetry.SimpleRegistryConfig"/>
+    </bean>
+
+    <!-- JMX -->
+
+    <bean id="alfred-telemetry.JmxConfig"
+            class="eu.xenit.alfred.telemetry.registry.jmx.JmxConfig">
+        <property name="enabled" value="${alfred.telemetry.export.jmx.enabled}"/>
+    </bean>
+
+    <bean id="alfred-telemetry.JmxRegistryFactoryWrapper"
+            class="eu.xenit.alfred.telemetry.registry.jmx.JmxRegistryFactoryWrapper">
+        <constructor-arg ref="alfred-telemetry.JmxConfig"/>
+    </bean>
+
+
+    <!-- GRAPHITE -->
+
+    <bean id="alfred-telemetry.GraphiteConfig"
+            class="eu.xenit.alfred.telemetry.registry.graphite.GraphiteConfig">
+        <property name="enabled" value="${alfred.telemetry.export.graphite.enabled}"/>
+        <property name="host" value="${alfred.telemetry.export.graphite.host}"/>
+        <property name="port" value="${alfred.telemetry.export.graphite.port}"/>
+        <property name="step" value="${alfred.telemetry.export.graphite.step}"/>
+        <property name="tagsAsPrefix" value="${alfred.telemetry.export.graphite.tags-as-prefix}"/>
+    </bean>
+
+    <bean id="alfred-telemetry.GraphiteRegistryFactoryWrapper"
+            class="eu.xenit.alfred.telemetry.registry.graphite.GraphiteRegistryFactoryWrapper">
+        <constructor-arg ref="alfred-telemetry.GraphiteConfig"/>
+    </bean>
+
+    <!-- PROMETHEUS -->
+
+    <bean id="alfred-telemetry.PrometheusConfig"
+            class="eu.xenit.alfred.telemetry.registry.prometheus.PrometheusConfig">
+        <property name="enabled" value="${alfred.telemetry.export.prometheus.enabled}"/>
+    </bean>
+
+    <bean id="alfred-telemetry.PrometheusRegistryFactoryWrapper"
+            class="eu.xenit.alfred.telemetry.registry.prometheus.PrometheusRegistryFactoryWrapper">
+        <constructor-arg ref="alfred-telemetry.PrometheusConfig"/>
+    </bean>
+</beans>

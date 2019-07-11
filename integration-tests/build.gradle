@@ -1,0 +1,121 @@
+plugins {
+    id 'eu.xenit.docker-alfresco' version '4.0.3' apply false
+    id 'java'
+    id 'idea'
+}
+
+ext {
+    slf4jVersion = '1.7.25'
+}
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+    testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+
+    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
+}
+
+test {
+    // By default tests should only run in the subprojects. To manually run tests in your IDEA, uncomment:
+    enabled = false
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    def edition = project.name.split("-")[1]
+    apply from: "${project.projectDir}/overload.gradle"
+
+    description = "Alfresco ${alfrescoVersion} with Alfred Micrometer"
+
+    task integrationTest(type: Test) {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+        testClassesDirs = project.parent.sourceSets.test.output.classesDirs
+        classpath = project.parent.sourceSets.test.runtimeClasspath
+        outputs.upToDateWhen { false }
+    }
+
+    check.dependsOn integrationTest
+
+    apply plugin: 'eu.xenit.docker-alfresco'
+
+    dependencies {
+        alfrescoAmp project(path: ":alfred-telemetry-platform", configuration: "amp")
+
+        // If customers want to use specific MeterRegistries, they should be added to the classpath:
+        alfrescoSM "io.micrometer:micrometer-registry-graphite:${micrometerVersion}"
+        alfrescoSM "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
+        alfrescoSM "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
+
+        baseAlfrescoWar "org.alfresco:${alfrescoArtifactId}:${alfrescoVersion}@war"
+        baseShareWar "org.alfresco:share:${shareVersion}@war"
+    }
+
+    dockerAlfresco {
+        baseImage = "hub.xenit.eu/alfresco-${edition}:${alfrescoVersion}"
+        leanImage = true
+
+        dockerBuild {
+            repository = 'hub.xenit.eu/alfred/alfred-telemetry'
+            tags = ["${version}-alfresco-${alfrescoVersion}"]
+            automaticTags = false
+        }
+    }
+
+    afterEvaluate {
+        graphiteComposeUp.dependsOn(buildDockerImage)
+        prometheusComposeUp.dependsOn(buildDockerImage)
+        buildDockerImage {
+            doLast {
+                dockerCompose.graphite.environment.put 'DOCKER_IMAGE', getImageId()
+                dockerCompose.prometheus.environment.put 'DOCKER_IMAGE', getImageId()
+            }
+        }
+    }
+
+    dockerCompose {
+        useComposeFiles = [
+                '../src/test/resources/compose/docker-compose.yml',
+                '../src/test/resources/compose/docker-compose-jmx.yml'
+        ]
+
+        removeVolumes = true
+        captureContainersOutput = false
+
+        // Uncomment for quick iterations when developing integration tests
+        // stopContainers = false
+
+        // expose alfresco/inflow on a random port, comment to use default port (8080)
+        environment.put 'ALFRESCO_TCP_8080', '8080'
+
+        isRequiredBy(project.tasks.integrationTest)
+
+        graphite {
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-graphite.yml',
+                    '../src/test/resources/compose/docker-compose-grafana.yml',
+            ]
+        }
+
+        prometheus {
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-prometheus.yml',
+                    '../src/test/resources/compose/docker-compose-grafana.yml',
+            ]
+        }
+    }
+}

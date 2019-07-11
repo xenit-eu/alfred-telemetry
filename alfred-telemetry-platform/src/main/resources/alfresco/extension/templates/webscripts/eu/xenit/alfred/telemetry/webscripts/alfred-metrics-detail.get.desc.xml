@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>Alfred Telemetry Metric Information</shortname>
+    <description>Displays information about a particular meter by providing its name as a selector</description>
+    <url>/alfred/telemetry/metrics/{meterName}</url>
+    <authentication>none</authentication>
+    <format default="json">argument</format>
+    <family>Alfred Telemetry</family>
+</webscript>

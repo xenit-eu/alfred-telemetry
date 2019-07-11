@@ -1,0 +1,6 @@
+version: '2.2'
+
+services:
+  alfresco:
+    environment:
+      - GLOBAL_alfred.telemetry.export.jmx.enabled=true

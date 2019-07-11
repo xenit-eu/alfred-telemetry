@@ -1,0 +1,27 @@
+version: '2.2'
+
+services:
+  alfresco:
+    environment:
+    - GLOBAL_alfred.telemetry.export.graphite.host=carbon
+    - GLOBAL_metrics.dbMetricsReporter.query.statements.enabled=true
+    - GLOBAL_metrics.restMetricsReporter.path.enabled=true
+
+  carbon:
+    image: hub.xenit.eu/carbon:0.0.1-4
+    volumes:
+    - whisperdb:/opt/graphite/storage/whisper
+
+  monitor-graphite-api:
+    image: hub.xenit.eu/graphite-api:0.0.1-10
+    volumes:
+    - whisperdb:/srv/graphite/whisper
+
+  grafana:
+    volumes:
+      - ./graphite/grafana/graphite-datasources.yml:/etc/grafana-provisioning/datasources/graphite-datasources.yml
+      - ./graphite/grafana/graphite-dashboards.yml:/etc/grafana-provisioning/dashboards/graphite-dashboards.yml
+      - ./graphite/grafana/dashboards:/etc/grafana-provisioning/dashboards/graphite
+
+volumes:
+  whisperdb:

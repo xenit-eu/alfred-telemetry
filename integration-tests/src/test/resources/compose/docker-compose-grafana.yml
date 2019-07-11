@@ -1,0 +1,9 @@
+version: '2.2'
+
+services:
+  grafana:
+    image: hub.xenit.eu/grafana:5.0
+    volumes:
+    - ./grafana:/etc/grafana:z
+    ports:
+    - 3000:3000

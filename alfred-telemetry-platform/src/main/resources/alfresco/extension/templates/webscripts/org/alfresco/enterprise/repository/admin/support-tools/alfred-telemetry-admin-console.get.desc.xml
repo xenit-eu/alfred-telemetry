@@ -1,0 +1,10 @@
+<webscript>
+    <shortname>Alfred Telemetry</shortname>
+    <description>Alfred Telemetry configuration overview.></description>
+    <url>/enterprise/admin/alfred-telemetry</url>
+    <family>AdminConsole</family>
+    <format default="html">argument</format>
+    <authentication>admin</authentication>
+    <lifecycle>internal</lifecycle>
+    <transaction allow="readonly">required</transaction>
+</webscript>

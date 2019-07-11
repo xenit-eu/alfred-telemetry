@@ -1,0 +1,90 @@
+plugins {
+    id 'idea'
+    id 'java'
+    id 'eu.xenit.alfresco' version "0.2.0"
+    id 'eu.xenit.amp' version "0.2.0"
+}
+
+description = "Alfred Telemetry Platform module which enables exposure of Metrics using Micrometer"
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+ext {
+    // Compiling against AEE 6.1 because:
+    // * Some MeterBinder implementations monitor Enterprise only components (e.g. Hazelcast caches)
+    // * Alfresco's Micrometer integration, (MetricsController, MetricsReporter) classes only available as of 6.1.
+    // Compatibility with 5.x should be covered with integration tests
+    alfrescoVersion = '6.1.0.5'
+}
+
+dependencies {
+    implementation enforcedPlatform("org.alfresco:acs-packaging:${alfrescoVersion}")
+
+    alfrescoProvided('org.alfresco:alfresco-repository')
+
+    // 'alfresco-enterprise-repository' not transitive because it will try to download a bunch of unreachable artifacts
+    alfrescoProvided('org.alfresco:alfresco-enterprise-repository') { transitive = false }
+    alfrescoProvided('com.hazelcast:hazelcast') { transitive = false }
+
+    implementation("io.micrometer:micrometer-core:${micrometerVersion}") {
+        exclude group: "org.slf4j", module: "*"
+    }
+    implementation("io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}") {
+        exclude group: "org.slf4j", module: "*"
+    }
+
+    alfrescoProvided "io.micrometer:micrometer-registry-graphite:${micrometerVersion}"
+    alfrescoProvided "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
+    alfrescoProvided "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+    testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "skipped", "failed"
+    }
+    systemProperty 'micrometerVersion', project.property("micrometerVersion")
+}
+
+processResources {
+    filesMatching("**/module.properties") {
+        expand project.properties
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+sourceSets {
+    main {
+        amp {
+            module("src/main/resources/alfresco/module/alfred-telemetry-platform/module.properties")
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            artifact amp
+        }
+    }
+}
+

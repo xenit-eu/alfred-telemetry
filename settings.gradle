@@ -1,0 +1,10 @@
+rootProject.name = 'alfred-telemetry'
+
+// Alfred Telemetry core module
+include ':alfred-telemetry-platform'
+
+include ':integration-tests'
+["52", "60", "61"].each { version ->
+    include ":integration-tests:alfresco-enterprise-${version}"
+    include ":integration-tests:alfresco-community-${version}"
+}

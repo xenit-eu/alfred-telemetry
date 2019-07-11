@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>Alfred Telemetry Prometheus WebScript</shortname>
+    <description>Scrapable endpoint with Micrometer metrics for Prometheus</description>
+    <url>/alfred/telemetry/prometheus</url>
+    <authentication>none</authentication>
+    <family>Alfred Telemetry</family>
+ </webscript>

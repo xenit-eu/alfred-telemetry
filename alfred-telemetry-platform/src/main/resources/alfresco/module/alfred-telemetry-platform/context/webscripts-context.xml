@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+
+    <bean id="webscript.org.alfresco.enterprise.repository.admin.support-tools.alfred-telemetry-admin-console.get"
+            class="eu.xenit.alfred.telemetry.webscripts.AdminConsoleWebScript"
+            parent="webscript">
+        <constructor-arg ref="meterRegistry"/>
+        <property name="globalProperties" ref="global-properties"/>
+    </bean>
+
+    <bean id="webscript.eu.xenit.alfred.telemetry.webscripts.alfred-prometheus.get"
+            class="eu.xenit.alfred.telemetry.webscripts.PrometheusWebScript"
+            parent="webscript">
+        <constructor-arg ref="meterRegistry"/>
+    </bean>
+
+    <bean id="webscript.eu.xenit.alfred.telemetry.webscripts.alfred-metrics.get"
+            class="eu.xenit.alfred.telemetry.webscripts.MetricsWebScript"
+            parent="webscript">
+        <constructor-arg ref="alfred-telemetry.MeterRegistryService"/>
+    </bean>
+
+    <bean id="webscript.eu.xenit.alfred.telemetry.webscripts.alfred-metrics-detail.get"
+            class="eu.xenit.alfred.telemetry.webscripts.MetricsDetailWebScript"
+            parent="webscript">
+        <constructor-arg ref="alfred-telemetry.MeterRegistryService"/>
+    </bean>
+
+</beans>

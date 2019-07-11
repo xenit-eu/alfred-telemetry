@@ -1,0 +1,10 @@
+apiVersion: 1
+
+providers:
+    - name: 'Prometheus dashboard provider'
+      org_id: 1
+      folder: ''
+      type: file
+      editable: false
+      options:
+          path: /etc/grafana-provisioning/dashboards/prometheus

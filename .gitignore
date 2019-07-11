@@ -1,0 +1,7 @@
+*.iml
+.gradle/
+build/
+.idea
+**/*.idea
+out/
+alfresco.log

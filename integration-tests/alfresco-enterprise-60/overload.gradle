@@ -1,0 +1,5 @@
+ext {
+    alfrescoVersion = '6.1.0.3'
+    alfrescoArtifactId = 'content-services'
+    shareVersion = '6.1.0'
+}
