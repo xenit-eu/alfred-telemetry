@@ -2,7 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/eu.xenit.alfred.telemetry/alfred-telemetry-platform.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.alfred.telemetry%22%20AND%20a%3A%22alfred-telemetry-platform%22)
 [![Build Status](https://jenkins-2.xenit.eu/buildStatus/icon?job=Xenit+Github%2Falfred-telemetry%2Fmaster)](https://jenkins-2.xenit.eu/job/Xenit%20Github/job/alfred-telemetry/job/master/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
 
 Alfred Telemetry integrates Alfresco and [Micrometer](https://micrometer.io/), an application metrics facade that 
