@@ -1,6 +1,8 @@
 package eu.xenit.alfred.telemetry.registry;
 
 
+import eu.xenit.alfred.telemetry.MeterRegistryCustomizer;
+import eu.xenit.alfred.telemetry.util.LambdaSafe;
 import eu.xenit.alfred.telemetry.util.VersionUtil;
 import eu.xenit.alfred.telemetry.util.VersionUtil.Version;
 import io.micrometer.core.instrument.Counter;
@@ -63,12 +65,21 @@ public class RegistryRegistrar implements InitializingBean, ApplicationContextAw
         }
 
         final MeterRegistry registry = factoryWrapper.getRegistryFactory().createRegistry();
+        this.customize(registry);
         this.addFilters(registry);
 
         globalMeterRegistry.add(registry);
         LOGGER.info("Registered Micrometer registry '{}'", factoryWrapper.getRegistryClass());
 
         this.incrementRegistryCounter();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void customize(final MeterRegistry registry) {
+        LambdaSafe.callbacks(MeterRegistryCustomizer.class, ctx.getBeansOfType(MeterRegistryCustomizer.class).values(),
+                registry)
+                .withLogger(this.getClass())
+                .invoke((c) -> c.customize(registry));
     }
 
     private void addFilters(final MeterRegistry registry) {

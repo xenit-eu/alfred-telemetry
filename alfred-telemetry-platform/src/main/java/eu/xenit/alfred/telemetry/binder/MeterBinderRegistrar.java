@@ -3,7 +3,6 @@ package eu.xenit.alfred.telemetry.binder;
 import com.google.common.base.CaseFormat;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import io.micrometer.core.instrument.config.MeterFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
