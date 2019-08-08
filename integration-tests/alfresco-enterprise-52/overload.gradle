@@ -1,5 +1,4 @@
 ext {
-    alfrescoVersion = '5.2.5'
-    alfrescoArtifactId = 'alfresco-enterprise'
-    shareVersion = '5.2.5'
+    alfrescoBaseWar = 'org.alfresco:alfresco-enterprise:5.2.5@war'
+    alfrescoBaseImage = 'hub.xenit.eu/alfresco-repository-enterprise:5.2.5'
 }
