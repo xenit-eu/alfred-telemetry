@@ -7,11 +7,14 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
-import java.util.Arrays;
-import java.util.List;
+import io.micrometer.core.instrument.config.MeterFilter;
+import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * {@link InitializingBean} that processes {@link RegistryFactoryWrapper}'s and registers the corresponding {@link
@@ -19,22 +22,20 @@ import org.springframework.beans.factory.InitializingBean;
  * registry} if the registry {@link RegistryFactoryWrapper#isRegistryEnabled() is enabled} and the registry {@link
  * RegistryFactoryWrapper#isRegistryAvailableOnClassPath() is available on the classpath}
  */
-public class RegistryRegistrar implements InitializingBean {
+public class RegistryRegistrar implements InitializingBean, ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistryRegistrar.class);
 
     private CompositeMeterRegistry globalMeterRegistry;
+    private ApplicationContext ctx;
 
-    private List<RegistryFactoryWrapper> registryFactoryWrappers;
-
-    public RegistryRegistrar(CompositeMeterRegistry globalMeterRegistry, RegistryFactoryWrapper... wrappers) {
+    public RegistryRegistrar(CompositeMeterRegistry globalMeterRegistry) {
         this.globalMeterRegistry = globalMeterRegistry;
-        this.registryFactoryWrappers = Arrays.asList(wrappers);
     }
 
     @Override
     public void afterPropertiesSet() {
-        registryFactoryWrappers.forEach(this::processRegistryFactoryWrapper);
+        ctx.getBeansOfType(RegistryFactoryWrapper.class).values().forEach(this::processRegistryFactoryWrapper);
     }
 
     private void processRegistryFactoryWrapper(RegistryFactoryWrapper factoryWrapper) {
@@ -61,10 +62,17 @@ public class RegistryRegistrar implements InitializingBean {
             return;
         }
 
-        globalMeterRegistry.add(factoryWrapper.getRegistryFactory().createRegistry());
+        final MeterRegistry registry = factoryWrapper.getRegistryFactory().createRegistry();
+        this.addFilters(registry);
+
+        globalMeterRegistry.add(registry);
         LOGGER.info("Registered Micrometer registry '{}'", factoryWrapper.getRegistryClass());
 
         this.incrementRegistryCounter();
+    }
+
+    private void addFilters(final MeterRegistry registry) {
+        ctx.getBeansOfType(MeterFilter.class).values().forEach(registry.config()::meterFilter);
     }
 
     private void incrementRegistryCounter() {
@@ -76,5 +84,10 @@ public class RegistryRegistrar implements InitializingBean {
             LOGGER.warn("Unable to retrieve 'alfred.telemetry.registries' counter from global Micrometer registry");
         }
 
+    }
+
+    @Override
+    public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
+        this.ctx = applicationContext;
     }
 }

@@ -47,12 +47,7 @@ public class MeterBinderRegistrar implements InitializingBean, ApplicationContex
             return;
         }
 
-        this.addFilters(meterRegistry);
         this.addBinders(meterRegistry);
-    }
-
-    protected void addFilters(final MeterRegistry registry) {
-        ctx.getBeansOfType(MeterFilter.class).values().forEach(registry.config()::meterFilter);
     }
 
     private void addBinders(final MeterRegistry registry) {
