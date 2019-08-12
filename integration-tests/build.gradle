@@ -32,7 +32,7 @@ test {
 subprojects {
     apply plugin: 'java'
 
-    def edition = project.name.split("-")[1]
+    def alfrescoVersion = project.name[-2..-1]
     apply from: "${project.projectDir}/overload.gradle"
 
     description = "Alfresco ${alfrescoVersion} with Alfred Micrometer"
@@ -59,12 +59,11 @@ subprojects {
         alfrescoSM "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
         alfrescoSM "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
 
-        baseAlfrescoWar "org.alfresco:${alfrescoArtifactId}:${alfrescoVersion}@war"
-        baseShareWar "org.alfresco:share:${shareVersion}@war"
+        baseAlfrescoWar "${alfrescoBaseWar}"
     }
 
     dockerAlfresco {
-        baseImage = "hub.xenit.eu/alfresco-${edition}:${alfrescoVersion}"
+        baseImage = "${alfrescoBaseImage}"
         leanImage = true
 
         dockerBuild {

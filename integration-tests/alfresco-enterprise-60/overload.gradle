@@ -1,5 +1,4 @@
 ext {
-    alfrescoVersion = '6.1.0.3'
-    alfrescoArtifactId = 'content-services'
-    shareVersion = '6.1.0'
+    alfrescoBaseWar = 'org.alfresco:content-services:6.0.1.2@war'
+    alfrescoBaseImage = 'hub.xenit.eu/alfresco-repository-enterprise:6.0.1.2'
 }
