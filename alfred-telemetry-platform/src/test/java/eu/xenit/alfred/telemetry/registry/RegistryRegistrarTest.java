@@ -11,16 +11,32 @@ import eu.xenit.alfred.telemetry.util.VersionUtil.Version;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import java.util.Collections;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 @ExtendWith(MockitoExtension.class)
 class RegistryRegistrarTest {
 
     @Mock
     private CompositeMeterRegistry meterRegistry;
+
+    @Mock
+    private ApplicationContext applicationContext;
+
+    private RegistryRegistrar registrar;
+
+    @BeforeEach
+    void setup() {
+        registrar = new RegistryRegistrar(meterRegistry);
+        registrar.setApplicationContext(applicationContext);
+    }
 
     @Test
     void dontRegisterIfVersionIfIncompatibleRegistryVersion() {
@@ -31,7 +47,9 @@ class RegistryRegistrarTest {
         when(factoryWrapper.getRegistryVersion())
                 .thenReturn(Version.fromString("101.12.07"));
 
-        RegistryRegistrar registrar = new RegistryRegistrar(meterRegistry, factoryWrapper);
+        when(applicationContext.getBeansOfType(RegistryFactoryWrapper.class))
+                .thenReturn(Collections.singletonMap("factoryWrapper", factoryWrapper));
+
         registrar.afterPropertiesSet();
 
         verify(meterRegistry, never()).add(any(MeterRegistry.class));
@@ -42,7 +60,9 @@ class RegistryRegistrarTest {
         RegistryFactoryWrapper factoryWrapper = mock(RegistryFactoryWrapper.class);
         when(factoryWrapper.isRegistryEnabled()).thenReturn(false);
 
-        RegistryRegistrar registrar = new RegistryRegistrar(meterRegistry, factoryWrapper);
+        when(applicationContext.getBeansOfType(RegistryFactoryWrapper.class))
+                .thenReturn(Collections.singletonMap("factoryWrapper", factoryWrapper));
+
         registrar.afterPropertiesSet();
 
         verify(meterRegistry, never()).add(any(MeterRegistry.class));
@@ -54,7 +74,9 @@ class RegistryRegistrarTest {
         when(factoryWrapper.isRegistryEnabled()).thenReturn(true);
         when(factoryWrapper.isRegistryAvailableOnClassPath()).thenReturn(false);
 
-        RegistryRegistrar registrar = new RegistryRegistrar(meterRegistry, factoryWrapper);
+        when(applicationContext.getBeansOfType(RegistryFactoryWrapper.class))
+                .thenReturn(Collections.singletonMap("factoryWrapper", factoryWrapper));
+
         registrar.afterPropertiesSet();
 
         verify(meterRegistry, never()).add(any(MeterRegistry.class));
@@ -67,7 +89,9 @@ class RegistryRegistrarTest {
         when(factoryWrapper.isRegistryAvailableOnClassPath()).thenReturn(true);
         when(factoryWrapper.getRegistryFactory()).thenReturn(SimpleMeterRegistry::new);
 
-        RegistryRegistrar registrar = new RegistryRegistrar(meterRegistry, factoryWrapper);
+        when(applicationContext.getBeansOfType(RegistryFactoryWrapper.class))
+                .thenReturn(Collections.singletonMap("factoryWrapper", factoryWrapper));
+
         registrar.afterPropertiesSet();
 
         verify(meterRegistry).add(any(SimpleMeterRegistry.class));
@@ -81,7 +105,9 @@ class RegistryRegistrarTest {
         when(factoryWrapper.getRegistryFactory()).thenReturn(SimpleMeterRegistry::new);
         when(factoryWrapper.getRegistryVersion()).thenReturn(VersionUtilTest.getMicrometerVersionFromGradle());
 
-        RegistryRegistrar registrar = new RegistryRegistrar(meterRegistry, factoryWrapper);
+        when(applicationContext.getBeansOfType(RegistryFactoryWrapper.class))
+                .thenReturn(Collections.singletonMap("factoryWrapper", factoryWrapper));
+
         registrar.afterPropertiesSet();
 
         verify(meterRegistry).add(any(SimpleMeterRegistry.class));

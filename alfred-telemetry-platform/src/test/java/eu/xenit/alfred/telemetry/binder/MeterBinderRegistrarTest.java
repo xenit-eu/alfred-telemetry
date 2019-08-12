@@ -109,19 +109,6 @@ class MeterBinderRegistrarTest {
                     is(1));
         }
 
-        @Test
-        void addMeterFilters() {
-            MeterFilter mockedFilter = MeterFilter.commonTags(Tags.of("stop", "hammertime"));
-            when(applicationContext.getBeansOfType(MeterFilter.class))
-                    .thenReturn(Collections.singletonMap("filter", mockedFilter));
-
-            registrar.afterPropertiesSet();
-
-            Counter testCounter = registrar.getMeterRegistry().find(BasicTestMetrics.COUNTER_NAME).counter();
-            assertThat(testCounter, is(not(nullValue())));
-            assertThat(testCounter.getId().getTag("stop"), is("hammertime"));
-        }
-
     }
 
     @Nested

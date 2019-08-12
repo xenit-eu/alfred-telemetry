@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import eu.xenit.alfred.telemetry.binder.MeterBinderRegistrar;
+import eu.xenit.alfred.telemetry.config.CommonTagFilterFactory;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
@@ -23,16 +24,17 @@ class Care4AlfMeterBinderRegistrarTest {
 
     private MeterBinderRegistrar registrar;
 
+    private MeterRegistry globalRegistry;
+
     @Mock
     private ApplicationContext applicationContext;
 
     @BeforeEach
     void setup() {
-        when(applicationContext.getBeansOfType(MeterFilter.class))
-                .thenReturn(
-                        Collections.singletonMap("filter", MeterFilter.commonTags(Tags.of("application", "alfresco"))));
-        MeterRegistry registry = new SimpleMeterRegistry();
-        registrar = new Care4AlfMeterBinderRegistrar(registry);
+        globalRegistry = new SimpleMeterRegistry();
+        globalRegistry.config().meterFilter(CommonTagFilterFactory.commonTagsIfNotExists(Tags.of("application", "alfresco")));
+
+        registrar = new Care4AlfMeterBinderRegistrar(globalRegistry);
         registrar.setApplicationContext(applicationContext);
         registrar.setEnabled(true);
     }
@@ -45,6 +47,9 @@ class Care4AlfMeterBinderRegistrarTest {
         registrar.afterPropertiesSet();
         final Counter counter = registrar.getMeterRegistry().counter("counter");
         assertThat(counter.getId().getTag("application"), is("c4a"));
+
+        final Counter counterThroughGlobalRegistry = globalRegistry.counter("counter");
+        assertThat(counterThroughGlobalRegistry.getId().getTag("application"), is("alfresco"));
     }
 
 }

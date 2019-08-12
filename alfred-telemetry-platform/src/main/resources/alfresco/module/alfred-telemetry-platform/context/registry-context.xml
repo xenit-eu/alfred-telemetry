@@ -12,14 +12,6 @@
     <bean id="alfred-telemetry.RegistryRegistrar"
             class="eu.xenit.alfred.telemetry.registry.RegistryRegistrar">
         <constructor-arg ref="meterRegistry"/>
-        <constructor-arg>
-            <list>
-                <ref bean="alfred-telemetry.SimpleRegistryFactoryWrapper"/>
-                <ref bean="alfred-telemetry.JmxRegistryFactoryWrapper"/>
-                <ref bean="alfred-telemetry.GraphiteRegistryFactoryWrapper"/>
-                <ref bean="alfred-telemetry.PrometheusRegistryFactoryWrapper"/>
-            </list>
-        </constructor-arg>
     </bean>
 
     <!-- Simple Meter registry -->
