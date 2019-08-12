@@ -180,7 +180,7 @@ Metrics provided
 
 
 ## Cache Metrics
-The cache metrics bindings will provide metrics for the Alfresco caches.
+The cache metrics bindings will provide metrics for the Alfresco caches. These metrics are **disabled by default**.
 
 **Control Property**: `alfred.telemetry.binder.cache.enabled`
 
