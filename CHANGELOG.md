@@ -34,3 +34,12 @@ if available on the classpath.
 - Integration with the out of the box Alfresco metrics included since 6.1.
 - Limited support for Care4Alf compatible metrics.
 - ...
+
+## [0.1.1] - 2019-08-13
+
+### Fixed
+* MeterFilters are applied after metrics are possibly already exposed to the global MeterRegistry
+
+### Changed
+* Changed default logging level to INFO
+* Disable Cache metrics by default
