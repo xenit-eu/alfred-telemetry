@@ -51,12 +51,6 @@ pipeline {
         always {
             sh "./gradlew composeDownForced"
             script {
-                def artifacts = [
-                        'alfred-telemetry-platform/build/libs/*.jar',
-                        'alfred-telemetry-platform/build/dist/*.amp'
-                ]
-
-                archiveArtifacts artifacts: artifacts.join(','), excludes: '**/*-sources.jar', allowEmptyArchive: true
                 junit '**/build/**/TEST-*.xml'
             }
         }
