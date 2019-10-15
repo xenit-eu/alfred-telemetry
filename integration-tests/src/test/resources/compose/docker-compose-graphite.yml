@@ -8,12 +8,12 @@ services:
     - GLOBAL_metrics.restMetricsReporter.path.enabled=true
 
   carbon:
-    image: hub.xenit.eu/carbon:0.0.1-4
+    image: hub.xenit.eu/public/carbon:0.0.1-4
     volumes:
     - whisperdb:/opt/graphite/storage/whisper
 
   monitor-graphite-api:
-    image: hub.xenit.eu/graphite-api:0.0.1-10
+    image: hub.xenit.eu/public/graphite-api:0.0.1-10
     volumes:
     - whisperdb:/srv/graphite/whisper
 
