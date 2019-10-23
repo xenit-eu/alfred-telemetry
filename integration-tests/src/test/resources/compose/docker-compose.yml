@@ -15,7 +15,7 @@ services:
       - GLOBAL_alfred.telemetry.binder.care4alf.enabled=true
 
   postgresql:
-    image: hub.xenit.eu/postgres
+    image: docker.io/xenit/postgres
     environment:
       - POSTGRES_USER=alfresco
       - POSTGRES_PASSWORD=admin

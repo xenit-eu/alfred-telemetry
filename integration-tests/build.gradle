@@ -67,8 +67,8 @@ subprojects {
         leanImage = true
 
         dockerBuild {
-            repository = 'hub.xenit.eu/alfred/alfred-telemetry'
-            tags = ["${version}-alfresco-${alfrescoVersion}"]
+            repository = "hub.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"
+            tags = ["${version}"]
             automaticTags = false
         }
     }
