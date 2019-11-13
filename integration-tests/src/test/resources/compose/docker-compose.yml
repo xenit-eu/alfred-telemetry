@@ -13,6 +13,8 @@ services:
       - GLOBAL_alfred.telemetry.alfresco-integration.enabled=true
       # Enable Care4Alf metrics:
       - GLOBAL_alfred.telemetry.binder.care4alf.enabled=true
+      # Enable Alfresco cache metrics:
+      - GLOBAL_alfred.telemetry.binder.cache.enabled=true
 
   postgresql:
     image: docker.io/xenit/postgres
