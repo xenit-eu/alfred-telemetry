@@ -1,11 +1,11 @@
-version: '2.2'
+version: '3.2'
 
 services:
   alfresco:
     image: ${DOCKER_IMAGE}
     ports:
-      - ${ALFRESCO_TCP_8080:-8080:8080}
-      #    - 8000:8000
+     - target: 8080
+       mode: host
     environment:
       - CATALINA_OPTS=-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
       - INDEX=noindex
