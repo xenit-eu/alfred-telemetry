@@ -1,11 +1,16 @@
 plugins {
-    id 'eu.xenit.docker-alfresco' version '4.0.3' apply false
+    id 'eu.xenit.docker-alfresco' version '5.0.6' apply false
+    id 'eu.xenit.docker-compose.auto' version '5.0.6' apply false
     id 'java'
     id 'idea'
 }
 
 ext {
     slf4jVersion = '1.7.25'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
 }
 
 dependencies {
@@ -50,6 +55,7 @@ subprojects {
     check.dependsOn integrationTest
 
     apply plugin: 'eu.xenit.docker-alfresco'
+    apply plugin: 'eu.xenit.docker-compose.auto'
 
     dependencies {
         alfrescoAmp project(path: ":alfred-telemetry-platform", configuration: "amp")
