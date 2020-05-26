@@ -3,13 +3,20 @@ package eu.xenit.alfred.telemetry.alfrescointegration;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import org.alfresco.enterprise.metrics.MetricsController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of Alfresco's {@link MetricsController} that will offer the global MicroMeter registry as registry.
  */
 public class AlfredTelemetryMetricsController implements MetricsController {
 
-    private CompositeMeterRegistry globalRegistry;
+    private static final Logger log = LoggerFactory.getLogger(AlfredTelemetryMetricsController.class);
+
+    private static final String MSG_INTEGRATION_FAILED =
+            "Failed to integrate Alfred Telemetry with the out of the box Alfresco metrics: ";
+
+    private final CompositeMeterRegistry globalRegistry;
     private final MetricsController alfrescoMetricsController;
 
     AlfredTelemetryMetricsController(CompositeMeterRegistry globalRegistry,
@@ -23,6 +30,15 @@ public class AlfredTelemetryMetricsController implements MetricsController {
 
     private void registerAlfrescoControllerInGlobalRegistry(final boolean enableDefaultAlfrescoRegistry) {
         if (enableDefaultAlfrescoRegistry) {
+            if (!alfrescoMetricsController.isEnabled()) {
+                log.warn(MSG_INTEGRATION_FAILED
+                        + "out of the box Alfresco metrics not enabled, see ${metrics.enabled} property.");
+                return;
+            }
+            if (alfrescoMetricsController.getRegistry() == null) {
+                log.warn(MSG_INTEGRATION_FAILED + "out of the box Alfresco MeterRegistry not correctly initialized.");
+                return;
+            }
             globalRegistry.add(alfrescoMetricsController.getRegistry());
         }
     }

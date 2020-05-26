@@ -4,12 +4,13 @@ services:
   alfresco:
     image: ${DOCKER_IMAGE}
     ports:
-     - target: 8080
-       mode: host
+      - target: 8080
+        mode: host
     environment:
       - CATALINA_OPTS=-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
       - INDEX=noindex
       - ENABLE_CLUSTERING=true
+      - GLOBAL_metrics.enabled=true
       - GLOBAL_alfred.telemetry.alfresco-integration.enabled=true
       # Enable Care4Alf metrics:
       - GLOBAL_alfred.telemetry.binder.care4alf.enabled=true
