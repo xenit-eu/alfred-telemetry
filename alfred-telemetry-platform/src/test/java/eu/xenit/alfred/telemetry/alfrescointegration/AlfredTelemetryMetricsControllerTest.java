@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +33,7 @@ class AlfredTelemetryMetricsControllerTest {
     @BeforeEach
     void setup() {
         when(alfrescoMetricsController.getRegistry()).thenReturn(alfrescoDefaultRegistry);
+        when(alfrescoMetricsController.isEnabled()).thenReturn(true);
     }
 
     @Test
@@ -40,6 +42,16 @@ class AlfredTelemetryMetricsControllerTest {
 
         verify(alfrescoMetricsController).getRegistry();
         verify(meterRegistry).add(alfrescoDefaultRegistry);
+    }
+
+    @Test
+    void initialize_doesNotIncludeAlfrescoDefaultRegistryIfDisabled() {
+        when(alfrescoMetricsController.isEnabled()).thenReturn(false);
+        new AlfredTelemetryMetricsController(meterRegistry, alfrescoMetricsController, true);
+
+        verify(alfrescoMetricsController).isEnabled();
+        verify(alfrescoMetricsController, never()).getRegistry();
+        verify(meterRegistry, never()).add(alfrescoDefaultRegistry);
     }
 
     @Test
@@ -59,12 +71,10 @@ class AlfredTelemetryMetricsControllerTest {
 
     @Test
     void isEnabled_delegatesToAlfrescoDefaultRegistry() {
-        when(alfrescoMetricsController.isEnabled()).thenReturn(true);
-
         MetricsController controller = new AlfredTelemetryMetricsController(meterRegistry, alfrescoMetricsController,
                 true);
         assertThat(controller.isEnabled(), is(true));
-        verify(alfrescoMetricsController).isEnabled();
+        verify(alfrescoMetricsController, times(2)).isEnabled();
     }
 
     @Test
