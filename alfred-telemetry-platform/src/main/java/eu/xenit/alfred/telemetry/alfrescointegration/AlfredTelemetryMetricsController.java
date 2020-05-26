@@ -35,11 +35,12 @@ public class AlfredTelemetryMetricsController implements MetricsController {
                         + "out of the box Alfresco metrics not enabled, see ${metrics.enabled} property.");
                 return;
             }
-            if (alfrescoMetricsController.getRegistry() == null) {
+            final MeterRegistry alfrescoRegistry = alfrescoMetricsController.getRegistry();
+            if (alfrescoRegistry == null) {
                 log.warn(MSG_INTEGRATION_FAILED + "out of the box Alfresco MeterRegistry not correctly initialized.");
                 return;
             }
-            globalRegistry.add(alfrescoMetricsController.getRegistry());
+            globalRegistry.add(alfrescoRegistry);
         }
     }
 
