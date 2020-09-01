@@ -238,6 +238,36 @@ Metrics provided
 | :------------------------------------ | :----------------------- |
 | users.tickets.count                   | status:[valid, expired]  |
 
+## Solr metrics
+
+### Solr tracking metrics
+**Control Property**: `alfred.telemetry.binder.solr.tracking.enabled`
+
+Metrics provided
+
+| Name                                  |
+| :------------------------------------ |
+| solr.tracking.maxTxnId                |
+| solr.tracking.maxTxnCommitTime        |
+| solr.tracking.maxChangeSetId          |
+| solr.tracking.maxChangeSetCommitTime  |
+
+### Solr sharding metrics
+Solr sharding metrics are only available on Alfresco enterprise versions greater than 6.0.
+
+**Control Property**: `alfred.telemetry.binder.solr.sharding.enabled`
+
+| Name                                         | Available tags                                                                              | Values                       |
+|-:--------------------------------------------|-:-------------------------------------------------------------------------------------------|-:----------------------------|
+| solr.sharding.numberOfShards                 | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore]                             |                              |
+| solr.sharding.numberOfActiveShardInstances   | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.lastIndexedChangeSetId         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.lastIndexedTxId                | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.instanceMode                   | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] | 0=ACTIVE, 1=PAUSED, 2=SILENT |
+| solr.sharding.master                         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.lastIndexedChangeSetCommitTime | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] | 0=false, 1=true              |
+| solr.sharding.lastIndexedTxCommitTime        | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.lastUpdated                    | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
 
 # Registering custom metrics
 

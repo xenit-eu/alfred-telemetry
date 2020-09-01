@@ -122,5 +122,12 @@ subprojects {
                     '../src/test/resources/compose/docker-compose-grafana.yml',
             ]
         }
+
+        sharding {
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-sharding.yml',
+            ]
+        }
     }
 }
