@@ -1,0 +1,45 @@
+version: '3.2'
+
+services:
+  alfresco:
+    environment:
+      - SOLR_SSL=none
+      - INDEX=solr6
+      - DYNAMIC_SHARD_REGISTRATION=true
+
+  solr1:
+    image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:1.3
+    restart: unless-stopped
+    ports:
+      - 8080
+    hostname: solr1
+    environment:
+      - SOLR_HOST=solr1
+      - ALFRESCO_SSL=none
+      - ARCHIVE_ENABLE_ALFRESCO_TRACKING=false
+      - ARCHIVE_INDEX_CONTENT=false
+      - ALFRESCO_INDEX_CONTENT=false
+      - MAX_HTTP_HEADER_SIZE=65536
+      - CORES_ALFRESCO=alfresco-0;alfresco-1
+      - GLOBAL_ALL_shard.method=DB_ID
+      - GLOBAL_ALL_shard.count=3
+      - GLOBAL_alfresco-0_shard.instance=0
+      - GLOBAL_alfresco-1_shard.instance=1
+
+  solr2:
+    image: hub.xenit.eu/alfresco-enterprise/alfresco-solr6:1.3
+    restart: unless-stopped
+    ports:
+      - 8080
+    hostname: solr2
+    environment:
+      - SOLR_HOST=solr2
+      - ALFRESCO_SSL=none
+      - ARCHIVE_ENABLE_ALFRESCO_TRACKING=false
+      - ARCHIVE_INDEX_CONTENT=false
+      - ALFRESCO_INDEX_CONTENT=false
+      - MAX_HTTP_HEADER_SIZE=65536
+      - CORES_ALFRESCO=alfresco-2
+      - GLOBAL_ALL_shard.method=DB_ID
+      - GLOBAL_ALL_shard.count=3
+      - GLOBAL_alfresco-2_shard.instance=2

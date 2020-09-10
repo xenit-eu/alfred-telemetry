@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+
+    <bean id="alfred-telemetry.SolrShardingMetricsBeanPostProcessor"
+            class="eu.xenit.alfred.telemetry.binder.solr.SolrMetricsBeanPostProcessor">
+        <constructor-arg ref="global-properties"/>
+        <constructor-arg ref="meterRegistry"/>
+        <constructor-arg ref="schedulerFactory"/>
+    </bean>
+
+    <bean id="alfred-telemetry.solrMetrics" class="eu.xenit.alfred.telemetry.binder.solr.tracking.SolrTrackingMetrics">
+        <constructor-arg ref="search.solrTrackingComponent"/>
+        <constructor-arg ref="transactionService"/>
+        <constructor-arg ref="meterRegistry"/>
+        <constructor-arg value="${alfred.telemetry.binder.solr.tracking.enabled}"/>
+    </bean>
+
+</beans>

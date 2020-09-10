@@ -18,12 +18,6 @@ pipeline {
             }
         }
         stage("Integration Tests") {
-            when {
-                anyOf {
-                    branch "master*"
-                    branch "release*"
-                }
-            }
             steps {
                 sh "./gradlew integrationTest"
             }

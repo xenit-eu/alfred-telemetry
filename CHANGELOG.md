@@ -25,6 +25,7 @@ Version template:
 ## [0.1.2] - UNRELEASED
 ### Added 
 * MeterRegistryCustomizer to support complex customization of MeterRegistries
+* Added metrics for Solr tracking and Solr sharding
 
 ## [0.1.1] - 2019-08-13
 
