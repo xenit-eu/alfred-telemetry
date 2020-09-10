@@ -31,19 +31,22 @@ public class SolrTrackingMetrics {
 
     private void registerMetrics() {
         LOGGER.info("Registering Solr metrics");
-        registerSolrTrackingMetric("maxTxnId", SOLRTrackingComponent::getMaxTxnId);
-        registerSolrTrackingMetric("maxTxnCommitTime", SOLRTrackingComponent::getMaxTxnCommitTime);
-        registerSolrTrackingMetric("maxChangeSetId", SOLRTrackingComponent::getMaxChangeSetId);
-        registerSolrTrackingMetric("maxChangeSetCommitTime", SOLRTrackingComponent::getMaxChangeSetCommitTime);
+        registerSolrTrackingMetric("maxTxnId", SOLRTrackingComponent::getMaxTxnId, "number");
+        registerSolrTrackingMetric("maxTxnCommitTime", SOLRTrackingComponent::getMaxTxnCommitTime, "timestamp");
+        registerSolrTrackingMetric("maxChangeSetId", SOLRTrackingComponent::getMaxChangeSetId, "number");
+        registerSolrTrackingMetric("maxChangeSetCommitTime", SOLRTrackingComponent::getMaxChangeSetCommitTime,
+                "timestamp");
     }
 
-    private void registerSolrTrackingMetric(String name, ToDoubleFunction<SOLRTrackingComponent> function) {
+    private void registerSolrTrackingMetric(String name, ToDoubleFunction<SOLRTrackingComponent> function,
+            String baseUnit) {
         ToDoubleFunction<SOLRTrackingComponent> wrappedFunction = solrTrackingComponent1 -> {
             RetryingTransactionHelper retryingTransactionHelper = transactionService.getRetryingTransactionHelper();
             return retryingTransactionHelper
                     .doInTransaction(() -> function.applyAsDouble(solrTrackingComponent1), true);
         };
         Gauge.builder(String.format("%s.%s", SOLR_METRICS_PREFIX, name), solrTrackingComponent, wrappedFunction)
+                .baseUnit(baseUnit)
                 .register(registry);
     }
 

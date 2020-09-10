@@ -1,5 +1,6 @@
 package eu.xenit.alfred.telemetry.binder.solr.sharding;
 
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
@@ -39,37 +40,37 @@ public class SolrShardingMetrics {
                     .and(floc.getStoreRefs().stream().map(storeRef -> Tag
                             .of("storeRef", String.format("%s_%s", storeRef.getProtocol(), storeRef.getIdentifier())))
                             .collect(Collectors.toSet()));
-            setAndCreateMetricIfNotExists("shards", floc.getNumberOfShards(), flocTags);
+            setAndCreateMetricIfNotExists("shards", floc.getNumberOfShards(), flocTags, "number");
             solrShardingMetricsContainer.getShards(floc).forEach(shard -> {
                 Tags shardTags = flocTags.and(Tags.of("shard", String.valueOf(shard.getInstance())));
                 Set<ShardInstance> shardInstances = solrShardingMetricsContainer.getShardInstances(shard);
                 int numberOfActiveShardInstances = (int) shardInstances.stream().filter(shardInstance ->
                         solrShardingMetricsContainer.getReplicaState(shardInstance) == ReplicaState.ACTIVE).count();
                 setAndCreateMetricIfNotExists("activeShardInstances", numberOfActiveShardInstances,
-                        shardTags);
+                        shardTags, "number");
                 shardInstances.forEach(shardInstance -> {
                     Tags instanceTags = shardTags.and(Tags.of("instanceHost", shardInstance.getHostName()));
                     ShardState shardState = solrShardingMetricsContainer.getShardState(shardInstance);
                     setAndCreateMetricIfNotExists("lastIndexedChangeSetId",
-                            shardState.getLastIndexedChangeSetId(), instanceTags);
+                            shardState.getLastIndexedChangeSetId(), instanceTags, "number");
                     setAndCreateMetricIfNotExists("lastIndexedTxId", shardState.getLastIndexedTxId(),
-                            instanceTags);
+                            instanceTags, "number");
                     setAndCreateMetricIfNotExists("instanceMode",
-                            solrShardingMetricsContainer.getReplicaState(shardInstance).ordinal(), instanceTags);
+                            solrShardingMetricsContainer.getReplicaState(shardInstance).ordinal(), instanceTags, "enumValue");
                     setAndCreateMetricIfNotExists("master", shardState.isMaster() ? 1 : 0,
-                            instanceTags);
+                            instanceTags, "boolean");
                     setAndCreateMetricIfNotExists("lastIndexedChangeSetCommitTime",
-                            shardState.getLastIndexedChangeSetCommitTime(), instanceTags);
+                            shardState.getLastIndexedChangeSetCommitTime(), instanceTags, "timestamp");
                     setAndCreateMetricIfNotExists("lastIndexedTxCommitTime",
-                            shardState.getLastIndexedTxCommitTime(), instanceTags);
+                            shardState.getLastIndexedTxCommitTime(), instanceTags, "timestamp");
                     setAndCreateMetricIfNotExists("lastUpdated",
-                            shardState.getLastUpdated(), instanceTags);
+                            shardState.getLastUpdated(), instanceTags, "timestamp");
                 });
             });
         });
     }
 
-    private void setAndCreateMetricIfNotExists(String metricName, long value, Iterable<Tag> tags) {
+    private void setAndCreateMetricIfNotExists(String metricName, long value, Iterable<Tag> tags, String baseUnit) {
         String fullMetricName = String.format("%s.%s", SOLR_SHARDING_METRICS_PREFIX, metricName);
         String metricIdentifier = metricName;
         for (Tag tag : tags) {
@@ -77,7 +78,9 @@ public class SolrShardingMetrics {
         }
         if (!metrics.containsKey(metricIdentifier)) {
             LOGGER.debug("Registering new metric {}", fullMetricName);
-            metrics.put(metricIdentifier, registry.gauge(fullMetricName, tags, new AtomicLong(value)));
+            AtomicLong atomicLongValue = new AtomicLong(value);
+            Gauge.builder(fullMetricName, atomicLongValue, Number::doubleValue).tags(tags).baseUnit(baseUnit).register(registry);
+            metrics.put(metricIdentifier, atomicLongValue);
         } else {
             AtomicLong metric = metrics.get(metricIdentifier);
             metric.set(value);
