@@ -1,18 +1,12 @@
 package eu.xenit.alfred.telemetry.binder.solr.sharding;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.sun.mail.iap.Argument;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import org.alfresco.repo.index.shard.Floc;
 import org.alfresco.repo.index.shard.Shard;
 import org.alfresco.repo.index.shard.ShardInstance;
@@ -21,9 +15,8 @@ import org.alfresco.repo.index.shard.ShardRegistryImpl;
 import org.alfresco.repo.index.shard.ShardRegistryImpl.ReplicaState;
 import org.alfresco.repo.index.shard.ShardState;
 import org.alfresco.service.cmr.repository.StoreRef;
-import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 
 class SolrShardingMetricsTest {
@@ -50,13 +43,14 @@ class SolrShardingMetricsTest {
         metricsInformation.put(floc, shardHashSetHashMap);
 
         ShardRegistry shardRegistry = Mockito.mock(ShardRegistry.class);
-        MeterRegistry meterRegistry = Mockito.mock(MeterRegistry.class);
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
         SolrShardingMetrics solrShardingMetrics = new SolrShardingMetrics(shardRegistry, meterRegistry);
 
         when(shardRegistry.getFlocs()).thenReturn(metricsInformation);
-        AtomicLong metricValue = spy(new AtomicLong(0));
-        when(meterRegistry.gauge(anyString(), any(Iterable.class), (Number) any())).thenReturn(metricValue);
         solrShardingMetrics.updateMetrics();
-        verify(meterRegistry, times(1)).gauge(eq("solr.sharding.lastIndexedTxId"), any(Iterable.class), (Number) any());
+        //check if there is one metric with the requested name
+        Assertions.assertEquals(1, meterRegistry.getMeters().stream()
+                .filter(meter -> meter.getId().getName().equals("solr.sharding.lastIndexedTxId"))
+                .collect(Collectors.toSet()).size());
     }
 }
