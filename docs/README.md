@@ -258,9 +258,9 @@ Solr sharding metrics are only available on Alfresco enterprise versions greater
 **Control Property**: `alfred.telemetry.binder.solr.sharding.enabled`
 
 | Name                                         | Available tags                                                                              | Values                       |
-|-:--------------------------------------------|-:-------------------------------------------------------------------------------------------|-:----------------------------|
-| solr.sharding.numberOfShards                 | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore]                             |                              |
-| solr.sharding.numberOfActiveShardInstances   | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+|--:-------------------------------------------|--:------------------------------------------------------------------------------------------|--:---------------------------|
+| solr.sharding.shards                         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore]                             |                              |
+| solr.sharding.shardInstances                 | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
 | solr.sharding.lastIndexedChangeSetId         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
 | solr.sharding.lastIndexedTxId                | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
 | solr.sharding.instanceMode                   | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] | 0=ACTIVE, 1=PAUSED, 2=SILENT |

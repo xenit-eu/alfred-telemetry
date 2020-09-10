@@ -39,13 +39,13 @@ public class SolrShardingMetrics {
                     .and(floc.getStoreRefs().stream().map(storeRef -> Tag
                             .of("storeRef", String.format("%s_%s", storeRef.getProtocol(), storeRef.getIdentifier())))
                             .collect(Collectors.toSet()));
-            setAndCreateMetricIfNotExists("numberOfShards", floc.getNumberOfShards(), flocTags);
+            setAndCreateMetricIfNotExists("shards", floc.getNumberOfShards(), flocTags);
             solrShardingMetricsContainer.getShards(floc).forEach(shard -> {
                 Tags shardTags = flocTags.and(Tags.of("shard", String.valueOf(shard.getInstance())));
                 Set<ShardInstance> shardInstances = solrShardingMetricsContainer.getShardInstances(shard);
                 int numberOfActiveShardInstances = (int) shardInstances.stream().filter(shardInstance ->
                         solrShardingMetricsContainer.getReplicaState(shardInstance) == ReplicaState.ACTIVE).count();
-                setAndCreateMetricIfNotExists("numberOfActiveShardInstances", numberOfActiveShardInstances,
+                setAndCreateMetricIfNotExists("activeShardInstances", numberOfActiveShardInstances,
                         shardTags);
                 shardInstances.forEach(shardInstance -> {
                     Tags instanceTags = shardTags.and(Tags.of("instanceHost", shardInstance.getHostName()));
