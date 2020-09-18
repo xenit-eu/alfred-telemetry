@@ -1,0 +1,11 @@
+version: '3.2'
+
+services:
+  alfresco:
+    volumes:
+      - type: bind
+        source: ../../../../../alfred-telemetry-platform/src/main/resources/alfresco/templates/webscripts
+        target: /usr/local/tomcat/shared/classes/alfresco/extension/templates/webscripts/
+      - type: bind
+        source: ./alfresco/development/extension/disable-webscript-caching-context.xml
+        target: /usr/local/tomcat/shared/classes/alfresco/extension/disable-webscript-caching-context.xml
