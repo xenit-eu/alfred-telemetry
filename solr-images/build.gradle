@@ -1,0 +1,49 @@
+plugins {
+    id 'eu.xenit.docker' version '5.0.7' apply false
+    id 'java'
+    id 'idea'
+}
+
+ext {
+    slf4jVersion = '1.7.25'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    def alfrescoVersion = project.name[-2..-1]
+    apply from: "${project.projectDir}/overload.gradle"
+
+    apply plugin: 'eu.xenit.docker'
+
+    configurations {
+        solrPrometheusJar
+    }
+
+    dependencies {
+        solrPrometheusJar project(path: ":alfred-telemetry-solr", configuration: 'static')
+    }
+
+    task createDockerFile(type: eu.xenit.gradle.docker.tasks.DockerfileWithCopyTask) {
+        group 'docker'
+
+        from "${solrBaseImage}"
+        smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/solr4/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/"
+        smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/solr4/solrconfig.xml", "/opt/alfresco/solr4/archive-SpacesStore/conf/"
+        smartCopy configurations.solrPrometheusJar.getSingleFile(), "/opt/alfresco/solr4/lib"
+        dependsOn(configurations.solrPrometheusJar)
+    }
+
+    dockerFile {
+        dockerFile = createDockerFile.getDestFile()
+        dockerBuild {
+            repository = "hub.xenit.eu/alfred-telemetry/solr-alfred-telemetry-${alfrescoVersion}"
+            automaticTags = false
+            tags = ["${version}"]
+        }
+    }
+}
