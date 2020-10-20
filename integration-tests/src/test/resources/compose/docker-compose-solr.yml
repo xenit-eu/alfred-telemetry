@@ -1,0 +1,11 @@
+version: '3.2'
+
+services:
+  solr:
+    image: ${SOLR_DOCKER_IMAGE}
+    ports:
+      - target: 8080
+        mode: host
+
+
+

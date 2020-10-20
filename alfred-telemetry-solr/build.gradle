@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+ext {
+    alfrescoVersion = '5.1.5'
+    solrVersion = '4.10.3'
+}
+
+repositories {
+    jcenter()
+
+    maven {
+        url 'https://artifacts.alfresco.com/nexus/content/groups/private'
+        credentials {
+            username property("org.alfresco.maven.nexus.username")
+            password property("org.alfresco.maven.nexus.password")
+        }
+    }
+}
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+configurations.create('static')
+artifacts.add('static', jar)
+
+dependencies {
+    implementation "org.apache.solr:solr-core:${solrVersion}"
+    implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
+    implementation "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
+}
