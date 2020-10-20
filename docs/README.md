@@ -90,7 +90,11 @@ alfred.telemetry.export.graphite.step=5
 alfred.telemetry.export.graphite.tags-as-prefix=application,host
 ```
 
-
+If you want Graphite support in your Alfresco docker image, you'll also need to add the following
+in your build.gradle:
+```groovy
+alfrescoSM "io.micrometer:micrometer-registry-graphite:${last-version}"
+```
 ## JMX
 
 **Control Property**: `alfred.telemetry.export.jmx.enabled`
