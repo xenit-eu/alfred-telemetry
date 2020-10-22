@@ -1,4 +1,5 @@
 ext {
     alfrescoBaseWar = 'org.alfresco:content-services:6.2.1@war'
     alfrescoBaseImage = 'hub.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:6.2.1'
+    solrFlavor = 'solr6'
 }

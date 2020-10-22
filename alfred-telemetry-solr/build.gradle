@@ -1,9 +1,7 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-
-ext {
-    alfrescoVersion = '5.1.5'
-    solrVersion = '4.10.3'
+plugins {
+    id 'eu.xenit.docker' version '5.0.7' apply false
+    id 'java'
+    id 'idea'
 }
 
 repositories {
@@ -18,16 +16,58 @@ repositories {
     }
 }
 
-compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-}
 
-configurations.create('static')
-artifacts.add('static', jar)
+subprojects {
+    apply plugin: 'java'
+    apply from: "${project.projectDir}/overload.gradle"
+    apply plugin: 'eu.xenit.docker'
 
-dependencies {
-    implementation "org.apache.solr:solr-core:${solrVersion}"
-    implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
-    implementation "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
+    compileJava {
+        if ("solr4".equals(solrFlavor)) {
+            sourceCompatibility = '1.8'
+            targetCompatibility = '1.8'
+        } else {
+            sourceCompatibility = '11'
+            targetCompatibility = '11'
+        }
+    }
+
+
+    dependencies {
+        files(jar)
+        if ("solr4".equals(solrFlavor)) {
+            implementation "org.apache.solr:solr-core:${solrVersion}"
+            implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
+            implementation "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
+        }   else if ("solr6".equals(solrFlavor)) {
+            implementation "org.apache.solr:solr-core:${solrVersion}"
+            implementation "org.alfresco:alfresco-search:${assVersion}"
+        }
+    }
+
+    task createDockerFile(type: eu.xenit.gradle.docker.tasks.DockerfileWithCopyTask) {
+        dependsOn(jar)
+        group 'docker'
+
+        from "${solrBaseImage}"
+        if("solr4".equals(solrFlavor)) {
+            smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/solrconfig.xml"
+            smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/archive-SpacesStore/conf/solrconfig.xml"
+            smartCopy files(jar).getSingleFile(), "/opt/alfresco/solr4/lib/alfred-telemetry-solr-prometheus.jar"
+        } else if("solr6".equals(solrFlavor)){
+            smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco-search-services/solrhome/templates/rerank/conf/solrconfig.xml"
+            smartCopy files(jar).getSingleFile(), "/opt/alfresco-search-services/solrhome/lib/alfred-telemetry-solr-prometheus.jar"
+        } else {
+            println "Unknown solrFlavor: ${solrFlavor}"
+        }
+    }
+
+    dockerFile {
+        dockerFile = createDockerFile.getDestFile()
+        dockerBuild {
+            repository = "hub.xenit.eu/alfred-telemetry/solr-alfred-telemetry-${solrFlavor}"
+            automaticTags = false
+            tags = ["${version}"]
+        }
+    }
 }
