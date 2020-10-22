@@ -3,9 +3,18 @@ version: '3.2'
 services:
   solr:
     image: ${SOLR_DOCKER_IMAGE}
+    environment:
+      - DEBUG=true
+      - JMX_ENABLED=true
     ports:
-      - target: 8080
+      - target: 8443
         mode: host
+      - target: 8000
+        mode: host
+        published: 8000
+      - target: 5000
+        mode: host
+        published: 5000
 
 
 

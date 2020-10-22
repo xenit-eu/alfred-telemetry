@@ -5,13 +5,13 @@ include ':alfred-telemetry-platform'
 
 // Alfred Telemetry core module
 include ':alfred-telemetry-solr'
-
-include ':solr-images'
+["solr4","solr6"].each { solrFlavor ->
+    include ":alfred-telemetry-solr:${solrFlavor}"
+}
 
 include ':integration-tests'
 //["52", "60", "61"].each { version ->
-//    include ":integration-tests:alfresco-enterprise-${version}"
-["52"].each { version ->
-    include ":solr-images:solr-${version}"
+["52","61"].each { version ->
     include ":integration-tests:alfresco-community-${version}"
+    //    include ":integration-tests:alfresco-enterprise-${version}"
 }

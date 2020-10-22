@@ -1,3 +1,0 @@
-ext {
-    solrBaseImage = 'docker.io/xenit/alfresco-solr4:5.2.g'
-}

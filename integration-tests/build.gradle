@@ -90,6 +90,12 @@ subprojects {
         }
     }
 
+    // Make sure solr images project is loaded before we try to load a task from it.
+    // Necessary because :solr-images:solr-* is cross-configured from the :solr-images project
+    project.evaluationDependsOn(":alfred-telemetry-solr")
+    project.evaluationDependsOn(":alfred-telemetry-solr:${solrFlavor}")
+    def solrImage = project(":alfred-telemetry-solr:${solrFlavor}")
+
     dockerCompose {
         useComposeFiles = [
                 '../src/test/resources/compose/docker-compose.yml',
@@ -136,5 +142,16 @@ subprojects {
                     '../src/test/resources/compose/docker-compose-sharding.yml'
             ]
         }
+
+        solr {
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-prometheus.yml',
+                    '../src/test/resources/compose/docker-compose-grafana.yml',
+                    '../src/test/resources/compose/docker-compose-solr.yml'
+            ]
+        }
+
+        dockerCompose.solr.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
     }
 }
