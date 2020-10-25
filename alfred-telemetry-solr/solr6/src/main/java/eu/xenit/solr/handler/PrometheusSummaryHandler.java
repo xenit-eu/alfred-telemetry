@@ -25,7 +25,6 @@ import org.alfresco.solr.tracker.AclTracker;
 import org.alfresco.solr.tracker.MetadataTracker;
 import org.alfresco.solr.tracker.TrackerRegistry;
 import org.apache.solr.common.util.NamedList;
-import org.apache.solr.core.JmxMonitoredMap;
 import org.apache.solr.handler.RequestHandlerBase;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
@@ -80,44 +79,24 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     public void handleRequestBody(SolrQueryRequest req, SolrQueryResponse rsp) throws Exception {
         if(req.getOriginalParams().getParams("enableCoreStats") != null)
             enableCoreStats = req.getOriginalParams().getBool("enableCoreStats");
-/*        else
-            enableCoreStats = true;*/
         if(req.getOriginalParams().getParams("enableFTSMetrics") != null)
             enableFTSMetrics = req.getOriginalParams().getBool("enableFTSMetrics");
-/*        else
-            enableFTSMetrics = true;*/
         if(req.getOriginalParams().getParams("enableTrackerMetrics") != null)
             enableTrackerMetrics = req.getOriginalParams().getBool("enableTrackerMetrics");
-/*        else
-            enableTrackerMetrics = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetrics") != null)
             enableJmxMetrics = req.getOriginalParams().getBool("enableJmxMetrics");
-/*        else
-            enableJmxMetrics = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsOS") != null)
             enableJmxMetricsOS = req.getOriginalParams().getBool("enableJmxMetricsOS");
-/*        else
-            enableJmxMetricsOS = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsMemory") != null)
             enableJmxMetricsMemory = req.getOriginalParams().getBool("enableJmxMetricsMemory");
-/*        else
-            enableJmxMetricsMemory = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsClassLoading") != null)
             enableJmxMetricsClassLoading = req.getOriginalParams().getBool("enableJmxMetricsClassLoading");
-/*        else
-            enableJmxMetricsClassLoading = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsGC") != null)
             enableJmxMetricsGC = req.getOriginalParams().getBool("enableJmxMetricsGC");
-/*        else
-            enableJmxMetricsGC = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsThreading") != null)
             enableJmxMetricsThreading = req.getOriginalParams().getBool("enableJmxMetricsThreading");
-/*        else
-            enableJmxMetricsThreading = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsSolr") != null)
             enableJmxMetricsSolr = req.getOriginalParams().getBool("enableJmxMetricsSolr");
-/*        else
-            enableJmxMetricsThreading = true;*/
 
 
         coreAdminHandler = (AlfrescoCoreAdminHandler)(req.getCore().getCoreContainer().getMultiCoreHandler());
@@ -135,8 +114,6 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     }
 
     private void getJmxMetrics(SolrQueryRequest req, SolrQueryResponse rsp) {
-/*        Map registry = req.getCore().getInfoRegistry();
-        MBeanServer mbeanServer = ((JmxMonitoredMap)registry).getServer();*/
         MBeanServer mbeanServer = JmxUtil.findFirstMBeanServer();
         if(mbeanServer==null) {
             logger.error("No mbeanServer found, jmx metrics will not be activated");
@@ -207,7 +184,7 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     }
 
     private String getPrometheusEscape(String property) {
-        return property.replace(" ",PROMETHEUS_SEPARATOR).replace(".",PROMETHEUS_SEPARATOR);
+        return property.replace(" ",PROMETHEUS_SEPARATOR).replace(".",PROMETHEUS_SEPARATOR).replace("/",PROMETHEUS_SEPARATOR);
     }
 
     private String getPrometheusName(ObjectName objectName) {
@@ -217,7 +194,8 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     }
 
     private boolean prometheusAllowedType(String type) {
-        return ("int".equals(type) || "double".equals(type) || "long".equals(type));
+        return ("int".equals(type) || "double".equals(type) || "long".equals(type) ||
+                "java.lang.Integer".equals(type) || "java.lang.Double".equals(type) || "java.lang.Long".equals(type));
     }
 
     private void getTrackerMetrics(SolrQueryRequest req, SolrQueryResponse rsp) {
