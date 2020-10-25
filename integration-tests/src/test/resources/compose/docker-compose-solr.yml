@@ -1,13 +1,18 @@
 version: '3.2'
 
 services:
+  alfresco:
+    environment:
+      - SOLR_SSL=none
+
   solr:
     image: ${SOLR_DOCKER_IMAGE}
     environment:
+      - ALFRESCO_SSL=none
       - DEBUG=true
       - JMX_ENABLED=true
     ports:
-      - target: 8443
+      - target: 8080
         mode: host
       - target: 8000
         mode: host
