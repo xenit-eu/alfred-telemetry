@@ -50,6 +50,7 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     boolean enableJmxMetricsThreadPool = true;
     boolean enableJmxMetricsRequests = true;
     boolean enableJmxMetricsSessions = true;
+    boolean enableJmxMetricsSolr = true;
 
     Logger logger = LoggerFactory.getLogger(PrometheusSummaryHandler.class);
 
@@ -88,54 +89,31 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     public void handleRequestBody(SolrQueryRequest req, SolrQueryResponse rsp) throws Exception {
         if(req.getOriginalParams().getParams("enableCoreStats") != null)
             enableCoreStats = req.getOriginalParams().getBool("enableCoreStats");
-/*        else
-            enableCoreStats = true;*/
         if(req.getOriginalParams().getParams("enableFTSMetrics") != null)
             enableFTSMetrics = req.getOriginalParams().getBool("enableFTSMetrics");
-/*        else
-            enableFTSMetrics = true;*/
         if(req.getOriginalParams().getParams("enableTrackerMetrics") != null)
             enableTrackerMetrics = req.getOriginalParams().getBool("enableTrackerMetrics");
-/*        else
-            enableTrackerMetrics = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetrics") != null)
             enableJmxMetrics = req.getOriginalParams().getBool("enableJmxMetrics");
-/*        else
-            enableJmxMetrics = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsOS") != null)
             enableJmxMetricsOS = req.getOriginalParams().getBool("enableJmxMetricsOS");
-/*        else
-            enableJmxMetricsOS = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsMemory") != null)
             enableJmxMetricsMemory = req.getOriginalParams().getBool("enableJmxMetricsMemory");
-/*        else
-            enableJmxMetricsMemory = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsClassLoading") != null)
             enableJmxMetricsClassLoading = req.getOriginalParams().getBool("enableJmxMetricsClassLoading");
-/*        else
-            enableJmxMetricsClassLoading = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsGC") != null)
             enableJmxMetricsGC = req.getOriginalParams().getBool("enableJmxMetricsGC");
-/*        else
-            enableJmxMetricsGC = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsThreading") != null)
             enableJmxMetricsThreading = req.getOriginalParams().getBool("enableJmxMetricsThreading");
-/*        else
-            enableJmxMetricsThreading = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsThreadPool") != null)
             enableJmxMetricsThreadPool = req.getOriginalParams().getBool("enableJmxMetricsThreadPool");
-/*        else
-            enableJmxMetricsThreadPool = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsRequests") != null)
             enableJmxMetricsRequests = req.getOriginalParams().getBool("enableJmxMetricsRequests");
-/*        else
-            enableJmxMetricsRequests = true;*/
         if(req.getOriginalParams().getParams("enableJmxMetricsSessions") != null)
             enableJmxMetricsSessions = req.getOriginalParams().getBool("enableJmxMetricsSessions");
-/*        else
-            enableJmxMetricsSessions = true;*/
+        if(req.getOriginalParams().getParams("enableJmxMetricsSolr") != null)
+            enableJmxMetricsSolr = req.getOriginalParams().getBool("enableJmxMetricsSolr");
 
-// this is the only difference between solr4 and solr6: can it be done better?
         coreAdminHandler = (AlfrescoCoreAdminHandler)(req.getCore().getCoreDescriptor().getCoreContainer().getMultiCoreHandler());
         coreName = req.getCore().getName();
         server = (SolrInformationServer) coreAdminHandler.getInformationServers().get(coreName);
@@ -167,6 +145,8 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
             getJmxMetricsPerBeans(mbeanServer,beansToMonitorThreadPool,rsp);
         if(enableJmxMetricsSessions)
             getJmxMetricsPerBeans(mbeanServer,beansToMonitorSessions,rsp);
+        if(enableJmxMetricsSolr)
+            getJmxMetricsPerBeans(mbeanServer,beansToMonitorSolr,rsp);
     }
 
 
@@ -220,7 +200,7 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     }
 
     private String getPrometheusEscape(String property) {
-        return property.replace(" ",PROMETHEUS_SEPARATOR).replace(".",PROMETHEUS_SEPARATOR);
+        return property.replace(" ",PROMETHEUS_SEPARATOR).replace(".",PROMETHEUS_SEPARATOR).replace("/",PROMETHEUS_SEPARATOR);
     }
 
     private String getPrometheusName(ObjectName objectName) {
@@ -230,7 +210,8 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     }
 
     private boolean prometheusAllowedType(String type) {
-        return ("int".equals(type) || "double".equals(type) || "long".equals(type));
+        return ("int".equals(type) || "double".equals(type) || "long".equals(type) ||
+                "java.lang.Integer".equals(type) || "java.lang.Double".equals(type) || "java.lang.Long".equals(type));
     }
 
     private void getTrackerMetrics(SolrQueryRequest req, SolrQueryResponse rsp) {
