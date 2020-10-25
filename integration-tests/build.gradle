@@ -52,6 +52,21 @@ subprojects {
         outputs.upToDateWhen { false }
     }
 
+    task solrIntegrationTest(type: Test) {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+        testClassesDirs = project.parent.sourceSets.test.output.classesDirs
+        classpath = project.parent.sourceSets.test.runtimeClasspath
+        outputs.upToDateWhen { false }
+        doFirst {
+            dockerCompose.solr.exposeAsSystemProperties(solrIntegrationTest)
+            systemProperty 'solrFlavor', "${solrFlavor}"
+        }
+    }
+
+
     check.dependsOn integrationTest
 
     apply plugin: 'eu.xenit.docker-alfresco'
@@ -144,12 +159,22 @@ subprojects {
         }
 
         solr {
-            useComposeFiles = [
-                    '../src/test/resources/compose/docker-compose.yml',
-                    '../src/test/resources/compose/docker-compose-prometheus.yml',
-                    '../src/test/resources/compose/docker-compose-grafana.yml',
-                    '../src/test/resources/compose/docker-compose-solr.yml'
-            ]
+            if("solr4".equals(solrFlavor)) {
+                useComposeFiles = [
+                        '../src/test/resources/compose/docker-compose.yml',
+                        '../src/test/resources/compose/docker-compose-prometheus-solr4.yml',
+                        '../src/test/resources/compose/docker-compose-grafana.yml',
+                        '../src/test/resources/compose/docker-compose-solr.yml'
+                ]
+            } else if("solr6".equals(solrFlavor)) {
+                useComposeFiles = [
+                        '../src/test/resources/compose/docker-compose.yml',
+                        '../src/test/resources/compose/docker-compose-prometheus-solr6.yml',
+                        '../src/test/resources/compose/docker-compose-grafana.yml',
+                        '../src/test/resources/compose/docker-compose-solr.yml'
+                ]
+            }
+            isRequiredBy(solrIntegrationTest)
         }
 
         dockerCompose.solr.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
