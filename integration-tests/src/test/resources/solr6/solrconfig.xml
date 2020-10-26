@@ -1737,7 +1737,7 @@
   </queryResponseWriter>
 
   <!--lib dir="${solr.install.dir}:lib/"/-->
-  <queryResponseWriter name="prometheus" class="eu.xenit.alfred.telemetry.solr.writer.writer.PrometheusResponseWriter"/>
+  <queryResponseWriter name="prometheus" class="eu.xenit.alfred.telemetry.solr.writerPrometheusResponseWriter"/>
   
   <!-- Query Parsers
 
