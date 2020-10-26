@@ -1,4 +1,4 @@
-package eu.xenit.solr.handler;
+package eu.xenit.alfred.telemetry.solr.handler;
 
 import java.io.IOException;
 import java.util.AbstractMap;
@@ -25,10 +25,10 @@ import org.alfresco.solr.tracker.AclTracker;
 import org.alfresco.solr.tracker.MetadataTracker;
 import org.alfresco.solr.tracker.TrackerRegistry;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.core.JmxMonitoredMap;
 import org.apache.solr.handler.RequestHandlerBase;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
-import org.apache.solr.util.JmxUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +47,10 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     boolean enableJmxMetricsClassLoading = true;
     boolean enableJmxMetricsGC = true;
     boolean enableJmxMetricsThreading = true;
+    boolean enableJmxMetricsThreadPool = true;
+    boolean enableJmxMetricsRequests = true;
+    boolean enableJmxMetricsSessions = true;
     boolean enableJmxMetricsSolr = true;
-
 
     Logger logger = LoggerFactory.getLogger(PrometheusSummaryHandler.class);
 
@@ -70,6 +72,14 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
             new AbstractMap.SimpleEntry<>("java.lang:type=Threading",new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorGC = new ArrayList(Arrays.asList(
             new AbstractMap.SimpleEntry<>("java.lang:type=GarbageCollector,name=ConcurrentMarkSweep",new ArrayList(Arrays.asList("*")))));
+    ArrayList<AbstractMap.SimpleEntry> beansToMonitorThreadPool = new ArrayList(Arrays.asList(
+            new AbstractMap.SimpleEntry<>("Catalina:type=ThreadPool,name=\"http-bio-8080\"",new ArrayList(Arrays.asList("*"))),
+            new AbstractMap.SimpleEntry<>("Catalina:type=ThreadPool,name=\"http-bio-8443\"",new ArrayList(Arrays.asList("*")))));
+    ArrayList<AbstractMap.SimpleEntry> beansToMonitorRequests = new ArrayList(Arrays.asList(
+            new AbstractMap.SimpleEntry<>("Catalina:type=GlobalRequestProcessor,name=\"http-bio-8080\"",new ArrayList(Arrays.asList("*"))),
+            new AbstractMap.SimpleEntry<>("Catalina:type=GlobalRequestProcessor,name=\"http-bio-8443\"",new ArrayList(Arrays.asList("*")))));
+    ArrayList<AbstractMap.SimpleEntry> beansToMonitorSessions = new ArrayList(Arrays.asList(
+            new AbstractMap.SimpleEntry<>("Catalina:type=Manager,context=/solr4,host=localhost",new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorSolr = new ArrayList(Arrays.asList(
             new AbstractMap.SimpleEntry<>("solr/alfresco:type=searcher,id=org.apache.solr.search.SolrIndexSearcher",new ArrayList(Arrays.asList("*"))),
             new AbstractMap.SimpleEntry<>("solr/alfresco:type=/afts,id=org.apache.solr.handler.component.AlfrescoSearchHandler",new ArrayList(Arrays.asList("*"))),
@@ -95,11 +105,16 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
             enableJmxMetricsGC = req.getOriginalParams().getBool("enableJmxMetricsGC");
         if(req.getOriginalParams().getParams("enableJmxMetricsThreading") != null)
             enableJmxMetricsThreading = req.getOriginalParams().getBool("enableJmxMetricsThreading");
+        if(req.getOriginalParams().getParams("enableJmxMetricsThreadPool") != null)
+            enableJmxMetricsThreadPool = req.getOriginalParams().getBool("enableJmxMetricsThreadPool");
+        if(req.getOriginalParams().getParams("enableJmxMetricsRequests") != null)
+            enableJmxMetricsRequests = req.getOriginalParams().getBool("enableJmxMetricsRequests");
+        if(req.getOriginalParams().getParams("enableJmxMetricsSessions") != null)
+            enableJmxMetricsSessions = req.getOriginalParams().getBool("enableJmxMetricsSessions");
         if(req.getOriginalParams().getParams("enableJmxMetricsSolr") != null)
             enableJmxMetricsSolr = req.getOriginalParams().getBool("enableJmxMetricsSolr");
 
-
-        coreAdminHandler = (AlfrescoCoreAdminHandler)(req.getCore().getCoreContainer().getMultiCoreHandler());
+        coreAdminHandler = (AlfrescoCoreAdminHandler)(req.getCore().getCoreDescriptor().getCoreContainer().getMultiCoreHandler());
         coreName = req.getCore().getName();
         server = (SolrInformationServer) coreAdminHandler.getInformationServers().get(coreName);
 
@@ -114,11 +129,8 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     }
 
     private void getJmxMetrics(SolrQueryRequest req, SolrQueryResponse rsp) {
-        MBeanServer mbeanServer = JmxUtil.findFirstMBeanServer();
-        if(mbeanServer==null) {
-            logger.error("No mbeanServer found, jmx metrics will not be activated");
-            return;
-        }
+        Map registry = req.getCore().getInfoRegistry();
+        MBeanServer mbeanServer = ((JmxMonitoredMap)registry).getServer();
         if(enableJmxMetricsOS)
             getJmxMetricsPerBeans(mbeanServer,beansToMonitorOS,rsp);
         if(enableJmxMetricsMemory)
@@ -129,6 +141,10 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
             getJmxMetricsPerBeans(mbeanServer,beansToMonitorClassLoading,rsp);
         if(enableJmxMetricsThreading)
             getJmxMetricsPerBeans(mbeanServer,beansToMonitorThreading,rsp);
+        if(enableJmxMetricsThreadPool)
+            getJmxMetricsPerBeans(mbeanServer,beansToMonitorThreadPool,rsp);
+        if(enableJmxMetricsSessions)
+            getJmxMetricsPerBeans(mbeanServer,beansToMonitorSessions,rsp);
         if(enableJmxMetricsSolr)
             getJmxMetricsPerBeans(mbeanServer,beansToMonitorSolr,rsp);
     }

@@ -42,12 +42,12 @@ Copy build/libs/solr-prometheus-exporter.jar into solr's instance lib folder (so
 Add to solrconfig.xml for each cores the RequestHandler:
 
       <lib dir="lib/" regex=".*\.jar" />
-      <requestHandler name="/prometheus" class="eu.xenit.solr.handler.PrometheusSummaryHandler" />
+      <requestHandler name="/prometheus" class="eu.xenit.alfred.telemetry.solr.handler.PrometheusSummaryHandler" />
       
 and the ResponseWriter:
 
       <lib dir="lib/" regex=".*\.jar" />
-      <queryResponseWriter name="prometheus" class="eu.xenit.solr.writer.PrometheusResponseWriter"/>
+      <queryResponseWriter name="prometheus" class="eu.xenit.alfred.telemetry.solr.writer.writer.PrometheusResponseWriter"/>
       
       
 Restart solr.

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.xenit.solr.writer;
+package eu.xenit.alfred.telemetry.solr.writer.writer;
 
 import java.io.IOException;
 import java.io.Writer;
