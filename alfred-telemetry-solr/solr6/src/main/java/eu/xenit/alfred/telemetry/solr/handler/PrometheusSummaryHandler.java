@@ -266,7 +266,9 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     }
 
     private void getFTSMetrics(SolrQueryRequest req, SolrQueryResponse rsp) {
-        if(server==null) return;        NamedList<Object> report = new NamedList();
+        if(server==null)
+            return;
+        NamedList<Object> report = new NamedList();
         // FTS
         server.addFTSStatusCounts(report);
         for(Entry fts : report) {
@@ -277,7 +279,9 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
 
     private void getCoreStats(SolrQueryRequest req, SolrQueryResponse rsp) throws IOException {
         // Core stats
-        if(server==null) return; Iterable<Entry<String, Object>> stats = server.getCoreStats();
+        if(server==null)
+            return;
+        Iterable<Entry<String, Object>> stats = server.getCoreStats();
         for(Entry<String,Object> stat : stats) {
             if(fieldsToMonitor.contains(stat.getKey())) {
                 String resp = String.format("alfresco_summary{core=\"%s\",feature=\"%s\"}",req.getCore().getName(),stat.getKey());

@@ -63,95 +63,133 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
             "Alfresco Unindexed Nodes",
             "Alfresco Error Nodes in Index"));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorOS = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("java.lang:type=OperatingSystem",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("java.lang:type=OperatingSystem", new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorMemory = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("java.lang:type=Memory",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("java.lang:type=Memory", new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorClassLoading = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("java.lang:type=ClassLoading",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("java.lang:type=ClassLoading", new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorThreading = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("java.lang:type=Threading",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("java.lang:type=Threading", new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorGC = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("java.lang:type=GarbageCollector,name=ConcurrentMarkSweep",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("java.lang:type=GarbageCollector,name=ConcurrentMarkSweep",
+                    new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorThreadPool = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("Catalina:type=ThreadPool,name=\"http-bio-8080\"",new ArrayList(Arrays.asList("*"))),
-            new AbstractMap.SimpleEntry<>("Catalina:type=ThreadPool,name=\"http-bio-8443\"",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("Catalina:type=ThreadPool,name=\"http-bio-8080\"",
+                    new ArrayList(Arrays.asList("*"))),
+            new AbstractMap.SimpleEntry<>("Catalina:type=ThreadPool,name=\"http-bio-8443\"",
+                    new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorRequests = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("Catalina:type=GlobalRequestProcessor,name=\"http-bio-8080\"",new ArrayList(Arrays.asList("*"))),
-            new AbstractMap.SimpleEntry<>("Catalina:type=GlobalRequestProcessor,name=\"http-bio-8443\"",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("Catalina:type=GlobalRequestProcessor,name=\"http-bio-8080\"",
+                    new ArrayList(Arrays.asList("*"))),
+            new AbstractMap.SimpleEntry<>("Catalina:type=GlobalRequestProcessor,name=\"http-bio-8443\"",
+                    new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorSessions = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("Catalina:type=Manager,context=/solr4,host=localhost",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("Catalina:type=Manager,context=/solr4,host=localhost",
+                    new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorSolr = new ArrayList(Arrays.asList(
-            new AbstractMap.SimpleEntry<>("solr/alfresco:type=searcher,id=org.apache.solr.search.SolrIndexSearcher",new ArrayList(Arrays.asList("*"))),
-            new AbstractMap.SimpleEntry<>("solr/alfresco:type=/afts,id=org.apache.solr.handler.component.AlfrescoSearchHandler",new ArrayList(Arrays.asList("*"))),
-            new AbstractMap.SimpleEntry<>("solr/alfresco:type=/cmis,id=org.apache.solr.handler.component.AlfrescoSearchHandler",new ArrayList(Arrays.asList("*")))));
+            new AbstractMap.SimpleEntry<>("solr/alfresco:type=searcher,id=org.apache.solr.search.SolrIndexSearcher",
+                    new ArrayList(Arrays.asList("*"))),
+            new AbstractMap.SimpleEntry<>(
+                    "solr/alfresco:type=/afts,id=org.apache.solr.handler.component.AlfrescoSearchHandler",
+                    new ArrayList(Arrays.asList("*"))),
+            new AbstractMap.SimpleEntry<>(
+                    "solr/alfresco:type=/cmis,id=org.apache.solr.handler.component.AlfrescoSearchHandler",
+                    new ArrayList(Arrays.asList("*")))));
 
     @Override
     public void handleRequestBody(SolrQueryRequest req, SolrQueryResponse rsp) throws Exception {
-        if(req.getOriginalParams().getParams("enableCoreStats") != null)
+        if (req.getOriginalParams().getParams("enableCoreStats") != null) {
             enableCoreStats = req.getOriginalParams().getBool("enableCoreStats");
-        if(req.getOriginalParams().getParams("enableFTSMetrics") != null)
+        }
+        if (req.getOriginalParams().getParams("enableFTSMetrics") != null) {
             enableFTSMetrics = req.getOriginalParams().getBool("enableFTSMetrics");
-        if(req.getOriginalParams().getParams("enableTrackerMetrics") != null)
+        }
+        if (req.getOriginalParams().getParams("enableTrackerMetrics") != null) {
             enableTrackerMetrics = req.getOriginalParams().getBool("enableTrackerMetrics");
-        if(req.getOriginalParams().getParams("enableJmxMetrics") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetrics") != null) {
             enableJmxMetrics = req.getOriginalParams().getBool("enableJmxMetrics");
-        if(req.getOriginalParams().getParams("enableJmxMetricsOS") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsOS") != null) {
             enableJmxMetricsOS = req.getOriginalParams().getBool("enableJmxMetricsOS");
-        if(req.getOriginalParams().getParams("enableJmxMetricsMemory") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsMemory") != null) {
             enableJmxMetricsMemory = req.getOriginalParams().getBool("enableJmxMetricsMemory");
-        if(req.getOriginalParams().getParams("enableJmxMetricsClassLoading") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsClassLoading") != null) {
             enableJmxMetricsClassLoading = req.getOriginalParams().getBool("enableJmxMetricsClassLoading");
-        if(req.getOriginalParams().getParams("enableJmxMetricsGC") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsGC") != null) {
             enableJmxMetricsGC = req.getOriginalParams().getBool("enableJmxMetricsGC");
-        if(req.getOriginalParams().getParams("enableJmxMetricsThreading") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsThreading") != null) {
             enableJmxMetricsThreading = req.getOriginalParams().getBool("enableJmxMetricsThreading");
-        if(req.getOriginalParams().getParams("enableJmxMetricsThreadPool") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsThreadPool") != null) {
             enableJmxMetricsThreadPool = req.getOriginalParams().getBool("enableJmxMetricsThreadPool");
-        if(req.getOriginalParams().getParams("enableJmxMetricsRequests") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsRequests") != null) {
             enableJmxMetricsRequests = req.getOriginalParams().getBool("enableJmxMetricsRequests");
-        if(req.getOriginalParams().getParams("enableJmxMetricsSessions") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsSessions") != null) {
             enableJmxMetricsSessions = req.getOriginalParams().getBool("enableJmxMetricsSessions");
-        if(req.getOriginalParams().getParams("enableJmxMetricsSolr") != null)
+        }
+        if (req.getOriginalParams().getParams("enableJmxMetricsSolr") != null) {
             enableJmxMetricsSolr = req.getOriginalParams().getBool("enableJmxMetricsSolr");
+        }
 
-        coreAdminHandler = (AlfrescoCoreAdminHandler)(req.getCore().getCoreDescriptor().getCoreContainer().getMultiCoreHandler());
+        coreAdminHandler = (AlfrescoCoreAdminHandler) (req.getCore().getCoreDescriptor().getCoreContainer()
+                .getMultiCoreHandler());
         coreName = req.getCore().getName();
         server = (SolrInformationServer) coreAdminHandler.getInformationServers().get(coreName);
 
-        if(enableCoreStats)
+        if (enableCoreStats) {
             getCoreStats(req, rsp);
-        if(enableFTSMetrics)
+        }
+        if (enableFTSMetrics) {
             getFTSMetrics(req, rsp);
-        if(enableTrackerMetrics)
+        }
+        if (enableTrackerMetrics) {
             getTrackerMetrics(req, rsp);
-        if(enableJmxMetrics)
-            getJmxMetrics(req,rsp);
+        }
+        if (enableJmxMetrics) {
+            getJmxMetrics(req, rsp);
+        }
     }
 
     private void getJmxMetrics(SolrQueryRequest req, SolrQueryResponse rsp) {
         Map registry = req.getCore().getInfoRegistry();
-        MBeanServer mbeanServer = ((JmxMonitoredMap)registry).getServer();
-        if(enableJmxMetricsOS)
-            getJmxMetricsPerBeans(mbeanServer,beansToMonitorOS,rsp);
-        if(enableJmxMetricsMemory)
-            getJmxMetricsPerBeans(mbeanServer,beansToMonitorMemory,rsp);
-        if(enableJmxMetricsGC)
-            getJmxMetricsPerBeans(mbeanServer,beansToMonitorGC,rsp);
-        if(enableJmxMetricsClassLoading)
-            getJmxMetricsPerBeans(mbeanServer,beansToMonitorClassLoading,rsp);
-        if(enableJmxMetricsThreading)
-            getJmxMetricsPerBeans(mbeanServer,beansToMonitorThreading,rsp);
-        if(enableJmxMetricsThreadPool)
-            getJmxMetricsPerBeans(mbeanServer,beansToMonitorThreadPool,rsp);
-        if(enableJmxMetricsSessions)
-            getJmxMetricsPerBeans(mbeanServer,beansToMonitorSessions,rsp);
-        if(enableJmxMetricsSolr)
-            getJmxMetricsPerBeans(mbeanServer,beansToMonitorSolr,rsp);
+        MBeanServer mbeanServer = ((JmxMonitoredMap) registry).getServer();
+        if (enableJmxMetricsOS) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorOS, rsp);
+        }
+        if (enableJmxMetricsMemory) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorMemory, rsp);
+        }
+        if (enableJmxMetricsGC) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorGC, rsp);
+        }
+        if (enableJmxMetricsClassLoading) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorClassLoading, rsp);
+        }
+        if (enableJmxMetricsThreading) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorThreading, rsp);
+        }
+        if (enableJmxMetricsThreadPool) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorThreadPool, rsp);
+        }
+        if (enableJmxMetricsSessions) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorSessions, rsp);
+        }
+        if (enableJmxMetricsSolr) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorSolr, rsp);
+        }
     }
 
 
-    private void getJmxMetricsPerBeans(MBeanServer mbeanServer, ArrayList<AbstractMap.SimpleEntry> beansToMonitor, SolrQueryResponse rsp) {
-        for(AbstractMap.SimpleEntry beanToMonitor : beansToMonitor) {
+    private void getJmxMetricsPerBeans(MBeanServer mbeanServer, ArrayList<AbstractMap.SimpleEntry> beansToMonitor,
+            SolrQueryResponse rsp) {
+        for (AbstractMap.SimpleEntry beanToMonitor : beansToMonitor) {
             ObjectName objectName = null;
             try {
                 objectName = new ObjectName((String) beanToMonitor.getKey());
@@ -184,15 +222,17 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
 
     private String getPrometheusLabels(ObjectName objectName) {
         String result = "";
-        for(String property : objectName.getKeyPropertyList().keySet()) {
-            if(!"type".equals(property)) {
-                result += getPrometheusEscape(property) + "=" + getPrometheusQuoted(objectName.getKeyPropertyList().get(property)) + ",";
+        for (String property : objectName.getKeyPropertyList().keySet()) {
+            if (!"type".equals(property)) {
+                result += getPrometheusEscape(property) + "=" + getPrometheusQuoted(
+                        objectName.getKeyPropertyList().get(property)) + ",";
             }
         }
-        if(result.length()>0)
-            return result.substring(0,result.length()-1);
-        else
+        if (result.length() > 0) {
+            return result.substring(0, result.length() - 1);
+        } else {
             return result;
+        }
     }
 
     private String getPrometheusQuoted(String s) {
@@ -200,7 +240,8 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     }
 
     private String getPrometheusEscape(String property) {
-        return property.replace(" ",PROMETHEUS_SEPARATOR).replace(".",PROMETHEUS_SEPARATOR).replace("/",PROMETHEUS_SEPARATOR);
+        return property.replace(" ", PROMETHEUS_SEPARATOR).replace(".", PROMETHEUS_SEPARATOR)
+                .replace("/", PROMETHEUS_SEPARATOR);
     }
 
     private String getPrometheusName(ObjectName objectName) {
@@ -226,8 +267,7 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
         long transactionsToDo = lastTxIdOnServer - lastIndexedTxId;
         Date lastIndexTxCommitDate = new Date(lastIndexTxCommitTime);
         Date lastTxOnServerDate = new Date(lastTxCommitTimeOnServer);
-        if (transactionsToDo < 0)
-        {
+        if (transactionsToDo < 0) {
             transactionsToDo = 0;
         }
 
@@ -240,65 +280,69 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
         Date lastIndexChangeSetCommitDate = new Date(lastIndexChangeSetCommitTime);
         Date lastChangeSetOnServerDate = new Date(lastChangeSetCommitTimeOnServer);
         long changeSetsToDo = lastChangeSetIdOnServer - lastIndexedChangeSetId;
-        if (changeSetsToDo < 0)
-        {
+        if (changeSetsToDo < 0) {
             changeSetsToDo = 0;
         }
 
         Duration txLag = new Duration(lastIndexTxCommitDate, lastTxOnServerDate);
-        if (lastIndexTxCommitDate.compareTo(lastTxOnServerDate) > 0)
-        {
+        if (lastIndexTxCommitDate.compareTo(lastTxOnServerDate) > 0) {
             txLag = new Duration();
         }
         long txLagSeconds = (lastTxCommitTimeOnServer - lastIndexTxCommitTime) / 1000;
-        if (txLagSeconds < 0)
-        {
+        if (txLagSeconds < 0) {
             txLagSeconds = 0;
         }
 
         Duration changeSetLag = new Duration(lastIndexChangeSetCommitDate, lastChangeSetOnServerDate);
-        if (lastIndexChangeSetCommitDate.compareTo(lastChangeSetOnServerDate) > 0)
-        {
+        if (lastIndexChangeSetCommitDate.compareTo(lastChangeSetOnServerDate) > 0) {
             changeSetLag = new Duration();
         }
         long changeSetLagSeconds = (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000;
-        if (changeSetLagSeconds < 0)
-        {
+        if (changeSetLagSeconds < 0) {
             changeSetLagSeconds = 0;
         }
 
-        String resp = String.format("alfresco_summary{core=\"%s\",feature=\"Approx transactions remaining\"}",coreName);
-        rsp.add(resp,transactionsToDo);
-        resp = String.format("alfresco_summary{core=\"%s\",feature=\"TX lag\"}",coreName);
-        rsp.add(resp,txLagSeconds);
-        resp = String.format("alfresco_summary{core=\"%s\",feature=\"Last Index TX Commit Time\"}",coreName);
-        rsp.add(resp,lastIndexTxCommitTime);
+        String resp = String
+                .format("alfresco_summary{core=\"%s\",feature=\"Approx transactions remaining\"}", coreName);
+        rsp.add(resp, transactionsToDo);
+        resp = String.format("alfresco_summary{core=\"%s\",feature=\"TX lag\"}", coreName);
+        rsp.add(resp, txLagSeconds);
+        resp = String.format("alfresco_summary{core=\"%s\",feature=\"Last Index TX Commit Time\"}", coreName);
+        rsp.add(resp, lastIndexTxCommitTime);
 
-        resp = String.format("alfresco_summary{core=\"%s\",feature=\"Approx change sets remaining\"}",coreName);
-        rsp.add(resp,changeSetsToDo);
-        resp = String.format("alfresco_summary{core=\"%s\",feature=\"Change Set Lag\"}",coreName);
-        rsp.add(resp,changeSetLagSeconds);
-        resp = String.format("alfresco_summary{core=\"%s\",feature=\"Last Index Change Set Commit Time\"}",coreName);
-        rsp.add(resp,lastIndexChangeSetCommitTime);
+        resp = String.format("alfresco_summary{core=\"%s\",feature=\"Approx change sets remaining\"}", coreName);
+        rsp.add(resp, changeSetsToDo);
+        resp = String.format("alfresco_summary{core=\"%s\",feature=\"Change Set Lag\"}", coreName);
+        rsp.add(resp, changeSetLagSeconds);
+        resp = String.format("alfresco_summary{core=\"%s\",feature=\"Last Index Change Set Commit Time\"}", coreName);
+        rsp.add(resp, lastIndexChangeSetCommitTime);
     }
 
     private void getFTSMetrics(SolrQueryRequest req, SolrQueryResponse rsp) {
-        if(server==null) return;        NamedList<Object> report = new NamedList();
+        if (server == null) {
+            return;
+        }
+        NamedList<Object> report = new NamedList();
         // FTS
         server.addFTSStatusCounts(report);
-        for(Entry fts : report) {
-            String resp = String.format("alfresco_summary{core=\"%s\",feature=\"%s\"}",req.getCore().getName(),fts.getKey());
-            rsp.add(resp,fts.getValue());
+        for (Entry fts : report) {
+            String resp = String
+                    .format("alfresco_summary{core=\"%s\",feature=\"%s\"}", req.getCore().getName(), fts.getKey());
+            rsp.add(resp, fts.getValue());
         }
     }
 
     private void getCoreStats(SolrQueryRequest req, SolrQueryResponse rsp) throws IOException {
         // Core stats
-        if(server==null) return; Iterable<Entry<String, Object>> stats = server.getCoreStats();
-        for(Entry<String,Object> stat : stats) {
-            if(fieldsToMonitor.contains(stat.getKey())) {
-                String resp = String.format("alfresco_summary{core=\"%s\",feature=\"%s\"}",req.getCore().getName(),stat.getKey());
-                rsp.add(resp,stat.getValue());
+        if (server == null) {
+            return;
+        }
+        Iterable<Entry<String, Object>> stats = server.getCoreStats();
+        for (Entry<String, Object> stat : stats) {
+            if (fieldsToMonitor.contains(stat.getKey())) {
+                String resp = String
+                        .format("alfresco_summary{core=\"%s\",feature=\"%s\"}", req.getCore().getName(), stat.getKey());
+                rsp.add(resp, stat.getValue());
             }
         }
     }
