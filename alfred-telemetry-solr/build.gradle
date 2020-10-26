@@ -30,7 +30,6 @@ subprojects {
 
 
     dependencies {
-        files(jar)
         if ("solr4".equals(solrFlavor)) {
             implementation "org.apache.solr:solr-core:${solrVersion}"
             implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
