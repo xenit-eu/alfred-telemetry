@@ -126,8 +126,6 @@ subprojects {
         // expose alfresco/inflow on a random port, comment to use default port (8080)
         environment.put 'ALFRESCO_TCP_8080', '8080'
 
-        isRequiredBy(project.tasks.integrationTest)
-
         dev {
             useComposeFiles = [
                     '../src/test/resources/compose/docker-compose.yml',
@@ -174,7 +172,7 @@ subprojects {
                         '../src/test/resources/compose/docker-compose-solr.yml'
                 ]
             }
-            isRequiredBy(solrIntegrationTest)
+            isRequiredBy(integrationTest)
         }
 
         dockerCompose.solr.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
