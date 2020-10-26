@@ -75,13 +75,9 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
                     new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorThreadPool = new ArrayList(Arrays.asList(
             new AbstractMap.SimpleEntry<>("Catalina:type=ThreadPool,name=\"http-bio-8080\"",
-                    new ArrayList(Arrays.asList("*"))),
-            new AbstractMap.SimpleEntry<>("Catalina:type=ThreadPool,name=\"http-bio-8443\"",
                     new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorRequests = new ArrayList(Arrays.asList(
             new AbstractMap.SimpleEntry<>("Catalina:type=GlobalRequestProcessor,name=\"http-bio-8080\"",
-                    new ArrayList(Arrays.asList("*"))),
-            new AbstractMap.SimpleEntry<>("Catalina:type=GlobalRequestProcessor,name=\"http-bio-8443\"",
                     new ArrayList(Arrays.asList("*")))));
     ArrayList<AbstractMap.SimpleEntry> beansToMonitorSessions = new ArrayList(Arrays.asList(
             new AbstractMap.SimpleEntry<>("Catalina:type=Manager,context=/solr4,host=localhost",
@@ -178,6 +174,9 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
         if (enableJmxMetricsThreadPool) {
             getJmxMetricsPerBeans(mbeanServer, beansToMonitorThreadPool, rsp);
         }
+        if (enableJmxMetricsRequests) {
+            getJmxMetricsPerBeans(mbeanServer, beansToMonitorRequests, rsp);
+        }
         if (enableJmxMetricsSessions) {
             getJmxMetricsPerBeans(mbeanServer, beansToMonitorSessions, rsp);
         }
@@ -257,6 +256,11 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
 
     private void getTrackerMetrics(SolrQueryRequest req, SolrQueryResponse rsp) {
         TrackerRegistry trackerRegistry = coreAdminHandler.getTrackerRegistry();
+
+        if(trackerRegistry==null) {
+            logger.info("There is no tracker registry yet, solr is not yet tracking");
+	    return;
+        }
 
         MetadataTracker metaTrkr = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class);
         TrackerState metadataTrkrState = metaTrkr.getTrackerState();
