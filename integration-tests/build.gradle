@@ -50,22 +50,11 @@ subprojects {
         testClassesDirs = project.parent.sourceSets.test.output.classesDirs
         classpath = project.parent.sourceSets.test.runtimeClasspath
         outputs.upToDateWhen { false }
-    }
-
-    task solrIntegrationTest(type: Test) {
-        useJUnitPlatform()
-        testLogging {
-            events "passed", "skipped", "failed"
-        }
-        testClassesDirs = project.parent.sourceSets.test.output.classesDirs
-        classpath = project.parent.sourceSets.test.runtimeClasspath
-        outputs.upToDateWhen { false }
         doFirst {
-            dockerCompose.solr.exposeAsSystemProperties(solrIntegrationTest)
+            dockerCompose.solr.exposeAsSystemProperties(integrationTest)
             systemProperty 'solrFlavor', "${solrFlavor}"
         }
     }
-
 
     check.dependsOn integrationTest
 
