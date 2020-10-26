@@ -47,7 +47,7 @@ Add to solrconfig.xml for each cores the RequestHandler:
 and the ResponseWriter:
 
       <lib dir="lib/" regex=".*\.jar" />
-      <queryResponseWriter name="prometheus" class="eu.xenit.alfred.telemetry.solr.writer.writer.PrometheusResponseWriter"/>
+      <queryResponseWriter name="prometheus" class="eu.xenit.alfred.telemetry.solr.writer.PrometheusResponseWriter"/>
       
       
 Restart solr.
