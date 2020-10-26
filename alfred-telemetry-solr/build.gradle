@@ -18,6 +18,18 @@ repositories {
 
 
 subprojects {
+    repositories {
+	jcenter()
+	
+	maven {
+            url 'https://artifacts.alfresco.com/nexus/content/groups/private'
+            credentials {
+		username property("org.alfresco.maven.nexus.username")
+		password property("org.alfresco.maven.nexus.password")
+            }
+	}
+    }
+    
     apply plugin: 'java'
     apply from: "${project.projectDir}/overload.gradle"
     apply plugin: 'eu.xenit.docker'
