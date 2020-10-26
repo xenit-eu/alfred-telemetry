@@ -19,7 +19,7 @@ pipeline {
         }
         stage("Integration Tests") {
             steps {
-                sh "./gradlew integrationTest"
+                sh "./gradlew solrIntegrationTest"
             }
         }
         stage('Publish') {
