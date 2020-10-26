@@ -4,22 +4,9 @@ plugins {
     id 'idea'
 }
 
-repositories {
-    jcenter()
-
-    maven {
-        url 'https://artifacts.alfresco.com/nexus/content/groups/private'
-        credentials {
-            username property("org.alfresco.maven.nexus.username")
-            password property("org.alfresco.maven.nexus.password")
-        }
-    }
-}
-
-
 subprojects {
     repositories {
-	jcenter()
+	mavenCentral()
 	
 	maven {
             url 'https://artifacts.alfresco.com/nexus/content/groups/private'
