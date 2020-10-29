@@ -1,5 +1,6 @@
 package eu.xenit.alfred.telemetry.webscripts;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Meter.Id;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -15,6 +16,7 @@ import org.springframework.extensions.webscripts.Cache;
 import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.util.StringUtils;
 
 public class AdminConsoleWebScript extends DeclarativeWebScript {
@@ -80,4 +82,10 @@ public class AdminConsoleWebScript extends DeclarativeWebScript {
             registry.getMeters().stream().map(Meter::getId).forEach(ids::add);
         }
     }
+
+    @VisibleForTesting
+    Map<String, Object> createTemplateModel(WebScriptRequest req, WebScriptResponse res, Map<String, Object> model) {
+        return this.createTemplateParameters(req, res, model);
+    }
+
 }
