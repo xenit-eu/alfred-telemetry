@@ -337,7 +337,7 @@ Alfresco.
 
 Navigating to `/alfresco/s/alfred/telemetry/metrics` displays a list of available meter names. You can drill 
 down to view information about a particular meter by providing its name as a selector, e.g. 
-`/alfresco/s/alfred/telemetry/jvm.memory.max`.
+`/alfresco/s/alfred/telemetry/metrics/jvm.memory.max`.
 
 > The name you use here should match the name used in the code, not the name after it has been naming-convention 
 > normalized for a monitoring system it is shipped to. In other words, if `jvm.memory.max` appears as 
