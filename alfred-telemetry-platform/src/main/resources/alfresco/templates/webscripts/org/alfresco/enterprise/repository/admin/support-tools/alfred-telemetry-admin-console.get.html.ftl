@@ -3,10 +3,17 @@
 <@page title=msg("alfred-telemetry.title") readonly=true>
 
     <div class="column-full">
+        <@section label=msg("alfred-telemetry.settings") />
+
+        <@field label="Alfred Telemetry Version" description="The version of the Alfred Telemetry module" value="${telemetry.module.version}" />
+        <@field label="Micrometer Version" description="The version of micrometer detected on the classpath" value="${telemetry.dependencies.micrometer.version}" />
+    </div>
+
+    <div class="column-full">
         <@section label=msg("alfred-telemetry.registry.graphite.title") />
         <ul>
-        <#list registryGraphite?keys as key>
-        <li><b>${key}</b>: ${registryGraphite[key]}</li>
+        <#list telemetry.registries.graphite.properties?keys as key>
+            <li><b>${key}</b>: ${telemetry.registries.graphite.properties[key]}</li>
         </#list>
         </ul>
     </div>
@@ -14,8 +21,8 @@
     <div class="column-full">
         <@section label=msg("alfred-telemetry.registry.jmx.title") />
         <ul>
-        <#list registryJmx?keys as key>
-        <li><b>${key}</b>: ${registryJmx[key]}</li>
+        <#list telemetry.registries.jmx.properties?keys as key>
+            <li><b>${key}</b>: ${telemetry.registries.jmx.properties[key]}</li>
         </#list>
         </ul>
     </div>
@@ -24,8 +31,8 @@
         <@section label=msg("alfred-telemetry.registry.prometheus.title") />
         <p class="info">${msg("alfred-telemetry.registry.prometheus.description")?html}</p>
         <ul>
-        <#list registryPrometheus?keys as key>
-        <li><b>${key}</b>: ${registryPrometheus[key]}</li>
+        <#list telemetry.registries.prometheus.properties?keys as key>
+            <li><b>${key}</b>: ${telemetry.registries.prometheus.properties[key]}</li>
         </#list>
         </ul>
     </div>
