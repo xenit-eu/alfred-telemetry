@@ -4,11 +4,8 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Meter.Id;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -25,12 +22,12 @@ public class AdminConsoleWebScript extends DeclarativeWebScript {
     private final static String PROP_PREFIX_REGISTRY = "alfred.telemetry.export.";
     private final static String PROP_PREFIX_ALF_INTEGRATION = "alfred.telemetry.alfresco-integration.";
 
-    private Properties globalProperties;
+    private final MeterRegistry meterRegistry;
+    private final Properties globalProperties;
 
-    private MeterRegistry meterRegistry;
-
-    public AdminConsoleWebScript(MeterRegistry meterRegistry) {
+    public AdminConsoleWebScript(MeterRegistry meterRegistry, Properties globalProperties) {
         this.meterRegistry = meterRegistry;
+        this.globalProperties = globalProperties;
     }
 
     @Override
@@ -52,7 +49,7 @@ public class AdminConsoleWebScript extends DeclarativeWebScript {
     private void includeRegistryProperties(Map<String, Object> model, final String registry) {
         Map<String, String> relevantProps = globalProperties.stringPropertyNames().stream()
                 .filter(s -> s.startsWith(PROP_PREFIX_REGISTRY + registry))
-                .collect(Collectors.toMap(s -> s, s -> globalProperties.getProperty(s)));
+                .collect(Collectors.toMap(s -> s, globalProperties::getProperty));
 
         model.put("registry" + StringUtils.capitalize(registry), relevantProps);
     }
@@ -60,7 +57,7 @@ public class AdminConsoleWebScript extends DeclarativeWebScript {
     private void includeAlfrescoIntegrationProps(Map<String, Object> model) {
         Map<String, String> relevantProps = globalProperties.stringPropertyNames().stream()
                 .filter(s -> s.startsWith(PROP_PREFIX_ALF_INTEGRATION))
-                .collect(Collectors.toMap(s -> s, s -> globalProperties.getProperty(s)));
+                .collect(Collectors.toMap(s -> s, globalProperties::getProperty));
 
         model.put("alfrescoIntegration", relevantProps);
     }
@@ -83,13 +80,4 @@ public class AdminConsoleWebScript extends DeclarativeWebScript {
             registry.getMeters().stream().map(Meter::getId).forEach(ids::add);
         }
     }
-
-    // <editor-fold desc="Getters and Setters">
-
-    @SuppressWarnings("unused")
-    public void setGlobalProperties(Properties globalProperties) {
-        this.globalProperties = globalProperties;
-    }
-
-    // </editor-fold>
 }
