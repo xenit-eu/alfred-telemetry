@@ -1,6 +1,6 @@
 subprojects {
     group = 'eu.xenit.alfred.telemetry'
-    version = '0.1.2'
+    version = '0.2.0'
 
     boolean isRelease = System.env.BRANCH_NAME?.startsWith("release")
     if (!isRelease)
