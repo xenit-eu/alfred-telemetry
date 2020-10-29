@@ -1,21 +1,24 @@
-version: '2.2'
+version: '3.2'
 
 services:
   alfresco:
     image: ${DOCKER_IMAGE}
     ports:
-      - ${ALFRESCO_TCP_8080:-8080:8080}
-      #    - 8000:8000
+      - target: 8080
+        mode: host
     environment:
       - CATALINA_OPTS=-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
       - INDEX=noindex
       - ENABLE_CLUSTERING=true
+      - GLOBAL_metrics.enabled=true
       - GLOBAL_alfred.telemetry.alfresco-integration.enabled=true
       # Enable Care4Alf metrics:
       - GLOBAL_alfred.telemetry.binder.care4alf.enabled=true
+      # Enable Alfresco cache metrics:
+      - GLOBAL_alfred.telemetry.binder.cache.enabled=true
 
   postgresql:
-    image: hub.xenit.eu/postgres
+    image: docker.io/xenit/postgres
     environment:
       - POSTGRES_USER=alfresco
       - POSTGRES_PASSWORD=admin

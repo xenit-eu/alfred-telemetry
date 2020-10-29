@@ -22,6 +22,41 @@ Version template:
  
 # Alfred Telemetry Changelog
 
+## [0.3.0] - UNRELEASED
+
+## [0.2.0] - 2020-10-29
+
+### Added 
+
+* Beans of type `MeterRegistryCustomizer` can customize a MeterRegistry before registration [[#10]]
+* Added metrics for Solr tracking and Solr sharding [[#22]]
+* Included Grafana dashboard in the test setup [[#13]]
+
+### Fixed
+
+* Alfresco 6.1 fails to start if the out-of-the-box metrics are disabled [[#15]]
+
+[#10]: https://github.com/xenit-eu/alfred-telemetry/issues/10
+[#13]: https://github.com/xenit-eu/alfred-telemetry/issues/13
+[#15]: https://github.com/xenit-eu/alfred-telemetry/issues/15
+[#22]: https://github.com/xenit-eu/alfred-telemetry/issues/22
+
+
+## [0.1.1] - 2019-08-13
+
+### Fixed
+
+* MeterFilters are applied after metrics are possibly already exposed to the global MeterRegistry [[#6]]
+
+### Changed
+* Changed default logging level to INFO [[#4]]
+* Disable Cache metrics by default [[#7]][[#9]]
+
+[#4]: https://github.com/xenit-eu/alfred-telemetry/pull/4
+[#6]: https://github.com/xenit-eu/alfred-telemetry/issues/6
+[#7]: https://github.com/xenit-eu/alfred-telemetry/issues/7
+[#9]: https://github.com/xenit-eu/alfred-telemetry/issues/9
+
 ## [0.1.0] - 2019-07-11
 
 Initial, early access release including:
@@ -34,12 +69,3 @@ if available on the classpath.
 - Integration with the out of the box Alfresco metrics included since 6.1.
 - Limited support for Care4Alf compatible metrics.
 - ...
-
-## [0.1.1] - 2019-08-13
-
-### Fixed
-* MeterFilters are applied after metrics are possibly already exposed to the global MeterRegistry
-
-### Changed
-* Changed default logging level to INFO
-* Disable Cache metrics by default

@@ -1,14 +1,20 @@
 plugins {
     id 'idea'
     id 'java'
-    id 'eu.xenit.alfresco' version "0.2.0"
-    id 'eu.xenit.amp' version "0.2.0"
+    id 'eu.xenit.alfresco' version "1.0.1"
+    id 'eu.xenit.amp' version "1.0.1"
 }
 
 description = "Alfred Telemetry Platform module which enables exposure of Metrics using Micrometer"
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
 }
 
 ext {
@@ -59,16 +65,6 @@ processResources {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
 sourceSets {
     main {
         amp {
@@ -81,9 +77,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifact sourcesJar
-            artifact javadocJar
-            artifact amp
+            artifact tasks.amp
         }
     }
 }

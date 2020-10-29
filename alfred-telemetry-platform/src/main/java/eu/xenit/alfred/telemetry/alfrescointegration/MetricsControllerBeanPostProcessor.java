@@ -70,6 +70,8 @@ public class MetricsControllerBeanPostProcessor implements BeanDefinitionRegistr
 
         alfredMetricsController.setBeanClass(AlfredTelemetryMetricsController.class);
         alfredMetricsController.setConstructorArgumentValues(constructorArgumentValues);
+        // Workaround to make sure Alfresco's logging hierarchy is initialized before our bean so no logging is lost:
+        alfredMetricsController.setDependsOn("log4JHierarchyInit");
 
         registry.registerBeanDefinition(METRICS_CONTROLLER_BEAN_ID, alfredMetricsController);
         LOGGER.info("Bean '{}' overwritten with custom '{}' implementation", METRICS_CONTROLLER_BEAN_ID,

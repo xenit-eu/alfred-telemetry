@@ -1,11 +1,16 @@
 plugins {
-    id 'eu.xenit.docker-alfresco' version '4.0.3' apply false
+    id 'eu.xenit.docker-alfresco' version '5.0.7' apply false
+    id 'eu.xenit.docker-compose.auto' version '5.0.7' apply false
     id 'java'
     id 'idea'
 }
 
 ext {
     slf4jVersion = '1.7.25'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
 }
 
 dependencies {
@@ -50,6 +55,7 @@ subprojects {
     check.dependsOn integrationTest
 
     apply plugin: 'eu.xenit.docker-alfresco'
+    apply plugin: 'eu.xenit.docker-compose.auto'
 
     dependencies {
         alfrescoAmp project(path: ":alfred-telemetry-platform", configuration: "amp")
@@ -67,8 +73,8 @@ subprojects {
         leanImage = true
 
         dockerBuild {
-            repository = 'hub.xenit.eu/alfred/alfred-telemetry'
-            tags = ["${version}-alfresco-${alfrescoVersion}"]
+            repository = "hub.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"
+            tags = ["${version}"]
             automaticTags = false
         }
     }
@@ -101,6 +107,13 @@ subprojects {
 
         isRequiredBy(project.tasks.integrationTest)
 
+        dev {
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-development.yml'
+            ]
+        }
+
         graphite {
             useComposeFiles = [
                     '../src/test/resources/compose/docker-compose.yml',
@@ -113,7 +126,14 @@ subprojects {
             useComposeFiles = [
                     '../src/test/resources/compose/docker-compose.yml',
                     '../src/test/resources/compose/docker-compose-prometheus.yml',
-                    '../src/test/resources/compose/docker-compose-grafana.yml',
+                    '../src/test/resources/compose/docker-compose-grafana.yml'
+            ]
+        }
+
+        sharding {
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-sharding.yml'
             ]
         }
     }

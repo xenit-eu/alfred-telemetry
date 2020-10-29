@@ -1,4 +1,4 @@
-version: '2.2'
+version: '3.2'
 
 services:
   alfresco:
@@ -8,12 +8,14 @@ services:
     - GLOBAL_metrics.restMetricsReporter.path.enabled=true
 
   carbon:
-    image: hub.xenit.eu/carbon:0.0.1-4
+    image: hub.xenit.eu/public/carbon:0.9.16
     volumes:
     - whisperdb:/opt/graphite/storage/whisper
+    environment:
+      - MAX_CREATES_PER_MINUTE=inf
 
   monitor-graphite-api:
-    image: hub.xenit.eu/graphite-api:0.0.1-10
+    image: hub.xenit.eu/public/graphite-api:0.0.1-10
     volumes:
     - whisperdb:/srv/graphite/whisper
 

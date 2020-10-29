@@ -90,7 +90,11 @@ alfred.telemetry.export.graphite.step=5
 alfred.telemetry.export.graphite.tags-as-prefix=application,host
 ```
 
-
+If you want Graphite support in your Alfresco docker image, you'll also need to add the following
+in your build.gradle:
+```groovy
+alfrescoSM "io.micrometer:micrometer-registry-graphite:${last-version}"
+```
 ## JMX
 
 **Control Property**: `alfred.telemetry.export.jmx.enabled`
@@ -238,6 +242,36 @@ Metrics provided
 | :------------------------------------ | :----------------------- |
 | users.tickets.count                   | status:[valid, expired]  |
 
+## Solr metrics
+
+### Solr tracking metrics
+**Control Property**: `alfred.telemetry.binder.solr.tracking.enabled`
+
+Metrics provided
+
+| Name                                  |
+| :------------------------------------ |
+| solr.tracking.maxTxnId                |
+| solr.tracking.maxTxnCommitTime        |
+| solr.tracking.maxChangeSetId          |
+| solr.tracking.maxChangeSetCommitTime  |
+
+### Solr sharding metrics
+Solr sharding metrics are only available on Alfresco enterprise versions greater than 6.0.
+
+**Control Property**: `alfred.telemetry.binder.solr.sharding.enabled`
+
+| Name                                         | Available tags                                                                              | Values                       |
+|--:-------------------------------------------|--:------------------------------------------------------------------------------------------|--:---------------------------|
+| solr.sharding.shards                         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore]                             |                              |
+| solr.sharding.shardInstances                 | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.lastIndexedChangeSetId         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.lastIndexedTxId                | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.instanceMode                   | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] | 0=ACTIVE, 1=PAUSED, 2=SILENT |
+| solr.sharding.master                         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.lastIndexedChangeSetCommitTime | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] | 0=false, 1=true              |
+| solr.sharding.lastIndexedTxCommitTime        | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
+| solr.sharding.lastUpdated                    | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
 
 # Registering custom metrics
 
@@ -303,7 +337,7 @@ Alfresco.
 
 Navigating to `/alfresco/s/alfred/telemetry/metrics` displays a list of available meter names. You can drill 
 down to view information about a particular meter by providing its name as a selector, e.g. 
-`/alfresco/s/alfred/telemetry/jvm.memory.max`.
+`/alfresco/s/alfred/telemetry/metrics/jvm.memory.max`.
 
 > The name you use here should match the name used in the code, not the name after it has been naming-convention 
 > normalized for a monitoring system it is shipped to. In other words, if `jvm.memory.max` appears as 
