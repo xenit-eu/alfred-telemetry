@@ -28,7 +28,7 @@ Version template:
 
 ### Added 
 
-* Beans of type `MeterRegistryCustomizer` can customize a MeterRegistry before registration [[#10]]
+* Beans of type `MeterRegistryCustomizer` allow customization of a `MeterRegistry` before registration [[#10]]
 * Added metrics for Solr tracking and Solr sharding [[#22]]
 * Included Grafana dashboard in the test setup [[#13]]
 
