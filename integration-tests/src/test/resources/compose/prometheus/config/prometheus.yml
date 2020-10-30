@@ -4,7 +4,7 @@ global:
 
 
 scrape_configs:
-  - job_name: 'prometheus'
+  - job_name: 'alfresco'
     static_configs:
       - targets: ['alfresco:8080']
     metrics_path: "/alfresco/s/alfred/telemetry/prometheus"
