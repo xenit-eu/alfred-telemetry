@@ -86,4 +86,4 @@ Verify in Prometheus (http://localhost:9090/) that targets are up and running.
 
 ## Integration tests
 
-    ./gradlew solrIntegrationTest
+    ./gradlew integrationTest
