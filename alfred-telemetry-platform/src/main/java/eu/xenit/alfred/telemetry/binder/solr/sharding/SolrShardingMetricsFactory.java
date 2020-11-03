@@ -14,12 +14,12 @@ import org.quartz.TriggerBuilder;
 public class SolrShardingMetricsFactory {
 
     public SolrShardingMetricsFactory(ShardRegistry shardRegistry, MeterRegistry registry, Scheduler scheduler,
-            String updateCron) throws SchedulerException {
+            String updateCron, Boolean flocIdEnabled) throws SchedulerException {
 
         JobBuilder jobBuilder = JobBuilder.newJob(SolrShardingMetricsScheduledJob.class);
         JobDataMap data = new JobDataMap();
         data.put(SolrShardingMetricsScheduledJob.SOLR_SHARDING_METRICS,
-                new SolrShardingMetrics(shardRegistry, registry));
+                new SolrShardingMetrics(shardRegistry, registry, flocIdEnabled));
         JobDetail jobDetail = jobBuilder.usingJobData(data).withIdentity("SolrShardingMetricsJob").build();
 
         Trigger trigger = TriggerBuilder.newTrigger().withSchedule(CronScheduleBuilder.cronSchedule(updateCron))
