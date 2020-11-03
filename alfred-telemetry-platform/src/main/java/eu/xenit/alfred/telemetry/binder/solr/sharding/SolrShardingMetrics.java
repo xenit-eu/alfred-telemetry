@@ -21,13 +21,15 @@ public class SolrShardingMetrics {
     private static final Logger LOGGER = LoggerFactory.getLogger(SolrShardingMetrics.class);
 
     public static final String SOLR_SHARDING_METRICS_PREFIX = "solr.sharding";
+    private boolean flocIdEnabled;
 
     private SolrShardingMetricsContainer solrShardingMetricsContainer;
     private MeterRegistry registry;
 
-    public SolrShardingMetrics(ShardRegistry shardRegistry, MeterRegistry registry) {
+    public SolrShardingMetrics(ShardRegistry shardRegistry, MeterRegistry registry, boolean flocIdEnabled) {
         this.solrShardingMetricsContainer = new SolrShardingMetricsContainer(shardRegistry);
         this.registry = registry;
+        this.flocIdEnabled = flocIdEnabled;
     }
 
     private Map<String, AtomicLong> metrics = new HashMap<>();
@@ -36,7 +38,8 @@ public class SolrShardingMetrics {
         LOGGER.debug("Updating metrics");
         solrShardingMetricsContainer.refresh();
         solrShardingMetricsContainer.getFlocs().forEach(floc -> {
-            final Tags flocTags = Tags.of("floc", String.valueOf(floc.hashCode()))
+            //Disable floc id if option is disabled so we don't have the problems of having to chose the floc in grafana
+            final Tags flocTags = Tags.of("floc", String.valueOf(flocIdEnabled ? floc.hashCode() : 1))
                     .and(floc.getStoreRefs().stream().map(storeRef -> Tag
                             .of("storeRef", String.format("%s_%s", storeRef.getProtocol(), storeRef.getIdentifier())))
                             .collect(Collectors.toSet()));
