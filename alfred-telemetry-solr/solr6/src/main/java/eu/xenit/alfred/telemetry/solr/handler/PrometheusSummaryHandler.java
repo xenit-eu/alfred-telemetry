@@ -31,7 +31,7 @@ import org.apache.solr.util.JmxUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PrometheusSummaryHandler extends RequestHandlerBase {
+public class PrometheusSummaryHandlerSolr6 extends RequestHandlerBase {
 
     private static final String PROMETHEUS_SEPARATOR = "_";
     AlfrescoCoreAdminHandler coreAdminHandler;
@@ -49,7 +49,7 @@ public class PrometheusSummaryHandler extends RequestHandlerBase {
     boolean enableJmxMetricsSolr = true;
 
 
-    Logger logger = LoggerFactory.getLogger(PrometheusSummaryHandler.class);
+    Logger logger = LoggerFactory.getLogger(PrometheusSummaryHandlerSolr6.class);
 
     ArrayList fieldsToMonitor = new ArrayList(Arrays.asList(
             "Alfresco Acls in Index",
