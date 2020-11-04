@@ -1,5 +1,6 @@
 package eu.xenit.alfred.telemetry.binder.solr;
 
+import eu.xenit.alfred.telemetry.binder.solr.sharding.SolrShardingMetrics;
 import eu.xenit.alfred.telemetry.binder.solr.sharding.SolrShardingMetricsFactory;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.util.Properties;
@@ -24,6 +25,7 @@ public class SolrMetricsBeanPostProcessor implements BeanDefinitionRegistryPostP
     public static final String SOLR_SHARDING_METRICS_CRON_PROPERTY = "alfred.telemetry.binder.solr.sharding.cronexpression";
     public static final String SOLR_SHARDING_METRICS_ENABLED_PROPERTY = "alfred.telemetry.binder.solr.sharding.enabled";
     public static final String QUARTZ_CHECK_CLASS = "org.quartz.ScheduleBuilder";
+    public static final String SOLR_SHARDING_METRICS_FLOC_ID_ENABLED_PROPERTY = "alfred.telemetry.binder.solr.sharding.floc.id.enabled";
     private final Scheduler scheduler;
     private final Properties globalProperties;
 
@@ -66,6 +68,7 @@ public class SolrMetricsBeanPostProcessor implements BeanDefinitionRegistryPostP
         constructorArgumentValues.addGenericArgumentValue(meterRegistry);
         constructorArgumentValues.addGenericArgumentValue(scheduler);
         constructorArgumentValues.addGenericArgumentValue(globalProperties.get(SOLR_SHARDING_METRICS_CRON_PROPERTY));
+        constructorArgumentValues.addGenericArgumentValue(Boolean.parseBoolean(globalProperties.getProperty(SOLR_SHARDING_METRICS_FLOC_ID_ENABLED_PROPERTY)));
         solrShardingMetricsBean.setConstructorArgumentValues(constructorArgumentValues);
         solrShardingMetricsBean.setBeanClass(SolrShardingMetricsFactory.class);
         beanDefinitionRegistry.registerBeanDefinition(SOLR_SHARDING_METRICS_BEAN_ID, solrShardingMetricsBean);

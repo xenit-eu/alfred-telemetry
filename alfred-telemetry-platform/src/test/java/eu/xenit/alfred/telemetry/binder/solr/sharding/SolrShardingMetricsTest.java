@@ -44,7 +44,7 @@ class SolrShardingMetricsTest {
 
         ShardRegistry shardRegistry = Mockito.mock(ShardRegistry.class);
         MeterRegistry meterRegistry = new SimpleMeterRegistry();
-        SolrShardingMetrics solrShardingMetrics = new SolrShardingMetrics(shardRegistry, meterRegistry);
+        SolrShardingMetrics solrShardingMetrics = new SolrShardingMetrics(shardRegistry, meterRegistry, true);
 
         when(shardRegistry.getFlocs()).thenReturn(metricsInformation);
         solrShardingMetrics.updateMetrics();
