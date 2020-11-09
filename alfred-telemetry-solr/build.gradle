@@ -6,63 +6,107 @@ plugins {
 
 subprojects {
     repositories {
-	mavenCentral()
-	jcenter()
-	
-	maven {
-            url 'https://artifacts.alfresco.com/nexus/content/groups/public'
-	}
-    }
-    
-    apply plugin: 'java'
-    apply from: "${project.projectDir}/overload.gradle"
-    apply plugin: 'eu.xenit.docker'
+        mavenCentral()
+        jcenter()
 
-    compileJava {
-        if ("solr4".equals(solrFlavor)) {
-            sourceCompatibility = '1.8'
-            targetCompatibility = '1.8'
-        } else {
-            sourceCompatibility = '11'
-            targetCompatibility = '11'
+        maven {
+            url 'https://artifacts.alfresco.com/nexus/content/groups/public'
         }
     }
 
+    apply plugin: 'java'
 
     dependencies {
-        if ("solr4".equals(solrFlavor)) {
-            implementation "org.apache.solr:solr-core:${solrVersion}"
-            implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
-            implementation "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
-        }   else if ("solr6".equals(solrFlavor)) {
-            implementation "org.apache.solr:solr-core:${solrVersion}"
-            implementation "org.alfresco:alfresco-search:${assVersion}"
+        implementation("io.micrometer:micrometer-core:${micrometerVersion}") {
+            exclude group: "org.slf4j", module: "*"
         }
+        implementation("io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}") {
+            exclude group: "org.slf4j", module: "*"
+        }
+        implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
     }
 
-    task createDockerFile(type: eu.xenit.gradle.docker.tasks.DockerfileWithCopyTask) {
-        dependsOn(jar)
-        group 'docker'
+    if(!(project.name.equals("common"))) {
+        apply from: "${project.projectDir}/overload.gradle"
+        apply plugin: 'eu.xenit.docker'
 
-        from "${solrBaseImage}"
-        if("solr4".equals(solrFlavor)) {
-            smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/solrconfig.xml"
-            smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/archive-SpacesStore/conf/solrconfig.xml"
-            smartCopy files(jar).getSingleFile(), "/opt/alfresco/solr4/lib/alfred-telemetry-solr-prometheus.jar"
-        } else if("solr6".equals(solrFlavor)){
-            smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco-search-services/solrhome/templates/rerank/conf/solrconfig.xml"
-            smartCopy files(jar).getSingleFile(), "/opt/alfresco-search-services/solrhome/lib/alfred-telemetry-solr-prometheus.jar"
-        } else {
-            println "Unknown solrFlavor: ${solrFlavor}"
+
+        compileJava {
+            if ("solr4".equals(solrFlavor)) {
+                sourceCompatibility = '1.8'
+                targetCompatibility = '1.8'
+            } else {
+                sourceCompatibility = '11'
+                targetCompatibility = '11'
+            }
         }
-    }
 
-    dockerFile {
-        dockerFile = createDockerFile.getDestFile()
-        dockerBuild {
-            repository = "hub.xenit.eu/alfred-telemetry/solr-alfred-telemetry-${solrFlavor}"
-            automaticTags = false
-            tags = ["${version}"]
+        configurations {
+// configuration that holds classes to include in the jar
+            commonClasses
+        }
+
+        dependencies {
+            commonClasses project(':alfred-telemetry-solr:common')
+            configurations.compile.extendsFrom(configurations.commonClasses)
+
+            if ("solr4".equals(solrFlavor)) {
+                implementation "org.apache.solr:solr-core:${solrVersion}"
+                implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
+                implementation "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
+            }   else if ("solr6".equals(solrFlavor)) {
+                implementation "org.apache.solr:solr-core:${solrVersion}"
+                implementation "org.alfresco:alfresco-search:${assVersion}"
+            }
+        }
+
+        jar {
+            from {
+               configurations.commonClasses.collect {
+                   include 'eu/xenit/**'
+                   include 'io/micrometer/**'
+                   include 'io/prometheus/**'
+                   include 'io/github/mweirauch/**'
+                   include 'com/sun/management/**'
+                   zipTree(it)
+               }
+            }
+        }
+
+        task createDockerFile(type: eu.xenit.gradle.docker.tasks.DockerfileWithCopyTask) {
+            dependsOn(jar)
+            group 'docker'
+
+            from "${solrBaseImage}"
+            if("solr4".equals(solrFlavor)) {
+                smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/solrconfig.xml"
+                smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/archive-SpacesStore/conf/solrconfig.xml"
+                smartCopy files(jar).getSingleFile(), "/opt/alfresco/solr4/lib/alfred-telemetry-solr-prometheus.jar"
+            } else if("solr6".equals(solrFlavor)){
+                smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco-search-services/solrhome/templates/rerank/conf/solrconfig.xml"
+                smartCopy files(jar).getSingleFile(), "/opt/alfresco-search-services/solrhome/lib/alfred-telemetry-solr-prometheus.jar"
+            }
+        }
+
+        dockerFile {
+            dockerFile = createDockerFile.getDestFile()
+            dockerBuild {
+                repository = "hub.xenit.eu/alfred-telemetry/solr-alfred-telemetry-${solrFlavor}"
+                automaticTags = false
+                tags = ["${version}"]
+            }
+
+        }
+    } else {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+
+        dependencies {
+            // compile against solr4 libraries
+            implementation "org.alfresco:alfresco-solr4:5.2.g:classes@jar"
+            implementation "org.alfresco:alfresco-solrclient:5.2.g"
+            implementation "org.apache.solr:solr-core:4.10.3"
         }
     }
 }
+
