@@ -11,12 +11,7 @@ scrape_configs:
   - job_name: 'solr-alfresco'
     static_configs:
       - targets: ['solr:8080']
-    metrics_path: "/solr/alfresco/prometheus"
+    metrics_path: "/solr/alfresco/metrics"
     params:
-      wt: ['prometheus']
-  - job_name: 'solr-archive'
-    static_configs:
-      - targets: ['solr:8080']
-    metrics_path: "/solr/archive/prometheus"
-    params:
-      wt: ['prometheus']
+      wt: ['dummy']
+

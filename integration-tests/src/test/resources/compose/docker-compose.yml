@@ -6,8 +6,15 @@ services:
     ports:
       - target: 8080
         mode: host
+      - target: 8000
+        mode: host
+        published: 8000
+ #     - target: 5000
+ #       mode: host
+ #       published: 5000
     environment:
-      - CATALINA_OPTS=-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+      - DEBUG=true
+      - JMX_ENABLED=true
       - INDEX=noindex
       - ENABLE_CLUSTERING=true
       - GLOBAL_metrics.enabled=true
@@ -16,6 +23,12 @@ services:
       - GLOBAL_alfred.telemetry.binder.care4alf.enabled=true
       # Enable Alfresco cache metrics:
       - GLOBAL_alfred.telemetry.binder.cache.enabled=true
+
+ #  share:
+ #   image: docker.io/xenit/alfresco-share-community:5.2.f
+ #   ports:
+ #    - target: 8080
+ #      mode: host
 
   postgresql:
     image: docker.io/xenit/postgres

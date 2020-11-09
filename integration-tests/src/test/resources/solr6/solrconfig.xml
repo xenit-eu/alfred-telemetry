@@ -1045,7 +1045,7 @@
   </requestHandler>
 
   <!--lib dir="${solr.install.dir}:lib/"/-->
-  <requestHandler name="/prometheus" class="eu.xenit.alfred.telemetry.solr.handler.PrometheusSummaryHandler" />
+  <requestHandler name="/metrics" class="eu.xenit.alfred.telemetry.solr.handler.MicrometerHandler" />
   
   <!-- for back compat with clients using /update/json and /update/csv -->  
   <requestHandler name="/update/json" class="solr.UpdateRequestHandler">
@@ -1737,7 +1737,7 @@
   </queryResponseWriter>
 
   <!--lib dir="${solr.install.dir}:lib/"/-->
-  <queryResponseWriter name="prometheus" class="eu.xenit.alfred.telemetry.solr.writer.PrometheusResponseWriter"/>
+  <queryResponseWriter name="dummy" class="eu.xenit.alfred.telemetry.solr.writer.DummyResponseWriter"/>
   
   <!-- Query Parsers
 
