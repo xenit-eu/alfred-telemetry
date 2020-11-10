@@ -53,4 +53,31 @@ class SolrShardingMetricsTest {
                 .filter(meter -> meter.getId().getName().equals("solr.sharding.lastIndexedTxId"))
                 .collect(Collectors.toSet()).size());
     }
+
+    @Test
+    public void testShardingStateNull(){
+        Floc floc = new Floc();
+        HashSet<StoreRef> storeRefs = new HashSet();
+        storeRefs.add(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
+        floc.setStoreRefs(storeRefs);
+        Shard shard = new Shard();
+        shard.setFloc(floc);
+        ShardInstance shardInstance = new ShardInstance();
+        shardInstance.setShard(shard);
+        shardInstance.setHostName("myInstanceHost");
+        HashSet<ShardState> shardStates = new HashSet<>();
+        shardStates.add(null);
+        HashMap<Shard, HashSet<ShardState>> shardHashSetHashMap = new HashMap<>();
+        shardHashSetHashMap.put(shard, shardStates);
+        HashMap<Floc, HashMap<Shard, HashSet<ShardState>>> metricsInformation = new HashMap<>();
+        metricsInformation.put(floc, shardHashSetHashMap);
+        ShardRegistry shardRegistry = Mockito.mock(ShardRegistry.class);
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
+        SolrShardingMetrics solrShardingMetrics = new SolrShardingMetrics(shardRegistry, meterRegistry, true);
+
+        when(shardRegistry.getFlocs()).thenReturn(metricsInformation);
+        //check if we don't get a nullpointer anymore
+        solrShardingMetrics.updateMetrics();
+
+    }
 }
