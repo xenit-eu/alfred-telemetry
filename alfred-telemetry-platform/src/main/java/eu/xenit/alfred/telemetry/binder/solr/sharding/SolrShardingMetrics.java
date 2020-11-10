@@ -64,6 +64,7 @@ public class SolrShardingMetrics {
                         shardState.setMaster(false);
                         shardState.setLastUpdated(-1);
                     }
+
                     setAndCreateMetricIfNotExists("lastIndexedChangeSetId",
                             shardState.getLastIndexedChangeSetId(), instanceTags, "number");
                     setAndCreateMetricIfNotExists("lastIndexedTxId", shardState.getLastIndexedTxId(),

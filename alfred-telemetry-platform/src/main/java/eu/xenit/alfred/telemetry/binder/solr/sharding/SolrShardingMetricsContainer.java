@@ -45,7 +45,7 @@ public class SolrShardingMetricsContainer {
     }
 
     public Set<ShardInstance> getShardInstances(Shard shard) {
-        return rawData.get(shard.getFloc()).get(shard).stream().map(shardState -> shardState.getShardInstance())
+        return rawData.get(shard.getFloc()).get(shard).stream().map(shardState -> (shardState != null ? shardState.getShardInstance():null)).filter(instance -> instance != null)
                 .collect(
                         Collectors.toSet());
     }
@@ -57,6 +57,8 @@ public class SolrShardingMetricsContainer {
     }
 
     public ReplicaState getReplicaState(ShardInstance shardInstance) {
+        ShardState shardState = getShardState(shardInstance);
+        if(shardState == null) return null;
         return ReplicaState
                 .valueOf(getShardState(shardInstance).getPropertyBag().get(ShardRegistryImpl.INSTANCE_STATE));
     }
