@@ -53,7 +53,7 @@ public class SolrShardingMetricsContainer {
     public ShardState getShardState(ShardInstance shardInstance) {
         Shard shard = shardInstance.getShard();
         return rawData.get(shard.getFloc()).get(shard).stream()
-                .filter(shardState -> shardState.getShardInstance() == shardInstance).findAny().get();
+                .filter(shardState -> shardState.getShardInstance() == shardInstance).findAny().orElse(null);
     }
 
     public ReplicaState getReplicaState(ShardInstance shardInstance) {
