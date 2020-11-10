@@ -54,6 +54,16 @@ public class SolrShardingMetrics {
                 shardInstances.forEach(shardInstance -> {
                     Tags instanceTags = shardTags.and(Tags.of("instanceHost", shardInstance.getHostName()));
                     ShardState shardState = solrShardingMetricsContainer.getShardState(shardInstance);
+                    //If shardstate doesn't exist, return all -1
+                    if(shardState == null){
+                        shardState = new ShardState();
+                        shardState.setLastIndexedChangeSetId(-1);
+                        shardState.setLastIndexedTxId(-1);
+                        shardState.setLastIndexedChangeSetCommitTime(-1);
+                        shardState.setLastIndexedTxCommitTime(-1);
+                        shardState.setMaster(false);
+                        shardState.setLastUpdated(-1);
+                    }
                     setAndCreateMetricIfNotExists("lastIndexedChangeSetId",
                             shardState.getLastIndexedChangeSetId(), instanceTags, "number");
                     setAndCreateMetricIfNotExists("lastIndexedTxId", shardState.getLastIndexedTxId(),
