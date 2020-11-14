@@ -6,3 +6,4 @@ build/
 out/
 alfresco.log
 **/*p6spy*
+**/*~

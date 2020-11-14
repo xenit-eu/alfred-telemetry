@@ -1,10 +1,12 @@
 package eu.xenit.alfred.telemetry.solr.handler;
 
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.JvmMetrics;
+import eu.xenit.alfred.telemetry.solr.monitoring.binder.MyTomcatMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.ProcessMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SolrMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SystemMetrics;
 import eu.xenit.alfred.telemetry.solr.util.PrometheusRegistryUtil;
+import eu.xenit.alfred.telemetry.solr.util.TomcatUtil;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.prometheus.PrometheusConfig;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
@@ -21,6 +23,7 @@ import org.slf4j.LoggerFactory;
 public class MicrometerHandler extends RequestHandlerBase {
     static PrometheusMeterRegistry prometheusMeterRegistry;
     SolrMetrics solrMetrics = null;
+    MyTomcatMetrics tomcatMetrics = null;
     static {
         prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         prometheusMeterRegistry.config().commonTags(Tags.of("application","solr"));
@@ -40,6 +43,11 @@ public class MicrometerHandler extends RequestHandlerBase {
         if(solrMetrics==null) {
             solrMetrics = new SolrMetrics(coreAdminHandler,mbeanServer);
             solrMetrics.bindTo(prometheusMeterRegistry);
+        }
+
+        if(tomcatMetrics==null) {
+            tomcatMetrics = new MyTomcatMetrics(mbeanServer);
+            tomcatMetrics.bindTo(prometheusMeterRegistry);
         }
         writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(prometheusMeterRegistry), rsp);
     }
