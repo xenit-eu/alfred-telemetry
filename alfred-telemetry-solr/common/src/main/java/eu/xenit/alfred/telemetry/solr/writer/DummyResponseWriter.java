@@ -11,7 +11,8 @@ public class DummyResponseWriter implements QueryResponseWriter {
 
     @Override
     public void write(Writer writer, SolrQueryRequest request, SolrQueryResponse response) throws IOException {
-        writer.write(response.getValues().get("allMetrics").toString());
+        if(response.getValues().get("allMetrics")!=null)
+            writer.write(response.getValues().get("allMetrics").toString());
     }
 
     @Override
