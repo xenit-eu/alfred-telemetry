@@ -4,10 +4,9 @@ import eu.xenit.alfred.telemetry.solr.monitoring.binder.JvmMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.ProcessMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SolrMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SystemMetrics;
+import eu.xenit.alfred.telemetry.solr.monitoring.registry.RegistryRegistraar;
 import eu.xenit.alfred.telemetry.solr.util.PrometheusRegistryUtil;
-import io.micrometer.core.instrument.Tags;
-import io.micrometer.prometheus.PrometheusConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
 import javax.management.MBeanServer;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
@@ -19,14 +18,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MicrometerHandler extends RequestHandlerBase {
-    static PrometheusMeterRegistry prometheusMeterRegistry;
-    SolrMetrics solrMetrics = null;
+    static RegistryRegistraar registraar = new RegistryRegistraar();
+    static MeterRegistry registry = registraar.getGlobalMeterRegistry();
+    static SolrMetrics solrMetrics = null;
     static {
-        prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        prometheusMeterRegistry.config().commonTags(Tags.of("application","solr"));
-        new JvmMetrics().bindTo(prometheusMeterRegistry);
-        new ProcessMetrics().bindTo(prometheusMeterRegistry);
-        new SystemMetrics().bindTo(prometheusMeterRegistry);
+        new JvmMetrics().bindTo(registry);
+        new ProcessMetrics().bindTo(registry);
+        new SystemMetrics().bindTo(registry);
     }
 
     Logger logger = LoggerFactory.getLogger(MicrometerHandler.class);
@@ -38,9 +36,9 @@ public class MicrometerHandler extends RequestHandlerBase {
         MBeanServer mbeanServer = JmxUtil.findFirstMBeanServer();
         if(solrMetrics==null) {
             solrMetrics = new SolrMetrics(coreAdminHandler,mbeanServer);
-            solrMetrics.bindTo(prometheusMeterRegistry);
+            solrMetrics.bindTo(registry);
         }
-        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(prometheusMeterRegistry), rsp);
+        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(registraar.getPrometheusMeterRegistry()), rsp);
     }
 
     private void writeTextToResponse(final String text, final SolrQueryResponse rsp) throws IOException {
