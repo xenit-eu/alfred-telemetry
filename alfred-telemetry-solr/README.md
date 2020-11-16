@@ -2,12 +2,9 @@
 Alfred Telemetry Solr integrates Solr and [Micrometer](https://micrometer.io/), an application metrics facade that 
 supports numerous monitoring systems.
 
-> To learn more about Micrometer’s capabilities, please refer to its [reference documentation](https://micrometer.io/docs)
-> , in particular the [concepts section](https://micrometer.io/docs/concepts).
-
 This Solr extension offers:
 
-* the flexibility to setup and define custom metrics very easily.
+* flexibility to setup and define custom metrics very easily.
 * a wide range of out of the box instrumentation
 
 
@@ -29,7 +26,7 @@ At the moment it is not possible to configure which metrics should be included.
 
 ## Jvm metrics
 
-The JVM metrics binding will provide several jvm metrics. 
+JVM metrics binding provides several jvm metrics. 
 At the moment following metrics are included:
 
 * JvmGcMetrics
@@ -39,11 +36,11 @@ At the moment following metrics are included:
 
 See metrics provided by these modules [here](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder/jvm).
 
-Note: at the moment GC metrics are not working properly.
+Note: at the moment GC metrics are not working fully.
 
 ## System metrics
 
-The system metrics binding will provide several system metrics.
+System metrics binding provides several system metrics.
 At the moment following metrics are included:
 
 * UptimeMetrics
@@ -54,13 +51,24 @@ See metrics provided by these modules [here](https://github.com/micrometer-metri
 
 ## Process metrics
 
-The process metrics binding will provide several process metrics.
+Process metrics binding provides several process metrics.
 At the moment following metrics are included:
 
 * ProcessMemoryMetrics
 * ProcessThreadMetrics
 
 See metrics provided by these modules [here](https://github.com/mweirauch/micrometer-jvm-extras/tree/master/src/main/java/io/github/mweirauch/micrometer/jvm/extras).
+
+## Tomcat metrics
+
+Tomcat metrics binding provides several tomcat-related metrics.
+At the moment following metrics are included:
+
+* TomcatMetrics
+* TomcatBeansMetrics (custom code, implemented because session-related metrics from default implementation did not work)
+
+See metrics provided by TomcatMetrics [here](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder/tomcat).
+
 
 ## Custom metrics
 
@@ -147,10 +155,33 @@ At the moment following metrics are included, only for core "alfresco":
 | solr_alfresco_searcher_numDocs                                        |
 | solr_alfresco_searcher_indexVersion                                   |
 
+### Tomcat jmx metrics
+
+At the moment following metrics are included:
+
+| Name                                                                  |
+| ----------------------------------------------------------------------|
+| Catalina_Manager_activeSessions                                       |
+| Catalina_Manager_expiredSessions                                      |
+| Catalina_Manager_maxActiveSessions                                    |
+| Catalina_Manager_rejectedSessions                                     |
+| Catalina_Manager_duplicates                                           |
+| Catalina_Manager_maxActive                                            |
+| Catalina_Manager_sessionCounter                                       |
+| Catalina_Manager_sessionIdLength                                      |
+| Catalina_Manager_maxInactiveInterval                                  |
+| Catalina_Manager_processExpiresFrequency                              |
+| Catalina_Manager_processingTime                                       |
+| Catalina_Manager_sessionAverageAliveTime                              |
+| Catalina_Manager_sessionMaxAliveTime                                  |
+| Catalina_Manager_sessionCreateRate                                    |
+| Catalina_Manager_sessionExpireRate                                    |
+
+
 
 ## Common tags
 Common tag used for all metrics from solr extension is application=solr. 
-This was done mainly to be compatible with the Micrometer dashboard.  
+This was done to be compatible with the public grafana dashboards.  
    
 
 # How to build 
@@ -158,6 +189,8 @@ This was done mainly to be compatible with the Micrometer dashboard.
     ./gradlew alfred-telemetry-solr:solr4:bDI
 
     ./gradlew alfred-telemetry-solr:solr6:bDI
+    
+Note: the jar built for each version of solr contains also necessary runtime dependencies.
 
 # How to deploy
 
