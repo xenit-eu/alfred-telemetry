@@ -13,9 +13,14 @@ import org.quartz.TriggerBuilder;
 
 public class SolrShardingMetricsFactory {
 
+    private Scheduler scheduler;
+    private JobDetail jobDetail;
+    private Trigger trigger;
+
     public SolrShardingMetricsFactory(ShardRegistry shardRegistry, MeterRegistry registry, Scheduler scheduler,
             String updateCron, Boolean flocIdEnabled) throws SchedulerException {
 
+        this.scheduler = scheduler;
         JobBuilder jobBuilder = JobBuilder.newJob(SolrShardingMetricsScheduledJob.class);
         JobDataMap data = new JobDataMap();
         data.put(SolrShardingMetricsScheduledJob.SOLR_SHARDING_METRICS,
@@ -26,6 +31,12 @@ public class SolrShardingMetricsFactory {
                 .forJob(jobDetail.getKey()).build();
 
         scheduler.scheduleJob(jobDetail, trigger);
+        this.jobDetail = jobDetail;
+        this.trigger = trigger;
+    }
+
+    public void destroy() throws SchedulerException {
+        scheduler.unscheduleJob(trigger.getKey());
     }
 
 }
