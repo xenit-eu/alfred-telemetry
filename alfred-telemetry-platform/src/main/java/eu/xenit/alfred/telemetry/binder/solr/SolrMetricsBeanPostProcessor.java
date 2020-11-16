@@ -70,6 +70,7 @@ public class SolrMetricsBeanPostProcessor implements BeanDefinitionRegistryPostP
         constructorArgumentValues.addGenericArgumentValue(globalProperties.get(SOLR_SHARDING_METRICS_CRON_PROPERTY));
         constructorArgumentValues.addGenericArgumentValue(Boolean.parseBoolean(globalProperties.getProperty(SOLR_SHARDING_METRICS_FLOC_ID_ENABLED_PROPERTY)));
         solrShardingMetricsBean.setConstructorArgumentValues(constructorArgumentValues);
+        solrShardingMetricsBean.setDestroyMethodName("destroy");
         solrShardingMetricsBean.setBeanClass(SolrShardingMetricsFactory.class);
         beanDefinitionRegistry.registerBeanDefinition(SOLR_SHARDING_METRICS_BEAN_ID, solrShardingMetricsBean);
         LOGGER.info("Registered SolrShardingMetricsFactory bean");
@@ -79,4 +80,6 @@ public class SolrMetricsBeanPostProcessor implements BeanDefinitionRegistryPostP
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
     }
+
+
 }
