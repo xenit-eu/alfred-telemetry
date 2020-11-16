@@ -1,6 +1,5 @@
 package eu.xenit.alfred.telemetry.solr.monitoring.binder;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
@@ -9,17 +8,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map.Entry;
-import java.util.function.ToDoubleFunction;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.tracker.TrackerRegistry;
-import org.apache.hadoop.metrics.util.MetricsRegistry;
-import org.apache.solr.request.SolrQueryRequest;
-import org.apache.solr.response.SolrQueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SolrCoreStatsMetrics implements MeterBinder {
+
     AlfrescoCoreAdminHandler coreAdminHandler;
     MeterRegistry registry;
 
@@ -40,7 +36,6 @@ public class SolrCoreStatsMetrics implements MeterBinder {
     }
 
     private void registerCoreStats() {
-        logger.info("Registering coreStats metrics");
         TrackerRegistry trackerRegistry = coreAdminHandler.getTrackerRegistry();
 
         while (trackerRegistry.getCoreNames().size() == 0) {
@@ -53,8 +48,9 @@ public class SolrCoreStatsMetrics implements MeterBinder {
             }
         }
 
-        for(String coreName : trackerRegistry.getCoreNames()) {
-            SolrInformationServer server = (SolrInformationServer) coreAdminHandler.getInformationServers().get(coreName);
+        for (String coreName : trackerRegistry.getCoreNames()) {
+            SolrInformationServer server = (SolrInformationServer) coreAdminHandler.getInformationServers()
+                    .get(coreName);
             Iterable<Entry<String, Object>> stats = null;
             try {
                 stats = server.getCoreStats();
@@ -80,8 +76,9 @@ public class SolrCoreStatsMetrics implements MeterBinder {
     private Double getValueFromServer(SolrInformationServer x, String key) {
         try {
             for (Entry<String, Object> stat : x.getCoreStats()) {
-                if(stat.getKey().equals(key))
+                if (stat.getKey().equals(key)) {
                     return Double.parseDouble(stat.getValue().toString());
+                }
             }
         } catch (IOException e) {
             logger.error("Cannot get coreStats");

@@ -9,9 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RegistryRegistraar {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RegistryRegistraar.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(RegistryRegistraar.class);
     CompositeMeterRegistry globalMeterRegistry = Metrics.globalRegistry;
     PrometheusMeterRegistry prometheusMeterRegistry;
+
+    public RegistryRegistraar() {
+        prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+        prometheusMeterRegistry.config().commonTags(Tags.of("application", "solr"));
+        globalMeterRegistry.add(prometheusMeterRegistry);
+    }
 
     public CompositeMeterRegistry getGlobalMeterRegistry() {
         return globalMeterRegistry;
@@ -19,12 +26,6 @@ public class RegistryRegistraar {
 
     public PrometheusMeterRegistry getPrometheusMeterRegistry() {
         return prometheusMeterRegistry;
-    }
-
-    public RegistryRegistraar() {
-        prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        prometheusMeterRegistry.config().commonTags(Tags.of("application","solr"));
-        globalMeterRegistry.add(prometheusMeterRegistry);
     }
 
 }

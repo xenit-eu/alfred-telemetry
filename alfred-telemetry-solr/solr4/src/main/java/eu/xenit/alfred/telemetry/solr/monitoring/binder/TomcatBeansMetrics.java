@@ -16,6 +16,7 @@ public class TomcatBeansMetrics implements MeterBinder {
 
     MBeanServer mBeanServer;
     MeterRegistry registry;
+
     // atm only monitor alfresco core
     ArrayList<String> beansToMonitorTomcat = new ArrayList(Arrays.asList(
             "Catalina:type=Manager,context=/solr4,host=localhost"));
@@ -29,6 +30,6 @@ public class TomcatBeansMetrics implements MeterBinder {
     @Override
     public void bindTo(MeterRegistry registry) {
         this.registry = registry;
-        JmxUtils.registerBeans(mBeanServer,beansToMonitorTomcat,registry);
+        JmxUtils.registerBeans(mBeanServer, beansToMonitorTomcat, registry);
     }
 }

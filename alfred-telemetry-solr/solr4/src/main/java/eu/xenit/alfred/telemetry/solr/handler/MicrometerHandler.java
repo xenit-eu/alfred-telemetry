@@ -19,10 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MicrometerHandler extends RequestHandlerBase {
+
     static RegistryRegistraar registraar = new RegistryRegistraar();
     static MeterRegistry registry = registraar.getGlobalMeterRegistry();
     static SolrMetrics solrMetrics = null;
     static MyTomcatMetrics tomcatMetrics = null;
+
     static {
         new JvmMetrics().bindTo(registry);
         new ProcessMetrics().bindTo(registry);
@@ -34,23 +36,25 @@ public class MicrometerHandler extends RequestHandlerBase {
 
     @Override
     public void handleRequestBody(SolrQueryRequest req, SolrQueryResponse rsp) throws Exception {
-        AlfrescoCoreAdminHandler coreAdminHandler = (AlfrescoCoreAdminHandler) req.getCore().getCoreDescriptor().getCoreContainer().getMultiCoreHandler();
+        AlfrescoCoreAdminHandler coreAdminHandler = (AlfrescoCoreAdminHandler) req.getCore().getCoreDescriptor()
+                .getCoreContainer().getMultiCoreHandler();
         MBeanServer mbeanServer = ((JmxMonitoredMap) req.getCore().getInfoRegistry()).getServer();
 
-        if(solrMetrics==null) {
-            solrMetrics = new SolrMetrics(coreAdminHandler,mbeanServer);
+        if (solrMetrics == null) {
+            solrMetrics = new SolrMetrics(coreAdminHandler, mbeanServer);
             solrMetrics.bindTo(registry);
         }
 
-        if(tomcatMetrics==null) {
+        if (tomcatMetrics == null) {
             tomcatMetrics = new MyTomcatMetrics(mbeanServer);
             tomcatMetrics.bindTo(registry);
         }
-        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(registraar.getPrometheusMeterRegistry()), rsp);
+        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(registraar.getPrometheusMeterRegistry()),
+                rsp);
     }
 
     private void writeTextToResponse(final String text, final SolrQueryResponse rsp) throws IOException {
-        rsp.add("allMetrics",text);
+        rsp.add("allMetrics", text);
     }
 
     @Override

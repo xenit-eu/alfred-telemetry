@@ -1,6 +1,5 @@
 package eu.xenit.alfred.telemetry.solr.util;
 
-import eu.xenit.alfred.telemetry.solr.monitoring.binder.SolrCoreStatsMetrics;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JmxUtils {
+
     static Logger logger = LoggerFactory.getLogger(JmxUtils.class);
 
     public static void registerBeans(MBeanServer mBeanServer, ArrayList<String> beansToMonitor,
@@ -64,7 +64,9 @@ public class JmxUtils {
                 String attributeName = attribute.getName();
                 if (attribute.getValue() instanceof Number) {
                     ObjectName finalObjectName = objectName;
-                    Gauge.builder(objectName.getDomain() + "_" + objectName.getKeyProperty("type") + "_" + attribute.getName(), objectName, x -> getValueFromBean(mBeanServer,finalObjectName,attribute.getName()))
+                    Gauge.builder(objectName.getDomain() + "_" + objectName.getKeyProperty("type") + "_" + attribute
+                                    .getName(), objectName,
+                            x -> getValueFromBean(mBeanServer, finalObjectName, attribute.getName()))
                             .register(registry);
                 }
             }

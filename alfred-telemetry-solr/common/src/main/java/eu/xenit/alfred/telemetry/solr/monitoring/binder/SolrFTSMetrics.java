@@ -10,12 +10,11 @@ import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.tracker.TrackerRegistry;
 import org.apache.solr.common.util.NamedList;
-import org.apache.solr.request.SolrQueryRequest;
-import org.apache.solr.response.SolrQueryResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SolrFTSMetrics implements MeterBinder {
+
     AlfrescoCoreAdminHandler coreAdminHandler;
     MeterRegistry registry;
 
@@ -40,9 +39,10 @@ public class SolrFTSMetrics implements MeterBinder {
         }
 
         Set<String> coreNames = coreAdminHandler.getTrackerRegistry().getCoreNames();
-        for(String coreName : coreNames) {
+        for (String coreName : coreNames) {
             NamedList<Object> report = new NamedList();
-            SolrInformationServer server = (SolrInformationServer) coreAdminHandler.getInformationServers().get(coreName);
+            SolrInformationServer server = (SolrInformationServer) coreAdminHandler.getInformationServers()
+                    .get(coreName);
             server.addFTSStatusCounts(report);
             for (Entry fts : report) {
                 Tags tags = Tags.of("core", coreName, "feature", (String) fts.getKey());
@@ -57,8 +57,9 @@ public class SolrFTSMetrics implements MeterBinder {
         NamedList<Object> report = new NamedList();
         server.addFTSStatusCounts(report);
         for (Entry fts : report) {
-            if (fts.getKey().equals(key))
+            if (fts.getKey().equals(key)) {
                 return Double.parseDouble(fts.getValue().toString());
+            }
         }
         return null;
     }

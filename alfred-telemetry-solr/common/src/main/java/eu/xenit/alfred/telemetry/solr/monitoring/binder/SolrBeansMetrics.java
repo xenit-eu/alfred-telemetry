@@ -13,6 +13,7 @@ public class SolrBeansMetrics implements MeterBinder {
 
     MBeanServer mBeanServer;
     MeterRegistry registry;
+
     // atm only monitor alfresco core
     ArrayList<String> beansToMonitorSolr = new ArrayList(Arrays.asList(
             "solr/alfresco:type=searcher,id=org.apache.solr.search.SolrIndexSearcher",
@@ -28,6 +29,6 @@ public class SolrBeansMetrics implements MeterBinder {
     @Override
     public void bindTo(MeterRegistry registry) {
         this.registry = registry;
-        JmxUtils.registerBeans(mBeanServer,beansToMonitorSolr,registry);
+        JmxUtils.registerBeans(mBeanServer, beansToMonitorSolr, registry);
     }
 }

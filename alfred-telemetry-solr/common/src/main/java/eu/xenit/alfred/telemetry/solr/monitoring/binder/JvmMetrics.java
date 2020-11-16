@@ -1,6 +1,5 @@
 package eu.xenit.alfred.telemetry.solr.monitoring.binder;
 
-
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;

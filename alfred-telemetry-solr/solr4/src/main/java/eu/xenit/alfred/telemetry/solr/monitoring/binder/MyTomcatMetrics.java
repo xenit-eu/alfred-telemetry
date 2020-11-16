@@ -8,6 +8,7 @@ import javax.management.MBeanServer;
 
 
 public class MyTomcatMetrics implements MeterBinder {
+
     MBeanServer mBeanServer;
 
     public MyTomcatMetrics(MBeanServer mBeanServer) {
@@ -16,8 +17,8 @@ public class MyTomcatMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-      new TomcatMetrics(null,null,mBeanServer).bindTo(registry);
-      new TomcatBeansMetrics(mBeanServer).bindTo(registry);
+        new TomcatMetrics(null, null, mBeanServer).bindTo(registry);
+        new TomcatBeansMetrics(mBeanServer).bindTo(registry);
     }
 }
 

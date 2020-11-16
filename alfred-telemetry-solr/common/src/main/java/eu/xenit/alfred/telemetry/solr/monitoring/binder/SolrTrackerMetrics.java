@@ -4,11 +4,8 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import java.util.Date;
 import java.util.Set;
-import org.alfresco.service.cmr.repository.datatype.Duration;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
-import org.alfresco.solr.SolrInformationServer;
 import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.tracker.AclTracker;
 import org.alfresco.solr.tracker.MetadataTracker;
@@ -17,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SolrTrackerMetrics implements MeterBinder {
+
     AlfrescoCoreAdminHandler coreAdminHandler;
     MeterRegistry registry;
 
@@ -42,41 +40,45 @@ public class SolrTrackerMetrics implements MeterBinder {
         }
 
         Set<String> coreNames = trackerRegistry.getCoreNames();
-        for(String coreName : coreNames) {
+        for (String coreName : coreNames) {
             Tags tags = Tags.of("core", coreName, "feature", "Approx transactions remaining");
             TrackerRegistry finalTrackerRegistry = trackerRegistry;
-            Gauge.builder("alfresco_nodes", trackerRegistry, x -> getTransactionsRemaining(finalTrackerRegistry,coreName))
+            Gauge.builder("alfresco_nodes", trackerRegistry,
+                    x -> getTransactionsRemaining(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "feature", "TX lag");
-            Gauge.builder("alfresco_nodes", trackerRegistry, x -> getTxLag(finalTrackerRegistry,coreName))
+            Gauge.builder("alfresco_nodes", trackerRegistry, x -> getTxLag(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "feature", "Last Index TX Commit Time");
-            Gauge.builder("alfresco_nodes", trackerRegistry, x -> getLastIndexTxCommitTime(finalTrackerRegistry,coreName))
+            Gauge.builder("alfresco_nodes", trackerRegistry,
+                    x -> getLastIndexTxCommitTime(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "feature", "Approx change sets remaining");
-            Gauge.builder("alfresco_acls", trackerRegistry, x -> getChangeSetsRemaining(finalTrackerRegistry,coreName))
+            Gauge.builder("alfresco_acls", trackerRegistry, x -> getChangeSetsRemaining(finalTrackerRegistry, coreName))
                     .tags(tags).register(registry);
 
             tags = Tags.of("core", coreName, "feature", "Change Set Lag");
-            Gauge.builder("alfresco_acls", trackerRegistry, x -> getChangeSetsLag(finalTrackerRegistry,coreName))
+            Gauge.builder("alfresco_acls", trackerRegistry, x -> getChangeSetsLag(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "feature", "Last Index Change Set Commit Time");
-            Gauge.builder("alfresco_acls", trackerRegistry, x -> getLastIndexChangeSetCommitTime(finalTrackerRegistry,coreName))
+            Gauge.builder("alfresco_acls", trackerRegistry,
+                    x -> getLastIndexChangeSetCommitTime(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
         }
     }
 
     private long getLastIndexChangeSetCommitTime(TrackerRegistry trackerRegistry, String coreName) {
-        return trackerRegistry.getTrackerForCore(coreName, AclTracker.class).getTrackerState().getLastIndexedChangeSetCommitTime();
+        return trackerRegistry.getTrackerForCore(coreName, AclTracker.class).getTrackerState()
+                .getLastIndexedChangeSetCommitTime();
     }
 
     private long getChangeSetsLag(TrackerRegistry trackerRegistry, String coreName) {
@@ -96,11 +98,13 @@ public class SolrTrackerMetrics implements MeterBinder {
     }
 
     private long getLastIndexTxCommitTime(TrackerRegistry trackerRegistry, String coreName) {
-        return trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class).getTrackerState().getLastIndexedTxCommitTime();
+        return trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class).getTrackerState()
+                .getLastIndexedTxCommitTime();
     }
 
     private long getTxLag(TrackerRegistry trackerRegistry, String coreName) {
-        TrackerState metadataTrkrState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class).getTrackerState();
+        TrackerState metadataTrkrState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class)
+                .getTrackerState();
         long lastTxCommitTimeOnServer = metadataTrkrState.getLastTxCommitTimeOnServer();
         long lastIndexTxCommitTime = metadataTrkrState.getLastIndexedTxCommitTime();
 
@@ -109,7 +113,8 @@ public class SolrTrackerMetrics implements MeterBinder {
     }
 
     private long getTransactionsRemaining(TrackerRegistry trackerRegistry, String coreName) {
-        TrackerState metadataTrkrState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class).getTrackerState();
+        TrackerState metadataTrkrState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class)
+                .getTrackerState();
         long lastIndexedTxId = metadataTrkrState.getLastIndexedTxId();
         long lastTxIdOnServer = metadataTrkrState.getLastTxIdOnServer();
         long transactionsToDo = lastTxIdOnServer - lastIndexedTxId;
