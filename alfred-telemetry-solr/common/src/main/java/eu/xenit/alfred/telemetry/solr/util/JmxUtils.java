@@ -64,8 +64,8 @@ public class JmxUtils {
                 String attributeName = attribute.getName();
                 if (attribute.getValue() instanceof Number) {
                     ObjectName finalObjectName = objectName;
-                    Gauge.builder(objectName.getDomain() + "_" + objectName.getKeyProperty("type") + "_" + attribute
-                                    .getName(), objectName,
+                    Gauge.builder(objectName.getDomain() + "." + objectName.getKeyProperty("type") + "." + attributeName,
+                            objectName,
                             x -> getValueFromBean(mBeanServer, finalObjectName, attribute.getName()))
                             .register(registry);
                 }

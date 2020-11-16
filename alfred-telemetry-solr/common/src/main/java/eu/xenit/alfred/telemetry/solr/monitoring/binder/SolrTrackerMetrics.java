@@ -43,33 +43,33 @@ public class SolrTrackerMetrics implements MeterBinder {
         for (String coreName : coreNames) {
             Tags tags = Tags.of("core", coreName, "feature", "Approx transactions remaining");
             TrackerRegistry finalTrackerRegistry = trackerRegistry;
-            Gauge.builder("alfresco_nodes", trackerRegistry,
+            Gauge.builder("alfresco.nodes", trackerRegistry,
                     x -> getTransactionsRemaining(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "feature", "TX lag");
-            Gauge.builder("alfresco_nodes", trackerRegistry, x -> getTxLag(finalTrackerRegistry, coreName))
+            Gauge.builder("alfresco.nodes", trackerRegistry, x -> getTxLag(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "feature", "Last Index TX Commit Time");
-            Gauge.builder("alfresco_nodes", trackerRegistry,
+            Gauge.builder("alfresco.nodes", trackerRegistry,
                     x -> getLastIndexTxCommitTime(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "feature", "Approx change sets remaining");
-            Gauge.builder("alfresco_acls", trackerRegistry, x -> getChangeSetsRemaining(finalTrackerRegistry, coreName))
+            Gauge.builder("alfresco.acls", trackerRegistry, x -> getChangeSetsRemaining(finalTrackerRegistry, coreName))
                     .tags(tags).register(registry);
 
             tags = Tags.of("core", coreName, "feature", "Change Set Lag");
-            Gauge.builder("alfresco_acls", trackerRegistry, x -> getChangeSetsLag(finalTrackerRegistry, coreName))
+            Gauge.builder("alfresco.acls", trackerRegistry, x -> getChangeSetsLag(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "feature", "Last Index Change Set Commit Time");
-            Gauge.builder("alfresco_acls", trackerRegistry,
+            Gauge.builder("alfresco.acls", trackerRegistry,
                     x -> getLastIndexChangeSetCommitTime(finalTrackerRegistry, coreName))
                     .tags(tags)
                     .register(registry);

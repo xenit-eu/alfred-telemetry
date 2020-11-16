@@ -61,12 +61,12 @@ public class SolrCoreStatsMetrics implements MeterBinder {
                 Entry<String, Object> key = stat;
                 Tags tags = Tags.of("core", coreName, "feature", stat.getKey());
                 if (fieldsToMonitorNodes.contains(stat.getKey())) {
-                    Gauge.builder("alfresco_nodes", server, x -> getValueFromServer(server, stat.getKey()))
+                    Gauge.builder("alfresco.nodes", server, x -> getValueFromServer(server, stat.getKey()))
                             .tags(tags)
                             .register(registry);
                 }
                 if (fieldsToMonitorAcls.contains(stat.getKey())) {
-                    Gauge.builder("alfresco_acls", server, x -> getValueFromServer(server, stat.getKey())).tags(tags)
+                    Gauge.builder("alfresco.acls", server, x -> getValueFromServer(server, stat.getKey())).tags(tags)
                             .register(registry);
                 }
             }

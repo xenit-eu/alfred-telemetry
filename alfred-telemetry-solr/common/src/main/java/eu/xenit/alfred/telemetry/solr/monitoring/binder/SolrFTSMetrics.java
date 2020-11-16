@@ -46,7 +46,7 @@ public class SolrFTSMetrics implements MeterBinder {
             server.addFTSStatusCounts(report);
             for (Entry fts : report) {
                 Tags tags = Tags.of("core", coreName, "feature", (String) fts.getKey());
-                Gauge.builder("alfresco_fts", server, x -> getValueFromReport(server, fts.getKey()))
+                Gauge.builder("alfresco.fts", server, x -> getValueFromReport(server, fts.getKey()))
                         .tags(tags)
                         .register(registry);
             }

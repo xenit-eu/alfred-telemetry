@@ -78,82 +78,70 @@ Following custom metrics have been implemented.
 
 At the moment following metrics are included, for each core tracked by solr:
 
-| Name                                                                   |
-| -----------------------------------------------------------------------|
-| alfresco_nodes{core=<core>,feature="Alfresco Nodes in Index"}          |
-| alfresco_nodes{core=<core>,feature="Alfresco Transactions in Index"}   |
-| alfresco_nodes{core=<core>,feature="Alfresco Stated in Index"}         |
-| alfresco_nodes{core=<core>,feature="Alfresco Unindexed Nodes"}         |
-| alfresco_nodes{core=<core>,feature="Alfresco Error Nodes in Index"}    |
-| alfresco_acls{core=<core>,feature="Alfresco Acls in Index"}            |
-| alfresco_acls{core=<core>,feature="Alfresco Acl Transactions in Index"}|
+| Name                                                       |
+| -----------------------------------------------------------|
+| alfresco.nodes{core=\<core\>,state="Indexed"}                |
+| alfresco.nodes{core=\<core\>,state="Unindexed"}      |
+| alfresco.nodes{core=\<core\>,state="Error"}          |
+| alfresco.acls{core=\<core\>,state="Indexed"}                  |
+| alfresco.states{core=\<core\>}                            |
+
+
 
 ### Solr FTS metrics
 
 At the moment following metrics are included, for each core tracked by solr:
 
-| Name                                                                  |
-| ----------------------------------------------------------------------|
-| alfresco_fts{core=<core>,feature="Node count with FTSStatus Clean"}   |
-| alfresco_fts{core=<core>,feature="Node count with FTSStatus Dirty"}   |
-| alfresco_fts{core=<core>,feature="Node count with FTSStatus New"}     |
+| Name                                        |
+| --------------------------------------------|
+| alfresco.fts{core=\<core\>,state="Clean"}   |
+| alfresco.fts{core=\<core\>,state="Dirty"}   |
+| alfresco.fts{core=\<core\>,state="New"}     |
 
 
 ### Solr tracker metrics
 
 At the moment following metrics are included, for each core tracked by solr:
 
-| Name                                                                  |
-| ----------------------------------------------------------------------|
-| alfresco_nodes{core=<core>,feature="Approx transactions remaining"}   |
-| alfresco_nodes{core=<core>,feature="TX lag"}                          |
-| alfresco_nodes{core=<core>,feature="Last Index TX Commit Time"}       |
-| alfresco_acls{core=<core>,feature="Approx change sets remaining"}     |
-| alfresco_acls{core=<core>,feature="Change Set Lag"}                   |
-| alfresco_acls{core=<core>,feature="Last Index Change Set Commit Time"}|
+| Name                                                                            |
+| --------------------------------------------------------------------------------|
+| alfresco.transactions.nodes{core=\<core\>,state="Indexed"}                                   |    
+| alfresco.transactions.acls{core=\<core\>,state="Indexed"}                                    |
+| alfresco.transactions.nodes{core=\<core\>,state="Remaining"}               |
+| alfresco.transactions.acls{core=\<core\>,state="Remaining"}                |
+| alfresco.transactions.nodes.lag{core=\<core\>}                     |
+| alfresco.transactions.acls.lag{core=\<core\>}                      |
+| alfresco.transactions.nodes.lastIndexCommitTime{core=\<core\>}  |
+| alfresco.transactions.acls.lastIndexCommitTime{core=\<core\>}   |
 
 ### Solr jmx metrics
 
-At the moment following metrics are included, only for core "alfresco":
+At the moment following metrics are included, only for core "alfresco" for \<type\> one of 
+"/afts" or "/cmis".
 
 | Name                                                                  |
 | ----------------------------------------------------------------------|
-| solr_alfresco__afts_handlerStart                                      |
-| solr_alfresco__afts_requests                                          |
-| solr_alfresco__afts_timeouts                                          |
-| solr_alfresco__afts_errors                                            |
-| solr_alfresco__afts_clientErrors                                      |
-| solr_alfresco__afts_serverErrors                                      |
-| solr_alfresco__afts_75thPcRequestTime                                 |
-| solr_alfresco__afts_95thPcRequestTime                                 |
-| solr_alfresco__afts_99thPcRequestTime                                 |
-| solr_alfresco__afts_999thPcRequestTime                                |
-| solr_alfresco__afts_medianRequestTime                                 |
-| solr_alfresco__afts_avgTimePerRequest                                 |
-| solr_alfresco__afts_totalTime                                         |
-| solr_alfresco__afts_5minRateRequestsPerSecond                         |
-| solr_alfresco__afts_15minRateRequestsPerSecond                        |
-| solr_alfresco__afts_avgRequestsPerSecond                              |
-| solr_alfresco__cmis_handlerStart                                      |
-| solr_alfresco__cmis_requests                                          |
-| solr_alfresco__cmis_timeouts                                          |
-| solr_alfresco__cmis_errors                                            |
-| solr_alfresco__cmis_clientErrors                                      |
-| solr_alfresco__cmis_serverErrors                                      |
-| solr_alfresco__cmis_75thPcRequestTime                                 |
-| solr_alfresco__cmis_95thPcRequestTime                                 |
-| solr_alfresco__cmis_999thPcRequestTime                                |
-| solr_alfresco__cmis_medianRequestTime                                 |
-| solr_alfresco__afts_avgTimePerRequest                                 |
-| solr_alfresco__cmis_totalTime                                         |
-| solr_alfresco__cmis_5minRateRequestsPerSecond                         |
-| solr_alfresco__cmis_15minRateRequestsPerSecond                        |
-| solr_alfresco__cmis_avgRequestsPerSecond                              |
-| solr_alfresco_searcher_warmupTime                                     |
-| solr_alfresco_searcher_deletedDocs                                    |
-| solr_alfresco_searcher_maxDoc                                         |
-| solr_alfresco_searcher_numDocs                                        |
-| solr_alfresco_searcher_indexVersion                                   |
+| solr.alfresco.handlerStart{type=\<type\>}                                     |
+| solr.alfresco.requests{type=\<type\>}                                          |
+| solr.alfresco.timeouts{type=\<type\>}                                         |
+| solr.alfresco.errors{type=\<type\>}                                            |
+| solr.alfresco.clientErrors{type=\<type\>}                                      |
+| solr.alfresco.serverErrors{type=\<type\>}                                      |
+| solr.alfresco.75thPcRequestTime{type=\<type\>}                                 |
+| solr.alfresco.95thPcRequestTime{type=\<type\>}                                 |
+| solr.alfresco.99thPcRequestTime{type=\<type\>}                                 |
+| solr.alfresco.999thPcRequestTime{type=\<type\>}                                |
+| solr.alfresco.medianRequestTime{type=\<type\>}                                 |
+| solr.alfresco.avgTimePerRequest{type=\<type\>}                                 |
+| solr.alfresco.totalTime{type=\<type\>}                                         |
+| solr.alfresco.5minRateRequestsPerSecond{type=\<type\>}                         |
+| solr.alfresco.15minRateRequestsPerSecond{type=\<type\>}                        |
+| solr.alfresco.avgRequestsPerSecond{type=\<type\>}                              |
+| solr.alfresco.warmupTime{type="searcher"}                                    |
+| solr.alfresco.deletedDocs{type="searcher"}                                    |
+| solr.alfresco.maxDoc{type="searcher"}                                         |
+| solr.alfresco.numDocs{type="searcher"}                                        |
+| solr.alfresco.indexVersion{type="searcher"}                                   |
 
 ### Tomcat jmx metrics
 
@@ -161,21 +149,21 @@ At the moment following metrics are included:
 
 | Name                                                                  |
 | ----------------------------------------------------------------------|
-| Catalina_Manager_activeSessions                                       |
-| Catalina_Manager_expiredSessions                                      |
-| Catalina_Manager_maxActiveSessions                                    |
-| Catalina_Manager_rejectedSessions                                     |
-| Catalina_Manager_duplicates                                           |
-| Catalina_Manager_maxActive                                            |
-| Catalina_Manager_sessionCounter                                       |
-| Catalina_Manager_sessionIdLength                                      |
-| Catalina_Manager_maxInactiveInterval                                  |
-| Catalina_Manager_processExpiresFrequency                              |
-| Catalina_Manager_processingTime                                       |
-| Catalina_Manager_sessionAverageAliveTime                              |
-| Catalina_Manager_sessionMaxAliveTime                                  |
-| Catalina_Manager_sessionCreateRate                                    |
-| Catalina_Manager_sessionExpireRate                                    |
+| Catalina.activeSessions{type="Manager"}                                    |
+| Catalina.expiredSessions{type="Manager"}                                      |
+| Catalina.maxActiveSessions{type="Manager"}                                    |
+| Catalina.rejectedSessions{type="Manager"}                                     |
+| Catalina.duplicates{type="Manager"}                                           |
+| Catalina.maxActive{type="Manager"}                                            |
+| Catalina.sessionCounter{type="Manager"}                                       |
+| Catalina.sessionIdLength{type="Manager"}                                      |
+| Catalina.maxInactiveInterval{type="Manager"}                                  |
+| Catalina.processExpiresFrequency{type="Manager"}                              |
+| Catalina.processingTime{type="Manager"}                                       |
+| Catalina.sessionAverageAliveTime{type="Manager"}                              |
+| Catalina.sessionMaxAliveTime{type="Manager"}                                  |
+| Catalina.sessionCreateRate{type="Manager"}                                    |
+| Catalina.sessionExpireRate{type="Manager"}                                    |
 
 
 
