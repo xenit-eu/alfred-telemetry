@@ -257,6 +257,16 @@ Metrics provided
 | solr.tracking.maxChangeSetId          |
 | solr.tracking.maxChangeSetCommitTime  |
 
+###Solr NodeDAO metrics
+
+| Name                                  |
+| :------------------------------------ |
+| solr.nodedao.maxTxnId                |
+| solr.nodedao.maxTxnCommitTime        |
+| solr.nodedao.maxTxNode          |
+
+
+
 ### Solr sharding metrics
 Solr sharding metrics are only available on Alfresco enterprise versions greater than 6.0.
 

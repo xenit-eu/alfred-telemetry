@@ -22,6 +22,9 @@ Version template:
  
 # Alfred Telemetry Changelog
 
+## [0.3.1] - 2020-11-17
+* Added metrics tracker for NodeDAO (to get MaxTxNode )
+
 ## [0.3.0] - UNRELEASED
 
 ## [0.2.0] - 2020-10-29
