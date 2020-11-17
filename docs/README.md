@@ -242,8 +242,18 @@ Metrics provided
 | :------------------------------------ | :----------------------- |
 | users.tickets.count                   | status:[valid, expired]  |
 
-## Solr metrics
+## Alfresco Node metrics
 
+**Control property**: `alfred.telemetry.binder.alfresco.node.enabled`
+
+| Name                                  |
+| :------------------------------------ |
+| alfresco.node.maxTxnId                |
+| alfresco.node.maxTxnCommitTime        |
+| alfresco.node.maxNodeId               |
+| alfresco.alc.maxChangeSetCommitTime   |
+
+## Solr metrics
 
 ### Solr tracking metrics
 **Control Property**: `alfred.telemetry.binder.solr.tracking.enabled`
@@ -256,16 +266,6 @@ Metrics provided
 | solr.tracking.maxTxnCommitTime        |
 | solr.tracking.maxChangeSetId          |
 | solr.tracking.maxChangeSetCommitTime  |
-
-###Solr NodeDAO metrics
-
-| Name                                  |
-| :------------------------------------ |
-| solr.nodedao.maxTxnId                |
-| solr.nodedao.maxTxnCommitTime        |
-| solr.nodedao.maxTxNode          |
-
-
 
 ### Solr sharding metrics
 Solr sharding metrics are only available on Alfresco enterprise versions greater than 6.0.

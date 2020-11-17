@@ -22,11 +22,13 @@ Version template:
  
 # Alfred Telemetry Changelog
 
-## [0.3.1] - 2020-11-17
-* Added metrics tracker for NodeDAO (to get MaxTxNode )
-
 ## [0.3.0] - UNRELEASED
 
+### Added
+
+* Added metrics tracker for NodeDAO and AclDAO (to get MaxTxNode )[[#42]]
+
+[#42]: https://github.com/xenit-eu/alfred-telemetry/pull/42
 ## [0.2.0] - 2020-10-29
 
 ### Added 
@@ -43,7 +45,6 @@ Version template:
 [#13]: https://github.com/xenit-eu/alfred-telemetry/issues/13
 [#15]: https://github.com/xenit-eu/alfred-telemetry/issues/15
 [#22]: https://github.com/xenit-eu/alfred-telemetry/issues/22
-
 
 ## [0.1.1] - 2019-08-13
 
