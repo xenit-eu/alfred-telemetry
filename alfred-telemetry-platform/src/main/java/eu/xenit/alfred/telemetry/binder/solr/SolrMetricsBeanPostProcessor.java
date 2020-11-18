@@ -80,6 +80,4 @@ public class SolrMetricsBeanPostProcessor implements BeanDefinitionRegistryPostP
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
     }
-
-
 }

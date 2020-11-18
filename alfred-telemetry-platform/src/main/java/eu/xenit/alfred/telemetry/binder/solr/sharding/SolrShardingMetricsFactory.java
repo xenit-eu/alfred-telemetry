@@ -10,11 +10,13 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SolrShardingMetricsFactory {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(SolrShardingMetricsFactory.class);
     private Scheduler scheduler;
-    private JobDetail jobDetail;
     private Trigger trigger;
 
     public SolrShardingMetricsFactory(ShardRegistry shardRegistry, MeterRegistry registry, Scheduler scheduler,
@@ -31,12 +33,15 @@ public class SolrShardingMetricsFactory {
                 .forJob(jobDetail.getKey()).build();
 
         scheduler.scheduleJob(jobDetail, trigger);
-        this.jobDetail = jobDetail;
         this.trigger = trigger;
     }
 
-    public void destroy() throws SchedulerException {
-        scheduler.unscheduleJob(trigger.getKey());
+    public void destroy() {
+        try {
+            scheduler.unscheduleJob(trigger.getKey());
+        } catch (SchedulerException e) {
+            LOGGER.error("Unable to unschedule job", e);
+        }
     }
 
 }
