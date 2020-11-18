@@ -16,10 +16,8 @@ services:
         mode: host
       - target: 8000
         mode: host
-        published: 8000
       - target: 5000
         mode: host
-        published: 5000
 
 
 
