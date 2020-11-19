@@ -2,6 +2,7 @@ package eu.xenit.alfred.telemetry.solr.util;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tags;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -64,9 +65,11 @@ public class JmxUtils {
                 String attributeName = attribute.getName();
                 if (attribute.getValue() instanceof Number) {
                     ObjectName finalObjectName = objectName;
-                    Gauge.builder(objectName.getDomain() + "." + objectName.getKeyProperty("type") + "." + attributeName,
+                    Tags tags = Tags.of("type", objectName.getKeyProperty("type"));
+                    Gauge.builder(objectName.getDomain() + "." + attributeName,
                             objectName,
                             x -> getValueFromBean(mBeanServer, finalObjectName, attribute.getName()))
+                            .tags(tags)
                             .register(registry);
                 }
             }

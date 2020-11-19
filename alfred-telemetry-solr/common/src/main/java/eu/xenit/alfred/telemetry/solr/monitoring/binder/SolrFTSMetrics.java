@@ -44,24 +44,34 @@ public class SolrFTSMetrics implements MeterBinder {
             SolrInformationServer server = (SolrInformationServer) coreAdminHandler.getInformationServers()
                     .get(coreName);
             server.addFTSStatusCounts(report);
-            for (Entry fts : report) {
-                Tags tags = Tags.of("core", coreName, "feature", (String) fts.getKey());
-                Gauge.builder("alfresco.fts", server, x -> getValueFromReport(server, fts.getKey()))
-                        .tags(tags)
-                        .register(registry);
-            }
+
+            Tags tags = Tags.of("core", coreName, "state", "Clean");
+            Gauge.builder("alfresco.fts", server, x -> getValueFromReport(server, "Node count with FTSStatus Clean"))
+                    .tags(tags)
+                    .register(registry);
+
+            tags = Tags.of("core", coreName, "state", "Dirty");
+            Gauge.builder("alfresco.fts", server, x -> getValueFromReport(server, "Node count with FTSStatus Dirty"))
+                    .tags(tags)
+                    .register(registry);
+
+            tags = Tags.of("core", coreName, "state", "New");
+            Gauge.builder("alfresco.fts", server, x -> getValueFromReport(server, "Node count with FTSStatus New"))
+                    .tags(tags)
+                    .register(registry);
+
         }
     }
 
-    private Double getValueFromReport(SolrInformationServer server, Object key) {
+    private long getValueFromReport(SolrInformationServer server, String key) {
         NamedList<Object> report = new NamedList();
         server.addFTSStatusCounts(report);
         for (Entry fts : report) {
             if (fts.getKey().equals(key)) {
-                return Double.parseDouble(fts.getValue().toString());
+                return Long.parseLong(fts.getValue().toString());
             }
         }
-        return null;
+        return -1;
     }
 
 

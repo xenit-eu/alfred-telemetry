@@ -41,82 +41,79 @@ public class SolrTrackerMetrics implements MeterBinder {
 
         Set<String> coreNames = trackerRegistry.getCoreNames();
         for (String coreName : coreNames) {
-            Tags tags = Tags.of("core", coreName, "feature", "Approx transactions remaining");
-            TrackerRegistry finalTrackerRegistry = trackerRegistry;
-            Gauge.builder("alfresco.nodes", trackerRegistry,
-                    x -> getTransactionsRemaining(finalTrackerRegistry, coreName))
+            TrackerState metadataTrackerState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class)
+                    .getTrackerState();
+            TrackerState aclsTrackerState = trackerRegistry.getTrackerForCore(coreName, AclTracker.class)
+                    .getTrackerState();
+
+            // technically these metrics are not per core, but in order to filter in grafana the core is added as a tag
+            Tags tags = Tags.of("core", coreName, "state", "Remaining");
+            Gauge.builder("alfresco.transactions.nodes", metadataTrackerState,
+                    x -> getTransactionsRemaining(metadataTrackerState))
                     .tags(tags)
                     .register(registry);
 
-            tags = Tags.of("core", coreName, "feature", "TX lag");
-            Gauge.builder("alfresco.nodes", trackerRegistry, x -> getTxLag(finalTrackerRegistry, coreName))
+            tags = Tags.of("core", coreName);
+            Gauge.builder("alfresco.transactions.nodes.lag", metadataTrackerState, x -> getTxLag(metadataTrackerState))
                     .tags(tags)
                     .register(registry);
 
-            tags = Tags.of("core", coreName, "feature", "Last Index TX Commit Time");
-            Gauge.builder("alfresco.nodes", trackerRegistry,
-                    x -> getLastIndexTxCommitTime(finalTrackerRegistry, coreName))
+            tags = Tags.of("core", coreName);
+            Gauge.builder("alfresco.transactions.nodes.lastIndexCommitTime", metadataTrackerState,
+                    x -> getLastIndexTxCommitTime(metadataTrackerState))
                     .tags(tags)
                     .register(registry);
 
-            tags = Tags.of("core", coreName, "feature", "Approx change sets remaining");
-            Gauge.builder("alfresco.acls", trackerRegistry, x -> getChangeSetsRemaining(finalTrackerRegistry, coreName))
+            tags = Tags.of("core", coreName, "state", "Remaining");
+            Gauge.builder("alfresco.transactions.acls", aclsTrackerState, x -> getChangeSetsRemaining(aclsTrackerState))
                     .tags(tags).register(registry);
 
-            tags = Tags.of("core", coreName, "feature", "Change Set Lag");
-            Gauge.builder("alfresco.acls", trackerRegistry, x -> getChangeSetsLag(finalTrackerRegistry, coreName))
+            tags = Tags.of("core", coreName);
+            Gauge.builder("alfresco.transactions.acls.lag", aclsTrackerState, x -> getChangeSetsLag(aclsTrackerState))
                     .tags(tags)
                     .register(registry);
 
-            tags = Tags.of("core", coreName, "feature", "Last Index Change Set Commit Time");
-            Gauge.builder("alfresco.acls", trackerRegistry,
-                    x -> getLastIndexChangeSetCommitTime(finalTrackerRegistry, coreName))
+            tags = Tags.of("core", coreName);
+            Gauge.builder("alfresco.transactions.acls.lastIndexCommitTime", aclsTrackerState,
+                    x -> getLastIndexChangeSetCommitTime(aclsTrackerState))
                     .tags(tags)
                     .register(registry);
         }
     }
 
-    private long getLastIndexChangeSetCommitTime(TrackerRegistry trackerRegistry, String coreName) {
-        return trackerRegistry.getTrackerForCore(coreName, AclTracker.class).getTrackerState()
-                .getLastIndexedChangeSetCommitTime();
+    private long getLastIndexChangeSetCommitTime(TrackerState aclsTrackerState) {
+        return aclsTrackerState.getLastIndexedChangeSetCommitTime();
     }
 
-    private long getChangeSetsLag(TrackerRegistry trackerRegistry, String coreName) {
-        TrackerState aclTrkrState = trackerRegistry.getTrackerForCore(coreName, AclTracker.class).getTrackerState();
-        long lastIndexChangeSetCommitTime = aclTrkrState.getLastIndexedChangeSetCommitTime();
-        long lastChangeSetCommitTimeOnServer = aclTrkrState.getLastChangeSetCommitTimeOnServer();
+    private long getChangeSetsLag(TrackerState aclsTrackerState) {
+        long lastIndexChangeSetCommitTime = aclsTrackerState.getLastIndexedChangeSetCommitTime();
+        long lastChangeSetCommitTimeOnServer = aclsTrackerState.getLastChangeSetCommitTimeOnServer();
         long changeSetLagSeconds = (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000;
         return ((changeSetLagSeconds < 0) ? 0 : changeSetLagSeconds);
     }
 
-    private long getChangeSetsRemaining(TrackerRegistry trackerRegistry, String coreName) {
-        TrackerState aclTrkrState = trackerRegistry.getTrackerForCore(coreName, AclTracker.class).getTrackerState();
-        long lastIndexedChangeSetId = aclTrkrState.getLastIndexedChangeSetId();
-        long lastChangeSetIdOnServer = aclTrkrState.getLastChangeSetIdOnServer();
+    private long getChangeSetsRemaining(TrackerState aclsTrackerState) {
+        long lastIndexedChangeSetId = aclsTrackerState.getLastIndexedChangeSetId();
+        long lastChangeSetIdOnServer = aclsTrackerState.getLastChangeSetIdOnServer();
         long changeSetsToDo = lastChangeSetIdOnServer - lastIndexedChangeSetId;
         return ((changeSetsToDo < 0) ? 0 : changeSetsToDo);
     }
 
-    private long getLastIndexTxCommitTime(TrackerRegistry trackerRegistry, String coreName) {
-        return trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class).getTrackerState()
-                .getLastIndexedTxCommitTime();
+    private long getLastIndexTxCommitTime(TrackerState metadataTrackerState) {
+        return metadataTrackerState.getLastIndexedTxCommitTime();
     }
 
-    private long getTxLag(TrackerRegistry trackerRegistry, String coreName) {
-        TrackerState metadataTrkrState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class)
-                .getTrackerState();
-        long lastTxCommitTimeOnServer = metadataTrkrState.getLastTxCommitTimeOnServer();
-        long lastIndexTxCommitTime = metadataTrkrState.getLastIndexedTxCommitTime();
+    private long getTxLag(TrackerState metadataTrackerState) {
+        long lastTxCommitTimeOnServer = metadataTrackerState.getLastTxCommitTimeOnServer();
+        long lastIndexTxCommitTime = metadataTrackerState.getLastIndexedTxCommitTime();
 
         long txLagSeconds = (lastTxCommitTimeOnServer - lastIndexTxCommitTime) / 1000;
         return ((txLagSeconds < 0) ? 0 : txLagSeconds);
     }
 
-    private long getTransactionsRemaining(TrackerRegistry trackerRegistry, String coreName) {
-        TrackerState metadataTrkrState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class)
-                .getTrackerState();
-        long lastIndexedTxId = metadataTrkrState.getLastIndexedTxId();
-        long lastTxIdOnServer = metadataTrkrState.getLastTxIdOnServer();
+    private long getTransactionsRemaining(TrackerState metadataTrackerState) {
+        long lastIndexedTxId = metadataTrackerState.getLastIndexedTxId();
+        long lastTxIdOnServer = metadataTrackerState.getLastTxIdOnServer();
         long transactionsToDo = lastTxIdOnServer - lastIndexedTxId;
         return (transactionsToDo < 0 ? 0 : transactionsToDo);
     }
