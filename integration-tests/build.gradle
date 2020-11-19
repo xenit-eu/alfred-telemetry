@@ -149,15 +149,15 @@ subprojects {
             if("solr4".equals(solrFlavor)) {
                 useComposeFiles = [
                         '../src/test/resources/compose/docker-compose.yml',
-                        '../src/test/resources/compose/docker-compose-prometheus-solr4.yml',
-                        '../src/test/resources/compose/docker-compose-grafana.yml',
+//                        '../src/test/resources/compose/docker-compose-prometheus-solr4.yml',
+//                        '../src/test/resources/compose/docker-compose-grafana.yml',
                         '../src/test/resources/compose/docker-compose-solr.yml'
                 ]
             } else if("solr6".equals(solrFlavor)) {
                 useComposeFiles = [
                         '../src/test/resources/compose/docker-compose.yml',
-                        '../src/test/resources/compose/docker-compose-prometheus-solr6.yml',
-                        '../src/test/resources/compose/docker-compose-grafana.yml',
+//                        '../src/test/resources/compose/docker-compose-prometheus-solr6.yml',
+//                        '../src/test/resources/compose/docker-compose-grafana.yml',
                         '../src/test/resources/compose/docker-compose-solr.yml'
                 ]
             }
