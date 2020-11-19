@@ -4,6 +4,7 @@ services:
   alfresco:
     environment:
       - SOLR_SSL=none
+      - INDEX=${INDEX}
 
   solr:
     image: ${SOLR_DOCKER_IMAGE}

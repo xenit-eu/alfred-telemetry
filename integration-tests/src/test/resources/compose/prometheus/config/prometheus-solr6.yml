@@ -8,7 +8,7 @@ scrape_configs:
     static_configs:
       - targets: ['alfresco:8080']
     metrics_path: "/alfresco/s/alfred/telemetry/prometheus"
-  - job_name: 'solr-alfresco'
+  - job_name: 'solr'
     static_configs:
       - targets: ['solr:8080']
     metrics_path: "/solr/alfresco/metrics"
