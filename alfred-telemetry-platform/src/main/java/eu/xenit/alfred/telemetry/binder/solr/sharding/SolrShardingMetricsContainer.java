@@ -2,8 +2,6 @@ package eu.xenit.alfred.telemetry.binder.solr.sharding;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.alfresco.repo.index.shard.Floc;
@@ -47,20 +45,20 @@ public class SolrShardingMetricsContainer {
     }
 
     public Set<ShardInstance> getShardInstances(Shard shard) {
-        return rawData.get(shard.getFloc()).get(shard).stream().filter(shardState -> Objects.nonNull(shardState))
-                .map(shardState -> shardState.getShardInstance()).filter(instance -> instance != null)
-                .collect(Collectors.toSet());
+        return rawData.get(shard.getFloc()).get(shard).stream().map(shardState -> shardState.getShardInstance())
+                .collect(
+                        Collectors.toSet());
     }
 
-    public Optional<ShardState> getShardState(ShardInstance shardInstance) {
+    public ShardState getShardState(ShardInstance shardInstance) {
         Shard shard = shardInstance.getShard();
         return rawData.get(shard.getFloc()).get(shard).stream()
-                .filter(shardState -> shardState.getShardInstance() == shardInstance).findAny();
+                .filter(shardState -> shardState.getShardInstance() == shardInstance).findAny().get();
     }
 
-    public Optional<ReplicaState> getReplicaState(ShardInstance shardInstance) {
-        return getShardState(shardInstance)
-                .map(shardState -> ReplicaState.valueOf(shardState.getPropertyBag().get(ShardRegistryImpl.INSTANCE_STATE)));
+    public ReplicaState getReplicaState(ShardInstance shardInstance) {
+        return ReplicaState
+                .valueOf(getShardState(shardInstance).getPropertyBag().get(ShardRegistryImpl.INSTANCE_STATE));
     }
 
 }
