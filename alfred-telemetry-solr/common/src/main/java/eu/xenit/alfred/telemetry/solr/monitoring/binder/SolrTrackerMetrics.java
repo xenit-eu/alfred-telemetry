@@ -30,9 +30,9 @@ public class SolrTrackerMetrics implements MeterBinder {
         TrackerRegistry trackerRegistry = coreAdminHandler.getTrackerRegistry();
 
         while (trackerRegistry.getCoreNames().size() == 0) {
-            logger.error("Solr did not start tracking yet, waiting 30sec");
+            logger.error("Solr did not start tracking yet, waiting 10sec");
             try {
-                Thread.currentThread().sleep(30_000);
+                Thread.currentThread().sleep(10_000);
                 trackerRegistry = coreAdminHandler.getTrackerRegistry();
             } catch (InterruptedException e) {
                 e.printStackTrace();

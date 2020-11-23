@@ -12,15 +12,13 @@ import java.io.IOException;
 import javax.management.MBeanServer;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.apache.solr.core.JmxMonitoredMap;
-import org.apache.solr.core.SolrCore;
 import org.apache.solr.handler.RequestHandlerBase;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
-import org.apache.solr.util.plugin.SolrCoreAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MicrometerHandler extends RequestHandlerBase implements SolrCoreAware {
+public class MicrometerHandler extends RequestHandlerBase {
 
     static RegistryRegistraar registraar = new RegistryRegistraar();
     static MeterRegistry registry = registraar.getGlobalMeterRegistry();
@@ -37,6 +35,19 @@ public class MicrometerHandler extends RequestHandlerBase implements SolrCoreAwa
 
     @Override
     public void handleRequestBody(SolrQueryRequest req, SolrQueryResponse rsp) throws Exception {
+        AlfrescoCoreAdminHandler coreAdminHandler = (AlfrescoCoreAdminHandler) req.getCore().getCoreDescriptor()
+                .getCoreContainer().getMultiCoreHandler();
+        MBeanServer mbeanServer = ((JmxMonitoredMap) req.getCore().getInfoRegistry()).getServer();
+
+        if (solrMetrics == null) {
+            solrMetrics = new SolrMetrics(coreAdminHandler, mbeanServer);
+            solrMetrics.bindTo(registry);
+        }
+
+        if (tomcatMetrics == null) {
+            tomcatMetrics = new MyTomcatMetrics(mbeanServer);
+            tomcatMetrics.bindTo(registry);
+        }
         writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(registraar.getPrometheusMeterRegistry()),
                 rsp);
     }
@@ -53,23 +64,5 @@ public class MicrometerHandler extends RequestHandlerBase implements SolrCoreAwa
     @Override
     public String getSource() {
         return null;
-    }
-
-    @Override
-    public void inform(SolrCore core) {
-
-        AlfrescoCoreAdminHandler coreAdminHandler = (AlfrescoCoreAdminHandler) core.getCoreDescriptor()
-                .getCoreContainer().getMultiCoreHandler();
-        MBeanServer mbeanServer = ((JmxMonitoredMap) core.getInfoRegistry()).getServer();
-
-        if (solrMetrics == null) {
-            solrMetrics = new SolrMetrics(coreAdminHandler, mbeanServer);
-            solrMetrics.bindTo(registry);
-        }
-
-        if (tomcatMetrics == null) {
-            tomcatMetrics = new MyTomcatMetrics(mbeanServer);
-            tomcatMetrics.bindTo(registry);
-        }
     }
 }

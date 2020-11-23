@@ -4,12 +4,13 @@ services:
   alfresco:
     environment:
       - SOLR_SSL=none
-      - INDEX=${INDEX}
+      - INDEX
 
   solr:
     image: ${SOLR_DOCKER_IMAGE}
     environment:
       - ALFRESCO_SSL=none
+      - SOLR_ENDPOINT
       - DEBUG=true
       - JMX_ENABLED=true
     ports:
