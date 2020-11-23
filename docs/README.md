@@ -244,14 +244,15 @@ Metrics provided
 
 ## Alfresco Node metrics
 
-**Control property**: `alfred.telemetry.binder.alfresco.node.enabled`
+**Control property**: `alfred.telemetry.binder.alfresco-node.enabled`
 
 | Name                                  |
 | :------------------------------------ |
 | alfresco.node.maxTxnId                |
 | alfresco.node.maxTxnCommitTime        |
 | alfresco.node.maxNodeId               |
-| alfresco.alc.maxChangeSetCommitTime   |
+| alfresco.acl.maxChangeSetCommitTime   |
+| alfresco.acl.maxChangeSetId           |
 
 ## Solr metrics
 

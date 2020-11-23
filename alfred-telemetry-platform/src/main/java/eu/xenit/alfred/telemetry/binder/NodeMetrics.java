@@ -2,11 +2,8 @@ package eu.xenit.alfred.telemetry.binder;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-
-import java.util.concurrent.TimeUnit;
-import java.util.function.ToDoubleFunction;
-
 import io.micrometer.core.instrument.TimeGauge;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import org.alfresco.repo.domain.node.NodeDAO;
 import org.alfresco.repo.domain.permissions.AclDAO;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
@@ -14,33 +11,30 @@ import org.alfresco.service.transaction.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeMetrics {
+import java.util.concurrent.TimeUnit;
+import java.util.function.ToDoubleFunction;
+
+public class NodeMetrics implements MeterBinder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeMetrics.class);
 
     public static final String ACL_PREFIX = "alfresco.acl";
     public static final String DAO_PREFIX = "alfresco.node";
     private TransactionService transactionService;
-    private TimeUnit baseTimeUnit = TimeUnit.MILLISECONDS;
+    private TimeUnit baseTimeUnit = TimeUnit.SECONDS;
 
     private NodeDAO nodeDAO;
     private AclDAO aclDAO;
-    private MeterRegistry registry;
 
-    public NodeMetrics(NodeDAO nodeDAOComponent, AclDAO aclDAOComponent, TransactionService transactionService,
-            MeterRegistry registry, boolean enabled) {
+    public NodeMetrics(NodeDAO nodeDAOComponent, AclDAO aclDAOComponent, TransactionService transactionService) {
         this.nodeDAO = nodeDAOComponent;
         this.aclDAO = aclDAOComponent;
         this.transactionService = transactionService;
-        this.registry = registry;
-        if (enabled) {
-            registerMetrics();
-        }
     }
 
-    private void registerMetrics() {
+    @Override
+    public void bindTo(MeterRegistry registry) {
         LOGGER.info("Registering Alfresco Node metrics");
-
         Gauge.builder(String.format("%s.%s", DAO_PREFIX, "maxNodeId"), nodeDAO, wrapDAOFunction(NodeDAO::getMaxNodeId))
                 .description("Gives the maximum node id from the repo")
                 .register(registry);
