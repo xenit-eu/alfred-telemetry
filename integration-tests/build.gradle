@@ -177,10 +177,24 @@ subprojects {
                         '../src/test/resources/compose/docker-compose-grafana.yml'
                 ]
             }
-            isRequiredBy(integrationTest)
+        }
+
+        solrGraphite {
+            if("solr4".equals(solrFlavor)) {
+                environment.put 'INDEX','solr4'
+            } else if("solr6".equals(solrFlavor)) {
+                environment.put 'INDEX','solr6'
+            }
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-solr.yml',
+                    '../src/test/resources/compose/docker-compose-graphite.yml',
+                    '../src/test/resources/compose/docker-compose-grafana.yml'
+            ]
         }
 
         dockerCompose.solr.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
         dockerCompose.solrPrometheus.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
+        dockerCompose.solrGraphite.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
     }
 }

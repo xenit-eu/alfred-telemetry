@@ -27,6 +27,8 @@ subprojects {
         }
 //        implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
         implementation "io.micrometer:micrometer-registry-prometheus:1.6.1"
+        implementation "io.micrometer:micrometer-registry-graphite:1.6.1"
+        implementation "io.dropwizard.metrics:metrics-graphite:4.1.15"
     }
 
     if(!(project.name.equals("common"))) {
@@ -71,6 +73,7 @@ subprojects {
                    include 'io/micrometer/**'
                    include 'io/prometheus/**'
                    include 'io/github/mweirauch/**'
+                   include 'com/codahale/**'
                    zipTree(it)
                }
             }
