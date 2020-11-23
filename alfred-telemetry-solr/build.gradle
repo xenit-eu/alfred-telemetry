@@ -16,16 +16,17 @@ subprojects {
 
     apply plugin: 'java'
 
+    configurations {
+        // configuration that holds the classes for graphite metrics, which conflicts with the library provided by solr6
+        metricsGraphite
+    }
+
     dependencies {
-        implementation("io.micrometer:micrometer-core:1.6.1") {
-            exclude group: "org.slf4j", module: "*"
-        }
-        implementation("io.github.mweirauch:micrometer-jvm-extras:0.1.2") {
-            exclude group: "org.slf4j", module: "*"
-        }
+        implementation("io.micrometer:micrometer-core:1.6.1")
+        implementation("io.github.mweirauch:micrometer-jvm-extras:0.1.2")
         implementation "io.micrometer:micrometer-registry-prometheus:1.6.1"
         implementation "io.micrometer:micrometer-registry-graphite:1.6.1"
-        implementation "io.dropwizard.metrics:metrics-graphite:4.1.15"
+        metricsGraphite "io.dropwizard.metrics:metrics-graphite:4.1.15"
     }
 
     if(!(project.name.equals("common"))) {
@@ -44,7 +45,7 @@ subprojects {
         }
 
         configurations {
-// configuration that holds classes to include in the jar
+            // configuration that holds classes to include in the jar
             commonClasses
         }
 
@@ -86,14 +87,16 @@ subprojects {
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/solrconfig.xml"
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/archive-SpacesStore/conf/solrconfig.xml"
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
-                smartCopy files(jar).getSingleFile(), "/opt/alfresco/solr4/lib/alfred-telemetry-solr-prometheus.jar"
+                smartCopy files(jar).getSingleFile(), "/opt/alfresco/solr4/lib/alfred-telemetry-solr.jar"
             } else if("solr6".equals(solrFlavor)){
-                // this should be done better; it basically overwrites existing metrics-graphite library with a newer one
-                smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/metrics-graphite-4.1.15.jar", "/opt/alfresco-search-services/solr/server/lib/metrics-graphite-3.2.2.jar"
+                dependsOn(configurations.metricsGraphite)
+                // overwrites existing metrics-graphite library with the one used by micrometer
+                smartCopy configurations.metricsGraphite.fileCollection { it.name == "metrics-graphite"}, "/opt/alfresco-search-services/solr/server/lib/"
+                instruction 'RUN rm -f /opt/alfresco-search-services/solr/server/lib/metrics-graphite-3.2.2.jar'
 
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco-search-services/solrhome/templates/rerank/conf/solrconfig.xml"
-                smartCopy files(jar).getSingleFile(), "/opt/alfresco-search-services/solrhome/lib/alfred-telemetry-solr-prometheus.jar"
+                smartCopy files(jar).getSingleFile(), "/opt/alfresco-search-services/solrhome/lib/alfred-telemetry-solr.jar"
             }
         }
 
