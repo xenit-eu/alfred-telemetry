@@ -10,19 +10,60 @@ This Solr extension offers:
 
 # Getting started
 
-At the moment Alfred Telemetry Solr extension auto-configures a [`PrometheusMeterRegistry`](https://micrometer.io/docs/registry/prometheus) 
-The extension implements a MicrometerHandler which binds all available metrics to the Prometheus registry. 
-In order to visualize correctly the output, a DummyResponseWriter is also provided, which simply displays verbatim the output of scraping.
-The jar file of the module, together with all micrometer dependencies need to be added to solr's classpath and solr core need to be configured to use the handler and the writer. See examples in integration tests.
+At the moment Alfred Telemetry Solr extension auto-configures a CompositeRegistry containing 2 registries:
+
+* a [`PrometheusMeterRegistry`](https://micrometer.io/docs/registry/prometheus) 
+* a [`GraphiteMeterRegistry`](https://micrometer.io/docs/registry/graphite)
+
+The extension implements a MicrometerHandler which binds all available metrics to the global registry. For graphite the handler needs to be called once in the beginning, which is done via an init script added to the image.
+
+In order to visualize correctly the output, a DummyResponseWriter is also provided, which simply displays verbatim the output of Prometheus scraping.
+
+The jar file of the module, together with all micrometer dependencies need to be added to solr's classpath and solr cores need to be configured to use the handler and the writer. 
+
+See examples in integration tests.
 
 
 # Supported monitoring systems
 
-At the moment only Prometheus is supported as a monitoring system.
+At the moment only Prometheus and Graphite are supported as monitoring systems.
+
+For Graphite the library offered by micrometer conflicts with the library from inside solr6 and therefore replaces that one.
+
+Disabling and configuring the graphite registry can be done via environment variables:
+
+| Variable                                 | Default  |
+|------------------------------------------|----------|
+| ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED | false    | 
+| ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST | localhost    | 
+| ALFRED_TELEMETRY_EXPORT_GRAPHITE_PORT | 2004    | 
+| ALFRED_TELEMETRY_EXPORT_GRAPHITE_STEP | 5    | 
 
 # Supported metrics
 
-At the moment it is not possible to configure which metrics should be included.
+Enabling / disabling metrics can be done via environment variables:
+
+| Variable                                 | Default  |
+|------------------------------------------|----------|
+|METRICS_JVM_ENABLED                       | true     |
+|METRICS_JVM_GC_ENABLED                    | true     |
+|METRICS_JVM_MEMORY_ENABLED                | true     |
+|METRICS_JVM_THREADS_ENABLED               | true     |
+|METRICS_JVM_CLASSLOADER_ENABLED           | true     |
+|METRICS_PROCESS_ENABLED                   | true     |
+|METRICS_PROCESS_THREADS_ENABLED           | true     |
+|METRICS_PROCESS_MEMORY_ENABLED            | true     |
+|METRICS_SYSTEM_ENABLED                    | true     |
+|METRICS_SYSTEM_UPTIME_ENABLED             | true     |
+|METRICS_SYSTEM_PROCESSOR_ENABLED          | true     |
+|METRICS_SYSTEM_FILEDESCRIPTORS_ENABLED    | true     |
+|METRICS_SOLR_ENABLED                      | true     |
+|METRICS_SOLR_CORESTATS_ENABLED            | true     |
+|METRICS_SOLR_FTS_ENABLED                  | true     |
+|METRICS_SOLR_TRACKER_ENABLED              | true     |
+|METRICS_SOLR_JMX_ENABLED                  | true     |
+|METRICS_TOMCAT_ENABLED                    | false    |
+|METRICS_TOMCAT_JMX_ENABLED                | true    |
 
 ## Jvm metrics
 

@@ -25,4 +25,16 @@ public class StringUtils {
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
     }
+
+    public static boolean isEnabled(String env) {
+        if(System.getenv(env)!=null) {
+            return Boolean.parseBoolean(System.getenv(env));
+        }
+
+        // everything is enabled by default except graphite registry and tomcat metrics
+        return ("ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED".equals(env)?
+                false:
+                ("METRICS_TOMCAT_ENABLED".equals(env) ? false:true));
+
+    }
 }

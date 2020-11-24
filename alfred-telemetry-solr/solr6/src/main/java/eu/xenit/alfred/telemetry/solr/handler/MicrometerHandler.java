@@ -6,6 +6,7 @@ import eu.xenit.alfred.telemetry.solr.monitoring.binder.SolrMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SystemMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.registry.RegistryRegistraar;
 import eu.xenit.alfred.telemetry.solr.util.PrometheusRegistryUtil;
+import eu.xenit.alfred.telemetry.solr.util.StringUtils;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
 import javax.management.MBeanServer;
@@ -24,9 +25,12 @@ public class MicrometerHandler extends RequestHandlerBase {
     static SolrMetrics solrMetrics = null;
 
     static {
-        new JvmMetrics().bindTo(registry);
-        new ProcessMetrics().bindTo(registry);
-        new SystemMetrics().bindTo(registry);
+        if( StringUtils.isEnabled("ALFRED_TELEMETRY_JVM_ENABLED"))
+            new JvmMetrics().bindTo(registry);
+        if( StringUtils.isEnabled("METRICS_PROCESS_ENABLED"))
+            new ProcessMetrics().bindTo(registry);
+        if( StringUtils.isEnabled("METRICS_SYSTEM_ENABLED"))
+            new SystemMetrics().bindTo(registry);
     }
 
     Logger logger = LoggerFactory.getLogger(MicrometerHandler.class);
@@ -37,7 +41,8 @@ public class MicrometerHandler extends RequestHandlerBase {
         AlfrescoCoreAdminHandler coreAdminHandler = (AlfrescoCoreAdminHandler) req.getCore().getCoreContainer()
                 .getMultiCoreHandler();
         MBeanServer mbeanServer = JmxUtil.findFirstMBeanServer();
-        if (solrMetrics == null) {
+
+        if (solrMetrics == null && StringUtils.isEnabled("METRICS_SOLR_ENABLED")) {
             solrMetrics = new SolrMetrics(coreAdminHandler, mbeanServer);
             solrMetrics.bindTo(registry);
         }

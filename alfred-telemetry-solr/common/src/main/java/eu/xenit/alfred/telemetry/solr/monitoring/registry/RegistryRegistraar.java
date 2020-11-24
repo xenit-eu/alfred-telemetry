@@ -1,5 +1,6 @@
 package eu.xenit.alfred.telemetry.solr.monitoring.registry;
 
+import eu.xenit.alfred.telemetry.solr.util.StringUtils;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
@@ -21,44 +22,49 @@ public class RegistryRegistraar {
     GraphiteMeterRegistry graphiteMeterRegistry;
 
     public RegistryRegistraar() {
+        // always register the Prometheus registry
         prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         prometheusMeterRegistry.config().commonTags(Tags.of("application", "solr"));
         globalMeterRegistry.add(prometheusMeterRegistry);
 
-       MyGraphiteConfig graphiteConfig = new MyGraphiteConfig();
-        graphiteConfig.setHost("carbon");
-        graphiteConfig.setPort(2004);
-        graphiteConfig.setStep(5);
-        graphiteConfig.setTagsAsPrefix("application,host");
-        io.micrometer.graphite.GraphiteConfig micrometerGraphiteConfig = new io.micrometer.graphite.GraphiteConfig() {
-            @Override
-            public String host() {
-                return graphiteConfig.getHost();
-            }
 
-            @Override
-            public int port() {
-                return graphiteConfig.getPort();
-            }
+        if(StringUtils.isEnabled("ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED")) {
+            MyGraphiteConfig graphiteConfig = new MyGraphiteConfig();
+            graphiteConfig.setHost(System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST")!=null?System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST"):"localhost");
+            graphiteConfig.setPort(System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_PORT")!=null?Integer.parseInt(System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_PORT")):2004);
+            graphiteConfig.setStep(System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_STEP")!=null?Integer.parseInt(System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_STEP")):5);
+            graphiteConfig.setTagsAsPrefix("application,host");
+            io.micrometer.graphite.GraphiteConfig micrometerGraphiteConfig = new io.micrometer.graphite.GraphiteConfig() {
+                @Override
+                public String host() {
+                    return graphiteConfig.getHost();
+                }
 
-            @Override
-            public Duration step() {
-                return Duration.ofSeconds(graphiteConfig.getStep());
-            }
+                @Override
+                public int port() {
+                    return graphiteConfig.getPort();
+                }
 
-            @Override
-            public String get(String key) {
-                return null;
-            }
+                @Override
+                public Duration step() {
+                    return Duration.ofSeconds(graphiteConfig.getStep());
+                }
 
-            @Override
-            public String[] tagsAsPrefix() {
-                return graphiteConfig.getTagsAsPrefix().toArray(new String[]{});
-            }
-        };
-        graphiteMeterRegistry = new GraphiteMeterRegistry(micrometerGraphiteConfig,io.micrometer.core.instrument.Clock.SYSTEM);
-        graphiteMeterRegistry.config().commonTags(Tags.of("application", "solr","host",tryToRetrieveHostName()));
-        globalMeterRegistry.add(graphiteMeterRegistry);
+                @Override
+                public String get(String key) {
+                    return null;
+                }
+
+                @Override
+                public String[] tagsAsPrefix() {
+                    return graphiteConfig.getTagsAsPrefix().toArray(new String[]{});
+                }
+            };
+            graphiteMeterRegistry = new GraphiteMeterRegistry(micrometerGraphiteConfig,
+                    io.micrometer.core.instrument.Clock.SYSTEM);
+            graphiteMeterRegistry.config().commonTags(Tags.of("application", "solr", "host", tryToRetrieveHostName()));
+            globalMeterRegistry.add(graphiteMeterRegistry);
+        }
     }
 
     private String tryToRetrieveHostName() {

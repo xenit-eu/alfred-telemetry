@@ -67,7 +67,7 @@
   "gnetId": 4701,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1606145261136,
+  "iteration": 1606226302662,
   "links": [],
   "panels": [
     {
@@ -93,7 +93,7 @@
         "#d44a3a"
       ],
       "datasource": "graphite",
-      "format": "s",
+      "format": "dtdurationms",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -162,7 +162,7 @@
           "value": "null"
         }
       ],
-      "valueName": "avg"
+      "valueName": "current"
     },
     {
       "cacheTimeout": null,
@@ -2137,7 +2137,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 13
+            "y": 8
           },
           "hiddenSeries": false,
           "id": 136,
@@ -2269,7 +2269,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 13
+            "y": 8
           },
           "hiddenSeries": false,
           "id": 137,
@@ -2511,7 +2511,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 15
+            "y": 10
           },
           "hiddenSeries": false,
           "id": 145,
@@ -2613,7 +2613,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 15
+            "y": 10
           },
           "hiddenSeries": false,
           "id": 147,
