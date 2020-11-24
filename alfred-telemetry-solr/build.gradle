@@ -87,7 +87,7 @@ subprojects {
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/solrconfig.xml"
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/archive-SpacesStore/conf/solrconfig.xml"
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
-                smartCopy files(jar).getSingleFile(), "/opt/alfresco/solr4/lib/alfred-telemetry-solr.jar"
+                smartCopy files(jar), "/opt/alfresco/solr4/lib/"
             } else if("solr6".equals(solrFlavor)){
                 dependsOn(configurations.metricsGraphite)
                 // overwrites existing metrics-graphite library with the one used by micrometer
