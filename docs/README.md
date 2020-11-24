@@ -242,8 +242,19 @@ Metrics provided
 | :------------------------------------ | :----------------------- |
 | users.tickets.count                   | status:[valid, expired]  |
 
-## Solr metrics
+## Alfresco Node metrics
 
+**Control property**: `alfred.telemetry.binder.alfresco-node.enabled`
+
+| Name                                  |
+| :------------------------------------ |
+| alfresco.node.maxTxnId                |
+| alfresco.node.maxTxnCommitTime        |
+| alfresco.node.maxNodeId               |
+| alfresco.acl.maxChangeSetCommitTime   |
+| alfresco.acl.maxChangeSetId           |
+
+## Solr metrics
 
 ### Solr tracking metrics
 **Control Property**: `alfred.telemetry.binder.solr.tracking.enabled`
