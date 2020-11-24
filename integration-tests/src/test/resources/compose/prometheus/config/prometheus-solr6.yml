@@ -14,4 +14,3 @@ scrape_configs:
     metrics_path: "/solr/alfresco/metrics"
     params:
       wt: ['dummy']
-

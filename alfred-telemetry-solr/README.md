@@ -237,7 +237,6 @@ and the ResponseWriter:
       <lib dir="lib/" regex=".*\.jar" />
       <queryResponseWriter name="dummy" class="eu.xenit.alfred.telemetry.solr.writer.DummyResponseWriter"/>
       
-      
 Restart solr.
 
 **Docker**
