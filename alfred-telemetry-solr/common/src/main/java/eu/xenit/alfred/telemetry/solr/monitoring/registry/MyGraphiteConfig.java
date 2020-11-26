@@ -1,7 +1,6 @@
 package eu.xenit.alfred.telemetry.solr.monitoring.registry;
 
-import eu.xenit.alfred.telemetry.solr.util.StringUtils;
-import io.micrometer.graphite.GraphiteConfig;
+import eu.xenit.alfred.telemetry.solr.util.Util;
 import java.util.List;
 
 public class MyGraphiteConfig {
@@ -40,6 +39,6 @@ public class MyGraphiteConfig {
     }
 
     public void setTagsAsPrefix(String tagsAsPrefix) {
-        this.tagsAsPrefix = StringUtils.parseList(tagsAsPrefix);
+        this.tagsAsPrefix = Util.parseList(tagsAsPrefix);
     }
 }

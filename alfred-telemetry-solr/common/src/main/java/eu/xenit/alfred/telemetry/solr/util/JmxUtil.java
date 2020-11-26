@@ -21,9 +21,9 @@ import javax.management.ReflectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JmxUtils {
+public class JmxUtil {
 
-    static Logger logger = LoggerFactory.getLogger(JmxUtils.class);
+    static Logger logger = LoggerFactory.getLogger(JmxUtil.class);
 
     public static void registerBeans(MBeanServer mBeanServer, ArrayList<String> beansToMonitor,
             MeterRegistry registry) {

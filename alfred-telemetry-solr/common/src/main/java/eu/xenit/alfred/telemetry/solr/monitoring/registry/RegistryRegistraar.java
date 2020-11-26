@@ -1,7 +1,6 @@
 package eu.xenit.alfred.telemetry.solr.monitoring.registry;
 
-import eu.xenit.alfred.telemetry.solr.util.StringUtils;
-import io.micrometer.core.instrument.Clock;
+import eu.xenit.alfred.telemetry.solr.util.Util;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
@@ -28,7 +27,7 @@ public class RegistryRegistraar {
         globalMeterRegistry.add(prometheusMeterRegistry);
 
 
-        if(StringUtils.isEnabled("ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED")) {
+        if(Util.isEnabled("ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED")) {
             MyGraphiteConfig graphiteConfig = new MyGraphiteConfig();
             graphiteConfig.setHost(System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST")!=null?System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST"):"localhost");
             graphiteConfig.setPort(System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_PORT")!=null?Integer.parseInt(System.getenv("ALFRED_TELEMETRY_EXPORT_GRAPHITE_PORT")):2004);
