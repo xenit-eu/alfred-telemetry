@@ -7,7 +7,7 @@ import eu.xenit.alfred.telemetry.solr.monitoring.binder.SolrMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SystemMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.registry.RegistryRegistraar;
 import eu.xenit.alfred.telemetry.solr.util.PrometheusRegistryUtil;
-import eu.xenit.alfred.telemetry.solr.util.StringUtils;
+import eu.xenit.alfred.telemetry.solr.util.Util;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
 import javax.management.MBeanServer;
@@ -27,11 +27,11 @@ public class MicrometerHandler extends RequestHandlerBase {
     static MyTomcatMetrics tomcatMetrics = null;
 
     static {
-        if( StringUtils.isEnabled("METRICS_JVM_ENABLED"))
+        if( Util.isEnabled("METRICS_JVM_ENABLED"))
             new JvmMetrics().bindTo(registry);
-        if( StringUtils.isEnabled("METRICS_PROCESS_ENABLED"))
+        if( Util.isEnabled("METRICS_PROCESS_ENABLED"))
             new ProcessMetrics().bindTo(registry);
-        if( StringUtils.isEnabled("METRICS_SYSTEM_ENABLED"))
+        if( Util.isEnabled("METRICS_SYSTEM_ENABLED"))
             new SystemMetrics().bindTo(registry);
     }
 
@@ -43,12 +43,12 @@ public class MicrometerHandler extends RequestHandlerBase {
                 .getCoreContainer().getMultiCoreHandler();
         MBeanServer mbeanServer = ((JmxMonitoredMap) req.getCore().getInfoRegistry()).getServer();
 
-        if (solrMetrics == null && StringUtils.isEnabled("METRICS_SOLR_ENABLED")) {
+        if (solrMetrics == null && Util.isEnabled("METRICS_SOLR_ENABLED")) {
             solrMetrics = new SolrMetrics(coreAdminHandler, mbeanServer);
             solrMetrics.bindTo(registry);
         }
 
-        if (tomcatMetrics == null && StringUtils.isEnabled("METRICS_TOMCAT_ENABLED")) {
+        if (tomcatMetrics == null && Util.isEnabled("METRICS_TOMCAT_ENABLED")) {
             tomcatMetrics = new MyTomcatMetrics(mbeanServer);
             tomcatMetrics.bindTo(registry);
         }

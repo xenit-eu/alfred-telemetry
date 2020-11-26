@@ -1,6 +1,6 @@
 package eu.xenit.alfred.telemetry.solr.monitoring.binder;
 
-import eu.xenit.alfred.telemetry.solr.util.StringUtils;
+import eu.xenit.alfred.telemetry.solr.util.Util;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import javax.management.MBeanServer;
@@ -22,13 +22,13 @@ public class SolrMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        if(StringUtils.isEnabled("METRICS_SOLR_CORESTATS_ENABLED"))
+        if(Util.isEnabled("METRICS_SOLR_CORESTATS_ENABLED"))
             new SolrCoreStatsMetrics(coreAdminHandler).bindTo(registry);
-        if(StringUtils.isEnabled("METRICS_SOLR_FTS_ENABLED"))
+        if(Util.isEnabled("METRICS_SOLR_FTS_ENABLED"))
             new SolrFTSMetrics(coreAdminHandler).bindTo(registry);
-        if(StringUtils.isEnabled("METRICS_SOLR_TRACKER_ENABLED"))
+        if(Util.isEnabled("METRICS_SOLR_TRACKER_ENABLED"))
             new SolrTrackerMetrics(coreAdminHandler).bindTo(registry);
-        if(StringUtils.isEnabled("METRICS_SOLR_JMX_ENABLED"))
+        if(Util.isEnabled("METRICS_SOLR_JMX_ENABLED"))
             new SolrBeansMetrics(mBeanServer).bindTo(registry);
     }
 }

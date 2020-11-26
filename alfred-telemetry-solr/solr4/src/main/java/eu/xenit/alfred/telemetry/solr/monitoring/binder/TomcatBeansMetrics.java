@@ -1,6 +1,6 @@
 package eu.xenit.alfred.telemetry.solr.monitoring.binder;
 
-import eu.xenit.alfred.telemetry.solr.util.JmxUtils;
+import eu.xenit.alfred.telemetry.solr.util.JmxUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import java.util.ArrayList;
@@ -30,6 +30,6 @@ public class TomcatBeansMetrics implements MeterBinder {
     @Override
     public void bindTo(MeterRegistry registry) {
         this.registry = registry;
-        JmxUtils.registerBeans(mBeanServer, beansToMonitorTomcat, registry);
+        JmxUtil.registerBeans(mBeanServer, beansToMonitorTomcat, registry);
     }
 }
