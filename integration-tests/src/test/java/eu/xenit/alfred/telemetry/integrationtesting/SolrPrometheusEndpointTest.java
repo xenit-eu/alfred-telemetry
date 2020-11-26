@@ -13,19 +13,23 @@ public class SolrPrometheusEndpointTest extends RestAssuredTestSolr {
 
     @Test
     void solrEndpoint() {
+        try {
+            Thread.currentThread().sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         ExtractableResponse<Response> response =
                 given()
                         .log().ifValidationFails()
                         .when()
-                        .get("/alfresco/prometheus?wt=prometheus")
+                        .get("/alfresco/metrics?wt=dummy")
                         .then()
                         .log().ifValidationFails()
                         .statusCode(isOneOf(200))
                         .extract();
 
         String responseBody = response.body().asString();
-
-        assertThat(responseBody, containsString("java_lang_OperatingSystem_OpenFileDescriptorCount"));
+        assertThat(responseBody, containsString("alfresco_nodes"));
     }
 
 }

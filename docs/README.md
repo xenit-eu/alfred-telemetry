@@ -256,6 +256,7 @@ Metrics provided
 
 ## Solr metrics
 
+
 ### Solr tracking metrics
 **Control Property**: `alfred.telemetry.binder.solr.tracking.enabled`
 

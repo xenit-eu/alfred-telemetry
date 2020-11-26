@@ -14,12 +14,11 @@ services:
     ports:
       - 9090:9090
 
-        #  grafana:
-        #   volumes:
-        #- ./prometheus/grafana/prometheus-datasources.yml:/etc/grafana-provisioning/datasources/prometheus-datasources.yml
-        #- ./prometheus/grafana/prometheus-dashboards.yml:/etc/grafana-provisioning/dashboards/prometheus-dashboards.yml
-        #- ./prometheus/grafana/dashboards:/etc/grafana-provisioning/dashboards/prometheus
-
+  grafana:
+    volumes:
+      - ./prometheus/grafana/prometheus-datasources.yml:/etc/grafana-provisioning/datasources/prometheus-datasources.yml
+      - ./prometheus/grafana/prometheus-dashboards.yml:/etc/grafana-provisioning/dashboards/prometheus-dashboards.yml
+      - ./prometheus/grafana/dashboards:/etc/grafana-provisioning/dashboards/prometheus
 
 volumes:
   prometheus_data:
