@@ -29,7 +29,7 @@ subprojects {
         metricsGraphite "io.dropwizard.metrics:metrics-graphite:4.1.15"
     }
 
-    if(!(project.name.equals("common"))) {
+    if (!(project.name.equals("common"))) {
         apply from: "${project.projectDir}/overload.gradle"
         apply plugin: 'eu.xenit.docker'
 
@@ -58,7 +58,7 @@ subprojects {
                 implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
                 implementation "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
                 implementation "org.apache.tomcat:tomcat-catalina:7.0.92"
-            }   else if ("solr6".equals(solrFlavor)) {
+            } else if ("solr6".equals(solrFlavor)) {
                 implementation "org.apache.solr:solr-core:${solrVersion}"
                 implementation "org.alfresco:alfresco-search:${assVersion}"
             }
@@ -67,14 +67,14 @@ subprojects {
         // can this be done better?
         jar {
             from {
-               configurations.commonClasses.collect {
-                   include 'eu/xenit/**'
-                   include 'io/micrometer/**'
-                   include 'io/prometheus/**'
-                   include 'io/github/mweirauch/**'
-                   include 'com/codahale/**'
-                   zipTree(it)
-               }
+                configurations.commonClasses.collect {
+                    include 'eu/xenit/**'
+                    include 'io/micrometer/**'
+                    include 'io/prometheus/**'
+                    include 'io/github/mweirauch/**'
+                    include 'com/codahale/**'
+                    zipTree(it)
+                }
             }
         }
 
@@ -83,15 +83,17 @@ subprojects {
             group 'docker'
 
             from "${solrBaseImage}"
-            if("solr4".equals(solrFlavor)) {
+            if ("solr4".equals(solrFlavor)) {
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/solrconfig.xml"
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/archive-SpacesStore/conf/solrconfig.xml"
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
                 smartCopy files(jar), "/opt/alfresco/solr4/lib/"
-            } else if("solr6".equals(solrFlavor)){
+            } else if ("solr6".equals(solrFlavor)) {
                 dependsOn(configurations.metricsGraphite)
                 // overwrites existing metrics-graphite library with the one used by micrometer
-                smartCopy configurations.metricsGraphite.fileCollection { it.group == "io.dropwizard.metrics" && it.name == "metrics-graphite"}, "/opt/alfresco-search-services/solr/server/lib/"
+                smartCopy configurations.metricsGraphite.fileCollection {
+                    it.group == "io.dropwizard.metrics" && it.name == "metrics-graphite"
+                }, "/opt/alfresco-search-services/solr/server/lib/"
                 instruction 'RUN rm -f /opt/alfresco-search-services/solr/server/lib/metrics-graphite-3.2.2.jar'
 
                 smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
@@ -108,6 +110,14 @@ subprojects {
                 tags = ["${version}"]
             }
 
+        }
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    artifact tasks.jar
+                }
+            }
         }
     } else {
         sourceCompatibility = '1.8'

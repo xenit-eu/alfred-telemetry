@@ -149,6 +149,7 @@ subprojects {
         solr {
             environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor)?'solr4':'solr')
             environment.put 'INDEX', solrFlavor
+            environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
 
             useComposeFiles = [
                     '../src/test/resources/compose/docker-compose.yml',
@@ -159,7 +160,9 @@ subprojects {
 
         solrPrometheus {
             environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor)?'solr4':'solr')
+            environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor)?'true':'false')
             environment.put 'INDEX', solrFlavor
+            environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
             if("solr4".equals(solrFlavor)) {
                 useComposeFiles = [
                         '../src/test/resources/compose/docker-compose.yml',
@@ -179,7 +182,10 @@ subprojects {
 
         solrGraphite {
             environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor)?'solr4':'solr')
+            environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor)?'true':'false')
             environment.put 'INDEX', solrFlavor
+            environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'true'
+            environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST', 'carbon'
             useComposeFiles = [
                     '../src/test/resources/compose/docker-compose.yml',
                     '../src/test/resources/compose/docker-compose-solr.yml',
