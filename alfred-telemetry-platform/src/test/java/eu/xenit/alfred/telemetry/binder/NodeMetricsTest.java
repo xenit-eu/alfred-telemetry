@@ -24,7 +24,7 @@ public class NodeMetricsTest {
         NodeDAO nodeDAO = Mockito.mock(NodeDAO.class);
         AclDAO aclDAO = Mockito.mock(AclDAO.class);
         TransactionService transactionService = createTransactionService();
-        NodeMetrics nodeMetrics = new NodeMetrics(nodeDAO, aclDAO, transactionService);
+        AlfrescoNodeMeterBinder nodeMetrics = new AlfrescoNodeMeterBinder(nodeDAO, aclDAO, transactionService);
         nodeMetrics.bindTo(meterRegistry);
         when(nodeDAO.getMaxNodeId()).thenReturn(1L);
         assertThat(
