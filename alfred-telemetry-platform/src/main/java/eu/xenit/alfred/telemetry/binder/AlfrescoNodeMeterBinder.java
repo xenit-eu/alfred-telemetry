@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 
-public class NodeMetrics implements MeterBinder {
+public class AlfrescoNodeMeterBinder implements MeterBinder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeMetrics.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlfrescoNodeMeterBinder.class);
 
     public static final String ACL_PREFIX = "alfresco.acl";
     public static final String DAO_PREFIX = "alfresco.node";
@@ -26,7 +26,7 @@ public class NodeMetrics implements MeterBinder {
     private NodeDAO nodeDAO;
     private AclDAO aclDAO;
 
-    public NodeMetrics(NodeDAO nodeDAOComponent, AclDAO aclDAOComponent, TransactionService transactionService) {
+    public AlfrescoNodeMeterBinder(NodeDAO nodeDAOComponent, AclDAO aclDAOComponent, TransactionService transactionService) {
         this.nodeDAO = nodeDAOComponent;
         this.aclDAO = aclDAOComponent;
         this.transactionService = transactionService;
