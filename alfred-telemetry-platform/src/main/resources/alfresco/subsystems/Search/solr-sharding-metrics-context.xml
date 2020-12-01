@@ -16,10 +16,4 @@
         <constructor-arg value="${alfred.telemetry.binder.solr.tracking.enabled}"/>
     </bean>
 
-    <bean id="alfred-telemetry.NodeMetrics" class="eu.xenit.alfred.telemetry.binder.AlfrescoNodeMeterBinder">
-        <constructor-arg ref="nodeDAO"/>
-        <constructor-arg ref="aclDAO" />
-        <constructor-arg ref="transactionService"/>
-    </bean>
-
 </beans>
