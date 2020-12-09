@@ -26,9 +26,24 @@ Version template:
 
 ### Added
 
+* Added solr-telemetry [[#40]]
+	* Early version, without micrometer, Prometheus only
+
+	[#27]: https://github.com/xenit-eu/alfred-telemetry/pull/27
+
+	* With micrometer
+	
+	[#40]: https://github.com/xenit-eu/alfred-telemetry/pull/40 
+	[#43]: https://github.com/xenit-eu/alfred-telemetry/pull/43
+	[#44]: https://github.com/xenit-eu/alfred-telemetry/pull/44
+	[#46]: https://github.com/xenit-eu/alfred-telemetry/pull/46
+	[#47]: https://github.com/xenit-eu/alfred-telemetry/pull/47
+	
+
 * Added metrics tracker for NodeDAO and AclDAO (to get MaxTxNode )[[#42]]
 
 [#42]: https://github.com/xenit-eu/alfred-telemetry/pull/42
+
 ## [0.2.0] - 2020-10-29
 
 ### Added 
