@@ -1,6 +1,4 @@
 plugins {
-    id 'eu.xenit.docker-alfresco' version '5.1.1' apply false
-    id 'eu.xenit.docker-compose.auto' version '5.1.1' apply false
     id 'java'
     id 'idea'
 }

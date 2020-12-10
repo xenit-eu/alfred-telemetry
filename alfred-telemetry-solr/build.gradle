@@ -1,6 +1,6 @@
 plugins {
-    id 'eu.xenit.docker' version '5.1.1' apply false
-    id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0' apply false
+    id 'base'
     id 'idea'
 }
 
@@ -10,30 +10,11 @@ subprojects {
         return;
     }
 
-    apply plugin: 'java'
     apply from: "${project.projectDir}/overload.gradle"
 
-    configurations {
-        // configuration that holds classes to include in the jar
-        commonClasses
-        implementation.extendsFrom(commonClasses)
-    }
-
-    dependencies {
-        commonClasses project(':alfred-telemetry-solr:alfred-telemetry-solr-common')
-    }
-
-    // can this be done better?
-    jar {
-        from {
-            configurations.commonClasses.collect {
-                include 'eu/xenit/**'
-                include 'io/micrometer/**'
-                include 'io/prometheus/**'
-                include 'io/github/mweirauch/**'
-                include 'com/codahale/**'
-                zipTree(it)
-            }
+    plugins.withId('java') {
+        dependencies {
+            implementation project(':alfred-telemetry-solr:alfred-telemetry-solr-common')
         }
     }
 
@@ -49,10 +30,26 @@ subprojects {
         }
     }
 
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifact tasks.jar
+    plugins.withId('com.github.johnrengelman.shadow') {
+        shadowJar {
+            dependencies {
+                exclude(dependency('org.slf4j:slf4j-api'))
+            }
+            ext.relocatePackage = { pkg -> relocate(pkg, "eu.xenit.alfred.telemetry.solr.internal.shadow.${pkg}") }
+            relocatePackage('com.codahale')
+            relocatePackage('com.rabbitmq')
+            relocatePackage('io.github.mweirauch')
+            relocatePackage('io.micrometer')
+            relocatePackage('io.prometheus')
+            relocatePackage('org.HdrHistogram')
+            relocatePackage('org.LatencyUtils')
+        }
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    project.shadow.component(it)
+                }
             }
         }
     }

@@ -16,7 +16,7 @@ dependencies {
     implementation "io.micrometer:micrometer-registry-graphite:1.6.1"
 
     // compile against solr4 libraries
-    implementation "org.alfresco:alfresco-solr4:5.2.g:classes@jar"
-    implementation "org.alfresco:alfresco-solrclient:5.2.g"
-    implementation "org.apache.solr:solr-core:4.10.3"
+    compileOnly "org.alfresco:alfresco-solr4:5.2.g:classes@jar"
+    compileOnly "org.alfresco:alfresco-solrclient:5.2.g"
+    compileOnly "org.apache.solr:solr-core:4.10.3"
 }

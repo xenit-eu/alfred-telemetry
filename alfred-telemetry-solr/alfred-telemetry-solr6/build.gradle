@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'eu.xenit.docker'
+    id 'com.github.johnrengelman.shadow'
 }
 sourceCompatibility = 11
 
@@ -13,13 +14,12 @@ configurations {
 }
 
 dependencies {
-    implementation "org.apache.solr:solr-core:${solrVersion}"
-    implementation "org.alfresco:alfresco-search:${assVersion}"
+    shadow "org.apache.solr:solr-core:${solrVersion}"
+    shadow "org.alfresco:alfresco-search:${assVersion}"
     metricsGraphite "io.dropwizard.metrics:metrics-graphite:4.1.15"
 }
 
 createDockerFile {
-    group 'docker'
     from "${solrBaseImage}"
     dependsOn(configurations.metricsGraphite)
     // overwrites existing metrics-graphite library with the one used by micrometer
@@ -30,5 +30,5 @@ createDockerFile {
 
     smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
     smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco-search-services/solrhome/templates/rerank/conf/solrconfig.xml"
-    smartCopy jar.outputs.files, "/opt/alfresco-search-services/solrhome/lib/"
+    smartCopy shadowJar.outputs.files, "/opt/alfresco-search-services/solrhome/lib/"
 }
