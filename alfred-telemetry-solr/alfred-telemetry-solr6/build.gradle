@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+    id 'eu.xenit.docker'
+    id 'com.github.johnrengelman.shadow'
+    id 'eu.xenit.alfresco'
+}
+sourceCompatibility = 11
+
+apply from: './overload.gradle'
+apply from: '../jcenter.gradle'
+
+dependencies {
+    alfrescoProvided "org.apache.solr:solr-core:${solrVersion}"
+    alfrescoProvided "org.alfresco:alfresco-search:${assVersion}"
+}
+
+createDockerFile {
+    from "${solrBaseImage}"
+    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
+    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco-search-services/solrhome/templates/rerank/conf/solrconfig.xml"
+    smartCopy shadowJar.outputs.files, "/opt/alfresco-search-services/solrhome/lib/"
+}

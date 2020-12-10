@@ -19,7 +19,7 @@ The extension implements a MicrometerHandler which binds all available metrics t
 
 In order to visualize correctly the output, a DummyResponseWriter is also provided, which simply displays verbatim the output of Prometheus scraping.
 
-The jar file of the module, together with all micrometer dependencies need to be added to solr's classpath and solr cores need to be configured to use the handler and the writer. 
+The jar file of the module needs to be added to solr's classpath and solr cores need to be configured to use the handler and the writer. 
 
 See examples in integration tests.
 
@@ -225,7 +225,7 @@ Note: the jar built for each version of solr contains also necessary runtime dep
 
 **No docker** 
 
-Copy alfred-telemetry-solr/<solrFlavor>/build/libs/<solrFlavor>_<version>.jar into solr's instance lib folder (solr4/lib or alfresco-search-services/solrhome/lib/).
+Copy alfred-telemetry-solr/alfred-telemetry-<solrFlavor>/build/libs/alfred-telemetry-<solrFlavor>-<version>.jar into solr's instance lib folder (solr4/lib or alfresco-search-services/solrhome/lib/).
 
 Add to solrconfig.xml for each cores the RequestHandler:
 
