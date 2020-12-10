@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+apply from: '../dependencies.gradle'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+dependencies {
+    // compile against solr4 libraries
+    implementation "org.alfresco:alfresco-solr4:5.2.g:classes@jar"
+    implementation "org.alfresco:alfresco-solrclient:5.2.g"
+    implementation "org.apache.solr:solr-core:4.10.3"
+}

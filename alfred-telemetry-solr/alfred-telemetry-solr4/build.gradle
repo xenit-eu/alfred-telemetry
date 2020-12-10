@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 1.8
+
+apply from: './overload.gradle'
+
+dependencies {
+    implementation "org.apache.solr:solr-core:${solrVersion}"
+    implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
+    implementation "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
+    implementation "org.apache.tomcat:tomcat-catalina:7.0.92"
+}
