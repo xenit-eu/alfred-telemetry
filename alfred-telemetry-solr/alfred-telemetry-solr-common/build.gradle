@@ -1,13 +1,20 @@
 plugins {
-    id 'java'
+    id 'java-library'
 }
-
-apply from: '../dependencies.gradle'
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
+apply from: '../jcenter.gradle'
+
 dependencies {
+    // Micrometer libraries.
+    // API dependencies implementations are used by alfred-telemetry-solr4 and alfred-telemetry-solr6
+    api "io.micrometer:micrometer-core:1.6.1"
+    api "io.micrometer:micrometer-registry-prometheus:1.6.1"
+    implementation "io.github.mweirauch:micrometer-jvm-extras:0.1.2"
+    implementation "io.micrometer:micrometer-registry-graphite:1.6.1"
+
     // compile against solr4 libraries
     implementation "org.alfresco:alfresco-solr4:5.2.g:classes@jar"
     implementation "org.alfresco:alfresco-solrclient:5.2.g"

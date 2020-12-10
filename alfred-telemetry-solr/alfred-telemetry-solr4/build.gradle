@@ -6,6 +6,8 @@ plugins {
 sourceCompatibility = 1.8
 
 apply from: './overload.gradle'
+apply from: '../jcenter.gradle'
+
 
 dependencies {
     implementation "org.apache.solr:solr-core:${solrVersion}"

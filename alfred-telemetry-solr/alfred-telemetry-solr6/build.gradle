@@ -5,9 +5,17 @@ plugins {
 sourceCompatibility = 11
 
 apply from: './overload.gradle'
+apply from: '../jcenter.gradle'
+
+configurations {
+    // configuration that holds the classes for graphite metrics, which conflicts with the library provided by solr6
+    metricsGraphite
+}
+
 dependencies {
     implementation "org.apache.solr:solr-core:${solrVersion}"
     implementation "org.alfresco:alfresco-search:${assVersion}"
+    metricsGraphite "io.dropwizard.metrics:metrics-graphite:4.1.15"
 }
 
 createDockerFile {

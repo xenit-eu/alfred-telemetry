@@ -11,17 +11,16 @@ subprojects {
     }
 
     apply plugin: 'java'
-    apply from: '../dependencies.gradle'
     apply from: "${project.projectDir}/overload.gradle"
 
     configurations {
         // configuration that holds classes to include in the jar
         commonClasses
+        implementation.extendsFrom(commonClasses)
     }
 
     dependencies {
         commonClasses project(':alfred-telemetry-solr:alfred-telemetry-solr-common')
-        configurations.compile.extendsFrom(configurations.commonClasses)
     }
 
     // can this be done better?
