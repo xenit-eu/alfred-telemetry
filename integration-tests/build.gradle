@@ -42,7 +42,7 @@ subprojects {
 
     description = "Alfresco ${alfrescoVersion} with Alfred Micrometer"
 
-    task integrationTest(type: Test) {
+    task integrationTest(type: Test, group: 'verification') {
         useJUnitPlatform()
         testLogging {
             events "passed", "skipped", "failed"
@@ -50,6 +50,10 @@ subprojects {
         testClassesDirs = project.parent.sourceSets.test.output.classesDirs
         classpath = project.parent.sourceSets.test.runtimeClasspath
         outputs.upToDateWhen { false }
+        doFirst {
+            dockerCompose.solr.exposeAsSystemProperties(integrationTest)
+            systemProperty 'solrFlavor', "${solrFlavor}"
+        }
     }
 
     check.dependsOn integrationTest
@@ -86,9 +90,16 @@ subprojects {
             doLast {
                 dockerCompose.graphite.environment.put 'DOCKER_IMAGE', getImageId()
                 dockerCompose.prometheus.environment.put 'DOCKER_IMAGE', getImageId()
+                dockerCompose.solrPrometheus.environment.put 'DOCKER_IMAGE', getImageId()
             }
         }
     }
+
+    // Make sure solr images project is loaded before we try to load a task from it.
+    // Necessary because :solr-images:solr-* is cross-configured from the :solr-images project
+    project.evaluationDependsOn(":alfred-telemetry-solr")
+    project.evaluationDependsOn(":alfred-telemetry-solr:${solrFlavor}")
+    def solrImage = project(":alfred-telemetry-solr:${solrFlavor}")
 
     dockerCompose {
         useComposeFiles = [
@@ -104,8 +115,6 @@ subprojects {
 
         // expose alfresco/inflow on a random port, comment to use default port (8080)
         environment.put 'ALFRESCO_TCP_8080', '8080'
-
-        isRequiredBy(project.tasks.integrationTest)
 
         dev {
             useComposeFiles = [
@@ -136,5 +145,57 @@ subprojects {
                     '../src/test/resources/compose/docker-compose-sharding.yml'
             ]
         }
+
+        solr {
+            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor)?'solr4':'solr')
+            environment.put 'INDEX', solrFlavor
+            environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
+
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-solr.yml'
+            ]
+            isRequiredBy(integrationTest)
+        }
+
+        solrPrometheus {
+            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor)?'solr4':'solr')
+            environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor)?'true':'false')
+            environment.put 'INDEX', solrFlavor
+            environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
+            if("solr4".equals(solrFlavor)) {
+                useComposeFiles = [
+                        '../src/test/resources/compose/docker-compose.yml',
+                        '../src/test/resources/compose/docker-compose-solr.yml',
+                        '../src/test/resources/compose/docker-compose-prometheus-solr4.yml',
+                        '../src/test/resources/compose/docker-compose-grafana.yml'
+                ]
+            } else if("solr6".equals(solrFlavor)) {
+                useComposeFiles = [
+                        '../src/test/resources/compose/docker-compose.yml',
+                        '../src/test/resources/compose/docker-compose-solr.yml',
+                        '../src/test/resources/compose/docker-compose-prometheus-solr6.yml',
+                        '../src/test/resources/compose/docker-compose-grafana.yml'
+                ]
+            }
+        }
+
+        solrGraphite {
+            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor)?'solr4':'solr')
+            environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor)?'true':'false')
+            environment.put 'INDEX', solrFlavor
+            environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'true'
+            environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST', 'carbon'
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-solr.yml',
+                    '../src/test/resources/compose/docker-compose-graphite.yml',
+                    '../src/test/resources/compose/docker-compose-grafana.yml'
+            ]
+        }
+
+        dockerCompose.solr.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
+        dockerCompose.solrPrometheus.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
+        dockerCompose.solrGraphite.fromBuildImage("SOLR_DOCKER_IMAGE", solrImage.tasks.named("buildDockerImage"))
     }
 }

@@ -3,10 +3,11 @@
 <beans>
 
     <bean id="webscript.org.alfresco.enterprise.repository.admin.support-tools.alfred-telemetry-admin-console.get"
-            class="eu.xenit.alfred.telemetry.webscripts.AdminConsoleWebScript"
+            class="eu.xenit.alfred.telemetry.webscripts.console.AdminConsoleWebScript"
             parent="webscript">
         <constructor-arg ref="meterRegistry"/>
-        <property name="globalProperties" ref="global-properties"/>
+        <constructor-arg ref="global-properties"/>
+        <constructor-arg ref="ServiceRegistry"/>
     </bean>
 
     <bean id="webscript.eu.xenit.alfred.telemetry.webscripts.alfred-prometheus.get"

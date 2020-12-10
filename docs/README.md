@@ -93,7 +93,7 @@ alfred.telemetry.export.graphite.tags-as-prefix=application,host
 If you want Graphite support in your Alfresco docker image, you'll also need to add the following
 in your build.gradle:
 ```groovy
-alfrescoSM "io.micrometer:micrometer-registry-graphite:${last-version}"
+alfrescoSM "io.micrometer:micrometer-registry-graphite:${version}"
 ```
 ## JMX
 
@@ -242,7 +242,20 @@ Metrics provided
 | :------------------------------------ | :----------------------- |
 | users.tickets.count                   | status:[valid, expired]  |
 
+## Alfresco Node metrics
+
+**Control property**: `alfred.telemetry.binder.alfresco-node.enabled`
+
+| Name                                  |
+| :------------------------------------ |
+| alfresco.node.maxTxnId                |
+| alfresco.node.maxTxnCommitTime        |
+| alfresco.node.maxNodeId               |
+| alfresco.acl.maxChangeSetCommitTime   |
+| alfresco.acl.maxChangeSetId           |
+
 ## Solr metrics
+
 
 ### Solr tracking metrics
 **Control Property**: `alfred.telemetry.binder.solr.tracking.enabled`
@@ -259,10 +272,14 @@ Metrics provided
 ### Solr sharding metrics
 Solr sharding metrics are only available on Alfresco enterprise versions greater than 6.0.
 
-**Control Property**: `alfred.telemetry.binder.solr.sharding.enabled`
+**Control Property**: 
+
+`alfred.telemetry.binder.solr.sharding.enabled` :Enable solr sharding metrics
+
+`alfred.telemetry.binder.solr.sharding.floc.id.enabled`: This option is enabled by default. If this option is disabled, then it will always use a floc id of 1 for the output metrics folder. On a restart, alfresco always generates a new floc id which can be annoying (for example in Grafana)
 
 | Name                                         | Available tags                                                                              | Values                       |
-|--:-------------------------------------------|--:------------------------------------------------------------------------------------------|--:---------------------------|
+|:-------------------------------------------|:------------------------------------------------------------------------------------------|:---------------------------|
 | solr.sharding.shards                         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore]                             |                              |
 | solr.sharding.shardInstances                 | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |
 | solr.sharding.lastIndexedChangeSetId         | floc:[*], storeRef:[workspace_SpacesStore, archive_SpacesStore], shard:[*], instanceHost[*] |                              |

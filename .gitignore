@@ -5,3 +5,5 @@ build/
 **/*.idea
 out/
 alfresco.log
+**/*p6spy*
+**/*~

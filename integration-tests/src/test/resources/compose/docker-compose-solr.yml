@@ -1,0 +1,30 @@
+version: '3.2'
+
+services:
+  alfresco:
+    environment:
+      - SOLR_SSL=none
+      - INDEX
+
+  solr:
+    image: ${SOLR_DOCKER_IMAGE}
+    environment:
+      - ALFRESCO_SSL=none
+      - SOLR_ENDPOINT
+      - ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED
+      - ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST
+      - METRICS_TOMCAT_ENABLED
+      - DEBUG=true
+      - JMX_ENABLED=true
+    ports:
+      - target: 8080
+        mode: host
+#      - target: 8000
+#        mode: host
+#        published: 8001
+#      - target: 5000
+#        mode: host
+#        published: 5000
+
+
+

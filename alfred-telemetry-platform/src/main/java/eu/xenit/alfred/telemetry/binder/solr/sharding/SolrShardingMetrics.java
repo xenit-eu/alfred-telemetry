@@ -6,7 +6,9 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import org.alfresco.repo.index.shard.ShardInstance;
@@ -21,13 +23,15 @@ public class SolrShardingMetrics {
     private static final Logger LOGGER = LoggerFactory.getLogger(SolrShardingMetrics.class);
 
     public static final String SOLR_SHARDING_METRICS_PREFIX = "solr.sharding";
+    private boolean flocIdEnabled;
 
     private SolrShardingMetricsContainer solrShardingMetricsContainer;
     private MeterRegistry registry;
 
-    public SolrShardingMetrics(ShardRegistry shardRegistry, MeterRegistry registry) {
+    public SolrShardingMetrics(ShardRegistry shardRegistry, MeterRegistry registry, boolean flocIdEnabled) {
         this.solrShardingMetricsContainer = new SolrShardingMetricsContainer(shardRegistry);
         this.registry = registry;
+        this.flocIdEnabled = flocIdEnabled;
     }
 
     private Map<String, AtomicLong> metrics = new HashMap<>();
@@ -36,7 +40,8 @@ public class SolrShardingMetrics {
         LOGGER.debug("Updating metrics");
         solrShardingMetricsContainer.refresh();
         solrShardingMetricsContainer.getFlocs().forEach(floc -> {
-            final Tags flocTags = Tags.of("floc", String.valueOf(floc.hashCode()))
+            //Disable floc id if option is disabled so we don't have the problems of having to chose the floc in grafana
+            final Tags flocTags = Tags.of("floc", String.valueOf(flocIdEnabled ? floc.hashCode() : 1))
                     .and(floc.getStoreRefs().stream().map(storeRef -> Tag
                             .of("storeRef", String.format("%s_%s", storeRef.getProtocol(), storeRef.getIdentifier())))
                             .collect(Collectors.toSet()));
@@ -44,19 +49,30 @@ public class SolrShardingMetrics {
             solrShardingMetricsContainer.getShards(floc).forEach(shard -> {
                 Tags shardTags = flocTags.and(Tags.of("shard", String.valueOf(shard.getInstance())));
                 Set<ShardInstance> shardInstances = solrShardingMetricsContainer.getShardInstances(shard);
-                int numberOfActiveShardInstances = (int) shardInstances.stream().filter(shardInstance ->
-                        solrShardingMetricsContainer.getReplicaState(shardInstance) == ReplicaState.ACTIVE).count();
-                setAndCreateMetricIfNotExists("activeShardInstances", numberOfActiveShardInstances,
-                        shardTags, "number");
+                AtomicInteger numberOfActiveShardInstances = new AtomicInteger();
                 shardInstances.forEach(shardInstance -> {
+                    Optional<ReplicaState> replicaState = solrShardingMetricsContainer.getReplicaState(shardInstance);
+                    if (replicaState.map(state -> (state == ReplicaState.ACTIVE)).orElse(false)) {
+                        numberOfActiveShardInstances.getAndIncrement();
+                    }
                     Tags instanceTags = shardTags.and(Tags.of("instanceHost", shardInstance.getHostName()));
-                    ShardState shardState = solrShardingMetricsContainer.getShardState(shardInstance);
+                    ShardState shardState = solrShardingMetricsContainer.getShardState(shardInstance).orElseGet(() -> {
+                        ShardState state = new ShardState();
+                        state = new ShardState();
+                        state.setLastIndexedChangeSetId(-1);
+                        state.setLastIndexedTxId(-1);
+                        state.setLastIndexedChangeSetCommitTime(-1);
+                        state.setLastIndexedTxCommitTime(-1);
+                        state.setMaster(false);
+                        state.setLastUpdated(-1);
+                        return state;
+                    });
                     setAndCreateMetricIfNotExists("lastIndexedChangeSetId",
                             shardState.getLastIndexedChangeSetId(), instanceTags, "number");
                     setAndCreateMetricIfNotExists("lastIndexedTxId", shardState.getLastIndexedTxId(),
                             instanceTags, "number");
-                    setAndCreateMetricIfNotExists("instanceMode",
-                            solrShardingMetricsContainer.getReplicaState(shardInstance).ordinal(), instanceTags, "enumValue");
+                    int instanceMode = replicaState.map(ReplicaState::ordinal).orElse(-1);
+                    setAndCreateMetricIfNotExists("instanceMode", instanceMode, instanceTags, "enumValue");
                     setAndCreateMetricIfNotExists("master", shardState.isMaster() ? 1 : 0,
                             instanceTags, "boolean");
                     setAndCreateMetricIfNotExists("lastIndexedChangeSetCommitTime",
@@ -66,6 +82,8 @@ public class SolrShardingMetrics {
                     setAndCreateMetricIfNotExists("lastUpdated",
                             shardState.getLastUpdated(), instanceTags, "timestamp");
                 });
+                setAndCreateMetricIfNotExists("activeShardInstances", numberOfActiveShardInstances.intValue(),
+                        shardTags, "number");
             });
         });
     }

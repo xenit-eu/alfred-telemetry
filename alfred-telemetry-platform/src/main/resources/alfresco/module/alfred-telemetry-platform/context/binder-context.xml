@@ -23,6 +23,11 @@
     <bean class="eu.xenit.alfred.telemetry.binder.JvmMetrics"/>
     <bean class="eu.xenit.alfred.telemetry.binder.FilesMetrics"/>
     <bean class="eu.xenit.alfred.telemetry.binder.ProcessMetrics"/>
+    <bean class="eu.xenit.alfred.telemetry.binder.AlfrescoNodeMeterBinder">
+        <constructor-arg ref="nodeDAO"/>
+        <constructor-arg ref="aclDAO" />
+        <constructor-arg ref="transactionService"/>
+    </bean>
     <bean class="io.micrometer.core.instrument.binder.system.ProcessorMetrics"/>
     <bean class="io.micrometer.core.instrument.binder.system.UptimeMetrics"/>
 
