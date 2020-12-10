@@ -26,9 +26,16 @@ Version template:
 
 ### Added
 
+* new module: `alfred-telemetry-solr` provides metrics for alfresco-solr4 and alfresco-solr6 [[#27][#40][#43][#44][#46][#47]]
 * Added metrics tracker for NodeDAO and AclDAO (to get MaxTxNode )[[#42]]
 
+[#40]: https://github.com/xenit-eu/alfred-telemetry/pull/40 
 [#42]: https://github.com/xenit-eu/alfred-telemetry/pull/42
+[#43]: https://github.com/xenit-eu/alfred-telemetry/pull/43
+[#44]: https://github.com/xenit-eu/alfred-telemetry/pull/44
+[#46]: https://github.com/xenit-eu/alfred-telemetry/pull/46
+[#47]: https://github.com/xenit-eu/alfred-telemetry/pull/47
+
 ## [0.2.0] - 2020-10-29
 
 ### Added 
