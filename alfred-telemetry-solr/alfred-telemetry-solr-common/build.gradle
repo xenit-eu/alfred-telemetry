@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'eu.xenit.alfresco'
 }
 
 sourceCompatibility = '1.8'
@@ -16,7 +17,7 @@ dependencies {
     implementation "io.micrometer:micrometer-registry-graphite:1.6.1"
 
     // compile against solr4 libraries
-    compileOnly "org.alfresco:alfresco-solr4:5.2.g:classes@jar"
-    compileOnly "org.alfresco:alfresco-solrclient:5.2.g"
-    compileOnly "org.apache.solr:solr-core:4.10.3"
+    alfrescoProvided "org.alfresco:alfresco-solr4:5.2.g:classes@jar"
+    alfrescoProvided "org.alfresco:alfresco-solrclient:5.2.g"
+    alfrescoProvided "org.apache.solr:solr-core:4.10.3"
 }

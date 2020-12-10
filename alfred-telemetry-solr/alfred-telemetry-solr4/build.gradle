@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'eu.xenit.docker'
     id 'com.github.johnrengelman.shadow'
+    id 'eu.xenit.alfresco'
 }
 
 sourceCompatibility = 1.8
@@ -11,10 +12,10 @@ apply from: '../jcenter.gradle'
 
 
 dependencies {
-    shadow "org.apache.solr:solr-core:${solrVersion}"
-    shadow "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
-    shadow "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
-    shadow "org.apache.tomcat:tomcat-catalina:7.0.92"
+    alfrescoProvided "org.apache.solr:solr-core:${solrVersion}"
+    alfrescoProvided "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
+    alfrescoProvided "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
+    alfrescoProvided "org.apache.tomcat:tomcat-catalina:7.0.92"
 }
 
 createDockerFile {
