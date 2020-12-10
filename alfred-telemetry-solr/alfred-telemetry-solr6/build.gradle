@@ -8,26 +8,13 @@ sourceCompatibility = 11
 apply from: './overload.gradle'
 apply from: '../jcenter.gradle'
 
-configurations {
-    // configuration that holds the classes for graphite metrics, which conflicts with the library provided by solr6
-    metricsGraphite
-}
-
 dependencies {
     shadow "org.apache.solr:solr-core:${solrVersion}"
     shadow "org.alfresco:alfresco-search:${assVersion}"
-    metricsGraphite "io.dropwizard.metrics:metrics-graphite:4.1.15"
 }
 
 createDockerFile {
     from "${solrBaseImage}"
-    dependsOn(configurations.metricsGraphite)
-    // overwrites existing metrics-graphite library with the one used by micrometer
-    smartCopy configurations.metricsGraphite.fileCollection {
-        it.group == "io.dropwizard.metrics" && it.name == "metrics-graphite"
-    }, "/opt/alfresco-search-services/solr/server/lib/"
-    instruction 'RUN rm -f /opt/alfresco-search-services/solr/server/lib/metrics-graphite-3.2.2.jar'
-
     smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
     smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco-search-services/solrhome/templates/rerank/conf/solrconfig.xml"
     smartCopy shadowJar.outputs.files, "/opt/alfresco-search-services/solrhome/lib/"
