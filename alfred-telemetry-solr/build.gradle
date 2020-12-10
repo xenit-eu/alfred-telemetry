@@ -32,7 +32,11 @@ subprojects {
     }
 
     plugins.withId('com.github.johnrengelman.shadow') {
+        jar {
+            archiveClassifier = 'internal-jar'
+        }
         shadowJar {
+            archiveClassifier = ''
             dependencies {
                 exclude(dependency('org.slf4j:slf4j-api'))
             }
