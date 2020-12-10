@@ -29,7 +29,7 @@ subprojects {
         metricsGraphite "io.dropwizard.metrics:metrics-graphite:4.1.15"
     }
 
-    if (!(project.name.equals("common"))) {
+    if (!(project.name.equals("alfred-telemetry-solr-common"))) {
         apply from: "${project.projectDir}/overload.gradle"
         apply plugin: 'eu.xenit.docker'
 
@@ -50,7 +50,7 @@ subprojects {
         }
 
         dependencies {
-            commonClasses project(':alfred-telemetry-solr:common')
+            commonClasses project(':alfred-telemetry-solr:alfred-telemetry-solr-common')
             configurations.compile.extendsFrom(configurations.commonClasses)
 
             if ("solr4".equals(solrFlavor)) {
