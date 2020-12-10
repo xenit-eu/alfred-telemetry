@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'eu.xenit.docker'
 }
 
 sourceCompatibility = 1.8
@@ -11,4 +12,12 @@ dependencies {
     implementation "org.alfresco:alfresco-solrclient:${alfrescoVersion}"
     implementation "org.alfresco:alfresco-solr4:${alfrescoVersion}:classes@jar"
     implementation "org.apache.tomcat:tomcat-catalina:7.0.92"
+}
+
+createDockerFile {
+    from "${solrBaseImage}"
+    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/solrconfig.xml"
+    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/archive-SpacesStore/conf/solrconfig.xml"
+    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
+    smartCopy jar.outputs.files, "/opt/alfresco/solr4/lib/"
 }
