@@ -5,7 +5,9 @@ plugins {
     id 'eu.xenit.alfresco'
 }
 
-sourceCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
 
 apply from: './overload.gradle'
 apply from: '../jcenter.gradle'
