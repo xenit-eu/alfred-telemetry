@@ -13,9 +13,42 @@ subprojects {
 
     apply from: "${project.projectDir}/overload.gradle"
 
+    description = "Alfred Telemetry Solr extension for ${solrFlavor} which enables exposure of Metrics using Micrometer"
+
     plugins.withId('java') {
+        configurations {
+            implementationSources {
+                canBeResolved = true
+                canBeConsumed = false
+                visible = false
+                extendsFrom(implementation)
+                attributes {
+                    attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category, Category.DOCUMENTATION))
+                    attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType, DocsType.SOURCES))
+                }
+            }
+        }
         dependencies {
             implementation project(':alfred-telemetry-solr:alfred-telemetry-solr-common')
+        }
+        java {
+            withJavadocJar()
+            withSourcesJar()
+        }
+
+        javadoc {
+            dependsOn(configurations.implementationSources)
+            source += configurations.implementationSources.collect {
+                zipTree(it).matching {
+                    include('**/*.java')
+                }
+            }
+            classpath += configurations.runtimeClasspath
+        }
+
+        sourcesJar {
+            dependsOn(configurations.implementationSources)
+            from(configurations.implementationSources.collect { zipTree(it) })
         }
     }
 
@@ -54,6 +87,8 @@ subprojects {
             publications {
                 mavenJava(MavenPublication) {
                     project.shadow.component(it)
+                    artifact sourcesJar
+                    artifact javadocJar
                 }
             }
         }
