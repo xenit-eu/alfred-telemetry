@@ -24,7 +24,20 @@ Version template:
 
 ## [0.4.0] - UNRELEASED
 
+## [0.3.1] - 2020-12-11
+
+### Fixed
+
+* Rename solr projects and embed its dependencies [[#54]]
+* Fix publication to maven central [[#55]]
+
+[#54]: https://github.com/xenit-eu/alfred-telemetry/pull/54
+[#55]: https://github.com/xenit-eu/alfred-telemetry/pull/55
+
+
 ## [0.3.0] - 2020-12-10
+
+*This release was not published due to errors during the publication process*
 
 ### Added
 

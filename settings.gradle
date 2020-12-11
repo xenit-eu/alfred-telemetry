@@ -5,9 +5,8 @@ include ':alfred-telemetry-platform'
 
 // Alfred Telemetry core module
 include ':alfred-telemetry-solr'
-include ':alfred-telemetry-solr:common'
-["solr4","solr6"].each { solrFlavor ->
-    include ":alfred-telemetry-solr:${solrFlavor}"
+["solr4", "solr6", "solr-common"].each { solrFlavor ->
+    include ":alfred-telemetry-solr:alfred-telemetry-${solrFlavor}"
 }
 
 include ':integration-tests'
