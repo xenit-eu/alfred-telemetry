@@ -1,6 +1,7 @@
 package eu.xenit.alfred.telemetry.solr.monitoring.registry;
 
 import eu.xenit.alfred.telemetry.solr.util.Util;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
@@ -14,13 +15,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RegistryRegistraar {
+    private static RegistryRegistraar registraar = null;
 
     private static final Logger logger = LoggerFactory.getLogger(RegistryRegistraar.class);
     CompositeMeterRegistry globalMeterRegistry = Metrics.globalRegistry;
     PrometheusMeterRegistry prometheusMeterRegistry;
     GraphiteMeterRegistry graphiteMeterRegistry;
 
-    public RegistryRegistraar() {
+
+    public static RegistryRegistraar getInstance() {
+        if(registraar == null)
+            registraar = new RegistryRegistraar();
+        return registraar;
+    }
+
+    private RegistryRegistraar() {
         // always register the Prometheus registry
         prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         prometheusMeterRegistry.config().commonTags(Tags.of("application", "solr"));
@@ -75,12 +84,12 @@ public class RegistryRegistraar {
         }
     }
 
-        public CompositeMeterRegistry getGlobalMeterRegistry() {
-        return globalMeterRegistry;
+    public static MeterRegistry getGlobalMeterRegistry() {
+        return getInstance().globalMeterRegistry;
     }
 
-    public PrometheusMeterRegistry getPrometheusMeterRegistry() {
-        return prometheusMeterRegistry;
+    public static PrometheusMeterRegistry getPrometheusMeterRegistry() {
+        return getInstance().prometheusMeterRegistry;
     }
 
 }
