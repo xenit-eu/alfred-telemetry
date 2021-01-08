@@ -142,7 +142,7 @@ class AdminConsoleWebScriptTest {
     private Matcher<Map<String, String>> isValidAlfrescoIntegrationConfig() {
         return allOf(
                 hasEntry(is("alfred.telemetry.alfresco-integration.enabled"), isBoolean()),
-                hasEntry(is("alfred.telemetry.alfresco-integration.include-default-alfresco-registry"), isBoolean())
+                hasEntry(is("alfred.telemetry.alfresco-integration.use-default-alfresco-registry"), isBoolean())
         );
     }
 
