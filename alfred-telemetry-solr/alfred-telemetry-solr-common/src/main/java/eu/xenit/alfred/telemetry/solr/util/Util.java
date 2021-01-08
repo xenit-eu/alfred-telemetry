@@ -31,10 +31,10 @@ public class Util {
             return Boolean.parseBoolean(System.getenv(env));
         }
 
-        // everything is enabled by default except graphite registry and tomcat metrics
+        // everything is enabled by default except graphite registry, tomcat and jetty metrics
         return ("ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED".equals(env)?
-                false:
-                ("METRICS_TOMCAT_ENABLED".equals(env) ? false:true));
-
+               false:
+               ("METRICS_TOMCAT_ENABLED".equals(env) ? false:
+               ("METRICS_JETTY_ENABLED".equals(env) ? false:true)));
     }
 }

@@ -4,16 +4,19 @@ import eu.xenit.alfred.telemetry.solr.monitoring.binder.JvmMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.ProcessMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SolrMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SystemMetrics;
-import eu.xenit.alfred.telemetry.solr.monitoring.registry.RegistryRegistraar;
+import eu.xenit.alfred.telemetry.solr.monitoring.registry.RegistryRegistrar;
 import eu.xenit.alfred.telemetry.solr.util.PrometheusRegistryUtil;
 import eu.xenit.alfred.telemetry.solr.util.Util;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.jetty.TimedHandler;
+import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.binder.jetty.JettyStatisticsMetrics;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.apache.solr.handler.RequestHandlerBase;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
 import org.apache.solr.util.JmxUtil;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +25,9 @@ import java.io.IOException;
 
 public class MicrometerHandler extends RequestHandlerBase {
 
-    static MeterRegistry registry = RegistryRegistraar.getInstance().getGlobalMeterRegistry();
+    static MeterRegistry registry = RegistryRegistrar.getInstance().getGlobalMeterRegistry();
     static SolrMetrics solrMetrics = null;
-    static TimedHandler jettyMetrics = null;
+    static JettyStatisticsMetrics jettyMetrics = null;
 
     static {
         if( Util.isEnabled("ALFRED_TELEMETRY_JVM_ENABLED"))
@@ -44,30 +47,26 @@ public class MicrometerHandler extends RequestHandlerBase {
                 .getMultiCoreHandler();
         MBeanServer mbeanServer = JmxUtil.findFirstMBeanServer();
 
-        if(jettyMetrics == null) {
-  //          jettyMetrics = new TimedHandler(registry, Tags.empty());
-            /*logger.error("class=" + req.getHttpSolrCall().getReq().getClass());
-            Enumeration<String> attributeNames = req.getHttpSolrCall().getReq().getAttributeNames();
-            logger.error("attributes=" + attributeNames);
-
-            Server server = (Server) req.getHttpSolrCall().getReq().getAttribute("org.eclipse.jetty.server.Server");
+        if(jettyMetrics == null && Util.isEnabled("METRICS_JETTY_ENABLED")) {
+            Server server =  (Server)req.getHttpSolrCall().getReq().getAttribute("org.eclipse.jetty.server.Server");
             if(server==null) {
                 logger.error("There is no jetty server");
-                logger.error("attributes=" + req.getHttpSolrCall().getReq().getAttributeNames());
             } else {
-                logger.error("server=" + server);
                 StatisticsHandler statisticsHandler = (StatisticsHandler) server.getChildHandlerByClass(StatisticsHandler.class);
-
-                jettyMetrics = new JettyStatisticsMetrics(statisticsHandler, null);
-                jettyMetrics.bindTo(registry);
-            }*/
+                if(statisticsHandler==null) {
+                    logger.error("There is no StatisticsHandler");
+                } else{
+                    jettyMetrics = new JettyStatisticsMetrics(statisticsHandler, Tags.empty());
+                    jettyMetrics.bindTo(registry);
+                }
+            }
         }
 
         if (solrMetrics == null && Util.isEnabled("METRICS_SOLR_ENABLED")) {
             solrMetrics = new SolrMetrics(coreAdminHandler, mbeanServer);
             solrMetrics.bindTo(registry);
         }
-        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(RegistryRegistraar.getInstance().getPrometheusMeterRegistry()),
+        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(RegistryRegistrar.getInstance().getPrometheusMeterRegistry()),
                 rsp);
     }
 
