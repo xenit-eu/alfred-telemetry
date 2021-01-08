@@ -5,7 +5,7 @@ import eu.xenit.alfred.telemetry.solr.monitoring.binder.MyTomcatMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.ProcessMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SolrMetrics;
 import eu.xenit.alfred.telemetry.solr.monitoring.binder.SystemMetrics;
-import eu.xenit.alfred.telemetry.solr.monitoring.registry.RegistryRegistraar;
+import eu.xenit.alfred.telemetry.solr.monitoring.registry.RegistryRegistrar;
 import eu.xenit.alfred.telemetry.solr.util.PrometheusRegistryUtil;
 import eu.xenit.alfred.telemetry.solr.util.Util;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class MicrometerHandler extends RequestHandlerBase {
 
-    static MeterRegistry registry = RegistryRegistraar.getInstance().getGlobalMeterRegistry();
+    static MeterRegistry registry = RegistryRegistrar.getInstance().getGlobalMeterRegistry();
     static SolrMetrics solrMetrics = null;
     static MyTomcatMetrics tomcatMetrics = null;
 
@@ -51,7 +51,7 @@ public class MicrometerHandler extends RequestHandlerBase {
             tomcatMetrics = new MyTomcatMetrics(mbeanServer);
             tomcatMetrics.bindTo(registry);
         }
-        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(RegistryRegistraar.getInstance().getPrometheusMeterRegistry()),
+        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(RegistryRegistrar.getInstance().getPrometheusMeterRegistry()),
                 rsp);
     }
 

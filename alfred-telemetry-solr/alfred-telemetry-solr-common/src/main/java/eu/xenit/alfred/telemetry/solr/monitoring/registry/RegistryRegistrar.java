@@ -14,22 +14,22 @@ import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RegistryRegistraar {
-    private static RegistryRegistraar registraar = null;
+public class RegistryRegistrar {
+    private static RegistryRegistrar registraar = null;
 
-    private static final Logger logger = LoggerFactory.getLogger(RegistryRegistraar.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegistryRegistrar.class);
     CompositeMeterRegistry globalMeterRegistry = Metrics.globalRegistry;
     PrometheusMeterRegistry prometheusMeterRegistry;
     GraphiteMeterRegistry graphiteMeterRegistry;
 
 
-    public static RegistryRegistraar getInstance() {
+    public static RegistryRegistrar getInstance() {
         if(registraar == null)
-            registraar = new RegistryRegistraar();
+            registraar = new RegistryRegistrar();
         return registraar;
     }
 
-    private RegistryRegistraar() {
+    private RegistryRegistrar() {
         // always register the Prometheus registry
         prometheusMeterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
         prometheusMeterRegistry.config().commonTags(Tags.of("application", "solr"));
