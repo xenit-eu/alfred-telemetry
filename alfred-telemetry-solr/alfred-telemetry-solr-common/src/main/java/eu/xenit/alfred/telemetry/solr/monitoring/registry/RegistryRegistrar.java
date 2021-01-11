@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RegistryRegistrar {
-    private static RegistryRegistrar registraar = null;
+    private static RegistryRegistrar registrar = null;
 
     private static final Logger logger = LoggerFactory.getLogger(RegistryRegistrar.class);
     CompositeMeterRegistry globalMeterRegistry = Metrics.globalRegistry;
@@ -24,9 +24,9 @@ public class RegistryRegistrar {
 
 
     public static RegistryRegistrar getInstance() {
-        if(registraar == null)
-            registraar = new RegistryRegistrar();
-        return registraar;
+        if(registrar == null)
+            registrar = new RegistryRegistrar();
+        return registrar;
     }
 
     private RegistryRegistrar() {

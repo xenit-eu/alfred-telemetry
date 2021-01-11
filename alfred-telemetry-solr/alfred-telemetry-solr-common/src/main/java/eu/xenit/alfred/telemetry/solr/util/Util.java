@@ -1,11 +1,18 @@
 package eu.xenit.alfred.telemetry.solr.util;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Util {
+    // everything is enabled by default except graphite registry, tomcat and jetty metrics
+    private static final Set<String> DEFAULT_DISABLED_CONFIGS;
+    static {
+        Set<String> configs = new HashSet<>();
+        configs.add("ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED");
+        configs.add("METRICS_TOMCAT_ENABLED");
+        configs.add("METRICS_JETTY_ENABLED");
+        DEFAULT_DISABLED_CONFIGS = Collections.unmodifiableSet(configs);
+    }
 
     private Util() {
         // private ctor to hide implicit public one
@@ -31,10 +38,6 @@ public class Util {
             return Boolean.parseBoolean(System.getenv(env));
         }
 
-        // everything is enabled by default except graphite registry, tomcat and jetty metrics
-        return ("ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED".equals(env)?
-               false:
-               ("METRICS_TOMCAT_ENABLED".equals(env) ? false:
-               ("METRICS_JETTY_ENABLED".equals(env) ? false:true)));
+        return (DEFAULT_DISABLED_CONFIGS.contains(env)?false:true);
     }
 }
