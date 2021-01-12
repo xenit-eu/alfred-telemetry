@@ -24,6 +24,12 @@ Version template:
 
 ## [0.4.0] - UNRELEASED
 
+### Added
+
+* Jetty metrics for alfred-telemetry-solr [#61]
+
+[#61]: https://github.com/xenit-eu/alfred-telemetry/pull/61
+
 ## [0.3.1] - 2020-12-11
 
 ### Fixed

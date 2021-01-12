@@ -21,5 +21,7 @@ createDockerFile {
     from "${solrBaseImage}"
     smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
     smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco-search-services/solrhome/templates/rerank/conf/solrconfig.xml"
+    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/jetty.xml", "/opt/alfresco-search-services/solr/server/etc/jetty.xml"
+    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solr-jetty-context.xml", "/opt/alfresco-search-services/solr/server/contexts/solr-jetty-context.xml"
     smartCopy shadowJar.outputs.files, "/opt/alfresco-search-services/solrhome/lib/"
 }
