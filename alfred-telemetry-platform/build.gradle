@@ -26,7 +26,7 @@ ext {
 }
 
 dependencies {
-    implementation enforcedPlatform("org.alfresco:acs-packaging:${alfrescoVersion}")
+    alfrescoProvided enforcedPlatform("org.alfresco:acs-packaging:${alfrescoVersion}")
 
     alfrescoProvided('org.alfresco:alfresco-repository')
 

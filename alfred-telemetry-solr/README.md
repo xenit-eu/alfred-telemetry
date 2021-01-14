@@ -4,7 +4,7 @@ supports numerous monitoring systems.
 
 This Solr extension offers:
 
-* flexibility to setup and define custom metrics very easily.
+* flexibility to setup and define custom metrics easily
 * a wide range of out of the box instrumentation
 
 
@@ -15,7 +15,8 @@ At the moment Alfred Telemetry Solr extension auto-configures a CompositeRegistr
 * a [`PrometheusMeterRegistry`](https://micrometer.io/docs/registry/prometheus) 
 * a [`GraphiteMeterRegistry`](https://micrometer.io/docs/registry/graphite)
 
-The extension implements a MicrometerHandler which binds all available metrics to the global registry. For graphite the handler needs to be called once in the beginning, which is done via an init script added to the image.
+The extension implements a MicrometerHandler which binds all available metrics to the global registry.  
+For graphite the handler needs to be called once in the beginning, which is done via an init script added to the image.
 
 In order to visualize correctly the output, a DummyResponseWriter is also provided, which simply displays verbatim the output of Prometheus scraping.
 
@@ -27,8 +28,6 @@ See examples in integration tests.
 # Supported monitoring systems
 
 At the moment only Prometheus and Graphite are supported as monitoring systems.
-
-For Graphite the library offered by micrometer conflicts with the library from inside solr6 and therefore replaces that one.
 
 Disabling and configuring the graphite registry can be done via environment variables:
 
@@ -110,10 +109,20 @@ At the moment following metrics are included:
 
 See metrics provided by TomcatMetrics [here](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder/tomcat).
 
+## Jetty metrics
+
+Jetty metrics binding provides several jetty-related metrics.
+At the moment following metrics are included:
+
+* JettyStatisticsMetrics
+
+See metrics provided by JettyStatisticsMetrics [here](https://github.com/micrometer-metrics/micrometer/tree/master/micrometer-core/src/main/java/io/micrometer/core/instrument/binder/jetty/JettyStatisticsMetrics.java).
+
+Note: JettyStatisticsMetrics has been deprecated in favor of TimedHandler, but that requires a newer version of jetty than the one shipped in solr artifacts.
 
 ## Custom metrics
 
-Following custom metrics have been implemented.
+Besides metrics offered by micrometer, following custom metrics have been implemented:
 
 ### Solr core stats metrics
 
@@ -236,6 +245,20 @@ and the ResponseWriter:
 
       <lib dir="lib/" regex=".*\.jar" />
       <queryResponseWriter name="dummy" class="eu.xenit.alfred.telemetry.solr.writer.DummyResponseWriter"/>
+
+In case of solr6, add to jetty.xml loading of StatisticsHandler:
+
+      <Call name="insertHandler">
+        <Arg>
+            <New id="StatsHandler" class="org.eclipse.jetty.server.handler.StatisticsHandler" />
+        </Arg>
+      </Call>
+
+and in solr-jetty-context.xml make sure server classes are available to the webapp:
+
+      <Call name="prependServerClass">
+        <Arg>-org.eclipse.jetty.server.</Arg>
+      </Call>
       
 Restart solr.
 
