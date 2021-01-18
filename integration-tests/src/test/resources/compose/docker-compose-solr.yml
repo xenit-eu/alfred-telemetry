@@ -3,12 +3,14 @@ version: '3.2'
 services:
   alfresco:
     environment:
+# comment out if SSL is enabled
       - SOLR_SSL=none
       - INDEX
 
   solr:
     image: ${SOLR_DOCKER_IMAGE}
     environment:
+# comment out if SSL is enabled    
       - ALFRESCO_SSL=none
       - SOLR_ENDPOINT
       - ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED
