@@ -9,8 +9,18 @@ scrape_configs:
       - targets: ['alfresco:8080']
     metrics_path: "/alfresco/s/alfred/telemetry/prometheus"
   - job_name: 'solr'
+# comment out if SSL is disabled
+#    scheme: https
     static_configs:
+# comment out if SSL is disabled
+#      - targets: ['solr:8443']
+# comment out if SSL is enabled
       - targets: ['solr:8080']
     metrics_path: "/solr/alfresco/metrics"
     params:
       wt: ['dummy']
+# comment out if SSL is disabled
+#    tls_config:
+#      insecure_skip_verify: true
+#      cert_file: /etc/prometheus/browser.pem
+#      key_file: /etc/prometheus/browser.pem
