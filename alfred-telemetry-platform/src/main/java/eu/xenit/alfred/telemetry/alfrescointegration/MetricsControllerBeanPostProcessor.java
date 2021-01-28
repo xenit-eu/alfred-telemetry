@@ -28,10 +28,10 @@ public class MetricsControllerBeanPostProcessor implements BeanDefinitionRegistr
     static final String METRICS_CONTROLLER_BEAN_ID_RENAMED = "alfred-telemetry.alfresco-metricsController";
 
     static final String PROP_KEY_INTEGRATION_ENABLED = "alfred.telemetry.alfresco-integration.enabled";
-    static final String PROP_KEY_ENABLE_DEFAULT_REGISTRY = "alfred.telemetry.alfresco-integration.include-default-alfresco-registry";
+    static final String PROP_KEY_ENABLE_DEFAULT_REGISTRY = "alfred.telemetry.alfresco-integration.use-default-alfresco-registry";
 
-    private boolean alfrescoIntegrationEnabled;
-    private boolean enableDefaultAlfrescoRegistry;
+    private final boolean alfrescoIntegrationEnabled;
+    private final boolean enableDefaultAlfrescoRegistry;
 
     public MetricsControllerBeanPostProcessor(Properties globalProperties) {
         this.alfrescoIntegrationEnabled = Boolean
