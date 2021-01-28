@@ -423,8 +423,8 @@ An overview of the configurable parameters and their default value. These values
     be available in the Alfresco scrape endpoint (`/alfresco/s/prometheus`). However this default 
     registry is managed by Alfresco, hence that means no customizations like e.g. common tags are 
     applied to the Prometheus metrics.  
-    If the default Alfresco registry is used, we should disable the prometheus registry initialized 
-    by Alfred Telemetry (`alfred.telemetry.export.prometheus.enabled=false`). 
+    If the default Alfresco registry is used, the prometheus registry initialized by Alfred Telemetry must be disabled
+    (`alfred.telemetry.export.prometheus.enabled=false`). 
 
 ## Known limitations
 * Alfresco's `ServletMetricsFilter` is not compatible with this module.  
