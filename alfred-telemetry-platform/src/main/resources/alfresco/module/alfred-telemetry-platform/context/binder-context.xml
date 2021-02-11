@@ -43,6 +43,11 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
+    <bean class="eu.xenit.alfred.telemetry.binder.AlfrescoStatusMetrics">
+        <constructor-arg ref="repoAdminService"/>
+        <constructor-arg ref="retryingTransactionHelper"/>
+    </bean>
+
     <!-- Care4Alf Legacy metrics support -->
 
     <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacyMemoryMetrics"/>
