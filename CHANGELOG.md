@@ -22,7 +22,13 @@ Version template:
  
 # Alfred Telemetry Changelog
 ## [0.4.1] - UNRELEASED
-	
+
+### Added
+
+* Status metric - read-only - for alfresco [#69]
+
+[#69]: https://github.com/xenit-eu/alfred-telemetry/pull/69
+
 ## [0.4.0] - 2020-01-12
 
 ### Added
