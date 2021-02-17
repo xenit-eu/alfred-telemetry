@@ -18,7 +18,9 @@ public class AlfrescoStatusMetrics implements MeterBinder {
 
     private RepoAdminService repoAdminService;
     private RetryingTransactionHelper retryingTransactionHelper;
-    public AlfrescoStatusMetrics(RepoAdminService repoAdminService, RetryingTransactionHelper retryingTransactionHelper) {
+
+    public AlfrescoStatusMetrics(RepoAdminService repoAdminService,
+            RetryingTransactionHelper retryingTransactionHelper) {
         this.repoAdminService = repoAdminService;
         this.retryingTransactionHelper = retryingTransactionHelper;
     }
@@ -26,9 +28,7 @@ public class AlfrescoStatusMetrics implements MeterBinder {
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
         LOGGER.info("Registering Alfresco Status metrics");
-        Gauge.builder(STATUS_PREFIX + ".readonly",
-                       repoAdminService,
-		               this::getReadOnly)
+        Gauge.builder(STATUS_PREFIX + ".readonly", repoAdminService, this::getReadOnly)
                 .description("Metric about Alfresco being in read-only mode")
                 .register(meterRegistry);
 
@@ -37,11 +37,15 @@ public class AlfrescoStatusMetrics implements MeterBinder {
     private double getReadOnly(RepoAdminService repoAdminService) {
         final boolean[] isReadOnly = {false};
 
-        retryingTransactionHelper.doInTransaction(()->AuthenticationUtil.runAsSystem(()->isReadOnly[0]=repoAdminService.getUsage().isReadOnly()),true);
+        retryingTransactionHelper.doInTransaction(() ->
+                        AuthenticationUtil.runAsSystem(() ->
+                                isReadOnly[0] = repoAdminService.getUsage().isReadOnly()),
+                true);
 
-        if(isReadOnly[0])
+        if (isReadOnly[0]) {
             return 1d;
-        else
+        } else {
             return 0d;
+        }
     }
 }
