@@ -242,6 +242,19 @@ Metrics provided
 | :------------------------------------ | :----------------------- |
 | users.tickets.count                   | status:[valid, expired]  |
 
+
+## Status metrics
+The status metrics bindings will provide a metric about Alfresco being in read-only mode.
+
+**Control Property**: `alfred.telemetry.binder.alfresco-status.enabled`
+
+Metrics provided
+
+| Name                                  | Available tags           |
+| :------------------------------------ | :----------------------- |
+| alfresco.status.readonly              |                          |
+
+
 ## Alfresco Node metrics
 
 **Control property**: `alfred.telemetry.binder.alfresco-node.enabled`
