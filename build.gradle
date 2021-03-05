@@ -12,7 +12,7 @@ subprojects {
         version += "-SNAPSHOT"
 
     ext {
-        micrometerVersion = '1.0.6'
+        micrometerVersion = '1.3.5'
         jvmExtrasVersion = '0.1.2'
 
         junitJupiterVersion = '5.4.2'
