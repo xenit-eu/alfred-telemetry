@@ -1,14 +1,9 @@
 package eu.xenit.alfred.telemetry.binder.care4alf;
 
 import eu.xenit.alfred.telemetry.binder.TicketMetrics;
-import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Meter.Id;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.config.MeterFilterReply;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 /**
@@ -17,6 +12,9 @@ import javax.annotation.Nonnull;
 public class TicketMetricsMeterFilter implements MeterFilter {
 
     public final static String METRIC_CARE4ALF_NAME_TICKETS = "users.tickets";
+
+    private static final MeterFilter FILTER_IGNORE_EXP_STATUS =
+            MeterFilter.ignoreTags(TicketMetrics.METRIC_TAG_NAME_EXPIRATION_STATUS);
 
     @Override
     @Nonnull
@@ -28,14 +26,9 @@ public class TicketMetricsMeterFilter implements MeterFilter {
         if (!TicketMetrics.METRIC_TAG_VALUE_NON_EXPIRED.equals(expirationStatus)) {
             return id;
         }
-        Tags tags = removeTags(id.getTags(), TicketMetrics.METRIC_TAG_NAME_EXPIRATION_STATUS);
-        return new Meter.Id(
-                METRIC_CARE4ALF_NAME_TICKETS,
-                tags,
-                id.getBaseUnit(),
-                id.getDescription(),
-                id.getType()
-        );
+
+        id = FILTER_IGNORE_EXP_STATUS.map(id);
+        return id.withName(METRIC_CARE4ALF_NAME_TICKETS);
     }
 
     @Override
@@ -48,18 +41,5 @@ public class TicketMetricsMeterFilter implements MeterFilter {
         }
 
         return MeterFilterReply.NEUTRAL;
-    }
-
-    private static Tags removeTags(final List<Tag> tags, final String... tagKeys) {
-        List<Tag> filtered = tags.stream()
-                .filter(t -> {
-                    for (String tagKey : tagKeys) {
-                        if (t.getKey().equals(tagKey)) {
-                            return false;
-                        }
-                    }
-                    return true;
-                }).collect(Collectors.toList());
-        return Tags.of(filtered);
     }
 }
