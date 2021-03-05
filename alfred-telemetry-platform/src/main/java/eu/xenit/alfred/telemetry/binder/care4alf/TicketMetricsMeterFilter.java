@@ -4,6 +4,7 @@ import eu.xenit.alfred.telemetry.binder.TicketMetrics;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Meter.Id;
 import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.config.MeterFilterReply;
 import java.util.List;
@@ -27,9 +28,10 @@ public class TicketMetricsMeterFilter implements MeterFilter {
         if (!TicketMetrics.METRIC_TAG_VALUE_NON_EXPIRED.equals(expirationStatus)) {
             return id;
         }
+        Tags tags = removeTags(id.getTags(), TicketMetrics.METRIC_TAG_NAME_EXPIRATION_STATUS);
         return new Meter.Id(
                 METRIC_CARE4ALF_NAME_TICKETS,
-                removeTags(id.getTags(), TicketMetrics.METRIC_TAG_NAME_EXPIRATION_STATUS),
+                tags,
                 id.getBaseUnit(),
                 id.getDescription(),
                 id.getType()
@@ -48,8 +50,8 @@ public class TicketMetricsMeterFilter implements MeterFilter {
         return MeterFilterReply.NEUTRAL;
     }
 
-    private static List<Tag> removeTags(final List<Tag> tags, final String... tagKeys) {
-        return tags.stream()
+    private static Tags removeTags(final List<Tag> tags, final String... tagKeys) {
+        List<Tag> filtered = tags.stream()
                 .filter(t -> {
                     for (String tagKey : tagKeys) {
                         if (t.getKey().equals(tagKey)) {
@@ -58,5 +60,6 @@ public class TicketMetricsMeterFilter implements MeterFilter {
                     }
                     return true;
                 }).collect(Collectors.toList());
+        return Tags.of(filtered);
     }
 }

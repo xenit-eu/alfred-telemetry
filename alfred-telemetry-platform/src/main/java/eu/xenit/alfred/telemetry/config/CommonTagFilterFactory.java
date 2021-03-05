@@ -2,12 +2,11 @@ package eu.xenit.alfred.telemetry.config;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.config.MeterFilter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -44,11 +43,11 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
             @Override
             @Nonnull
             public Meter.Id map(@Nonnull Meter.Id id) {
-                List<Tag> allTags = new ArrayList<>(id.getTags());
+                Tags allTags = Tags.of(id.getTags());
 
                 StreamSupport.stream(tags.spliterator(), false)
                         .filter(t -> id.getTag(t.getKey()) == null)
-                        .forEach(allTags::add);
+                        .forEach(allTags::and);
 
                 return new Meter.Id(id.getName(), allTags, id.getBaseUnit(), id.getDescription(), id.getType());
             }
