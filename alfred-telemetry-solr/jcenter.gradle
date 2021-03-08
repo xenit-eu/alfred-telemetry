@@ -1,8 +1,0 @@
-repositories {
-    jcenter {
-        mavenContent {
-            // Only allow artifacts with this groupID to be resolved from Jcenter
-            includeGroup 'org.restlet.jee'
-        }
-    }
-}

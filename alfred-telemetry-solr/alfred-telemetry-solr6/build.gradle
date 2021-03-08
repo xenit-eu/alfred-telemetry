@@ -10,10 +10,11 @@ java {
 }
 
 apply from: './overload.gradle'
-apply from: '../jcenter.gradle'
 
 dependencies {
-    alfrescoProvided "org.apache.solr:solr-core:${solrVersion}"
+    alfrescoProvided ("org.apache.solr:solr-core:${solrVersion}") {
+        exclude group: 'org.restlet.jee' // Only available in JCenter, not essential in this project.
+    }
     alfrescoProvided "org.alfresco:alfresco-search:${assVersion}"
 }
 

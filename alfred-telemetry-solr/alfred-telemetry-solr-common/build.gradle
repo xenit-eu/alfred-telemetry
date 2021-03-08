@@ -9,8 +9,6 @@ java {
     withSourcesJar()
 }
 
-apply from: '../jcenter.gradle'
-
 dependencies {
     // Micrometer libraries.
     // API dependencies implementations are used by alfred-telemetry-solr4 and alfred-telemetry-solr6
@@ -22,5 +20,7 @@ dependencies {
     // compile against solr4 libraries
     alfrescoProvided "org.alfresco:alfresco-solr4:5.2.g:classes@jar"
     alfrescoProvided "org.alfresco:alfresco-solrclient:5.2.g"
-    alfrescoProvided "org.apache.solr:solr-core:4.10.3"
+    alfrescoProvided ("org.apache.solr:solr-core:4.10.3") {
+        exclude group: 'org.restlet.jee' // Only available in JCenter, not essential in this project.
+    }
 }
