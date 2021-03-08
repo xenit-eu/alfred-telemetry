@@ -1,13 +1,14 @@
 package eu.xenit.alfred.telemetry.config;
 
 import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.Meter.Id;
 import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.config.MeterFilter;
+import io.micrometer.core.instrument.config.MeterFilterReply;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -39,18 +40,18 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
         return commonTagsIfNotExists(getCommonTags());
     }
 
-    public static MeterFilter commonTagsIfNotExists(Iterable<Tag> tags) {
+    public static MeterFilter commonTagsIfNotExists(Iterable<Tag> tagsToAdd) {
         return new MeterFilter() {
             @Override
             @Nonnull
             public Meter.Id map(@Nonnull Meter.Id id) {
-                List<Tag> allTags = new ArrayList<>(id.getTags());
-
-                StreamSupport.stream(tags.spliterator(), false)
-                        .filter(t -> id.getTag(t.getKey()) == null)
-                        .forEach(allTags::add);
-
-                return new Meter.Id(id.getName(), allTags, id.getBaseUnit(), id.getDescription(), id.getType());
+                Id ret = id;
+                for (Tag tagToAdd : tagsToAdd) {
+                    if (ret.getTag(tagToAdd.getKey()) == null) {
+                        ret = ret.withTag(tagToAdd);
+                    }
+                }
+                return ret;
             }
         };
     }
