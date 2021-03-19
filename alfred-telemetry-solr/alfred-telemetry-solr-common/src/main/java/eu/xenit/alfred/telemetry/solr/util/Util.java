@@ -40,4 +40,13 @@ public class Util {
 
         return (DEFAULT_DISABLED_CONFIGS.contains(env)?false:true);
     }
+
+    public static boolean isVersionLowerThan2() {
+        try {
+            Class<?> cachedDocTransformerFactory = Class.forName("org.alfresco.solr.transformer.CachedDocTransformerFactory");
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
 }
