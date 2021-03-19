@@ -19,5 +19,7 @@ dependencies {
 
     // compile against ASS 2.0.0 libraries
     alfrescoProvided "org.alfresco:alfresco-search:2.0.0"
-    alfrescoProvided ("org.apache.solr:solr-core:6.6.5")
+    alfrescoProvided ("org.apache.solr:solr-core:6.6.5") {
+        exclude group: 'org.restlet.jee' // Only available in JCenter, not essential in this project.
+    }    
 }
