@@ -1,0 +1,6 @@
+<xi:include href="onPurposeNonExistingFile.xml" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <xi:fallback>
+        <requestHandler name="/metrics" class="eu.xenit.alfred.telemetry.solr.handler.MicrometerHandler"/>
+        <queryResponseWriter name="dummy" class="eu.xenit.alfred.telemetry.solr.writer.DummyResponseWriter"/>
+    </xi:fallback>
+</xi:include>
