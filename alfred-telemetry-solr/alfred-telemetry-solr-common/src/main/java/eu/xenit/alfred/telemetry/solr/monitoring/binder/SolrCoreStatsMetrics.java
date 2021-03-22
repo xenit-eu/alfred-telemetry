@@ -31,7 +31,7 @@ public class SolrCoreStatsMetrics implements MeterBinder {
                 Thread.currentThread().sleep(10_000);
                 trackerRegistry = coreAdminHandler.getTrackerRegistry();
             } catch (InterruptedException e) {
-                logger.error(e.getMessage());
+                logger.error("Fail to wait 10 sec", e);
             }
         }
 

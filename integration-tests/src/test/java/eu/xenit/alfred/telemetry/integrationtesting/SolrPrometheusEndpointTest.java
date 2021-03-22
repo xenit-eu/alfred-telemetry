@@ -19,7 +19,7 @@ public class SolrPrometheusEndpointTest extends RestAssuredTestSolr {
         try {
             Thread.currentThread().sleep(20000);
         } catch (InterruptedException e) {
-            logger.error(e.getMessage());
+            logger.error("Fail to wait 20 sec", e);
         }
         ExtractableResponse<Response> response =
                 given()
