@@ -7,7 +7,7 @@ plugins {
 
 subprojects {
     // Do not configure solr-common here
-    if (project.name.equals("alfred-telemetry-solr-common")) {
+    if (project.name == "alfred-telemetry-solr-common") {
         return;
     }
 

@@ -5,9 +5,7 @@ include ':alfred-telemetry-platform'
 
 // Alfred Telemetry core module
 include ':alfred-telemetry-solr'
-["solr4", "solr6", "solr-common"].each { solrFlavor ->
-    include ":alfred-telemetry-solr:alfred-telemetry-${solrFlavor}"
-}
+include ':alfred-telemetry-solr:alfred-telemetry-solr-common'
 
 include ':integration-tests'
 
@@ -16,8 +14,10 @@ if (hasProperty("enterprise")) {
     integrationTestVersions.each {version ->
         include ":integration-tests:alfresco-enterprise-${version}"
     }
+    include ":alfred-telemetry-solr:alfred-telemetry-solr6"
 } else {
     integrationTestVersions.each {version ->
         include ":integration-tests:alfresco-community-${version}"
+        include ":alfred-telemetry-solr:alfred-telemetry-solr4"
     }
 }
