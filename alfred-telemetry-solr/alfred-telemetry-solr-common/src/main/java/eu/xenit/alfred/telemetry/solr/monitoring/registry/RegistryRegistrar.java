@@ -18,14 +18,15 @@ public class RegistryRegistrar {
     private static RegistryRegistrar registrar = null;
 
     private static final Logger logger = LoggerFactory.getLogger(RegistryRegistrar.class);
-    CompositeMeterRegistry globalMeterRegistry = Metrics.globalRegistry;
-    PrometheusMeterRegistry prometheusMeterRegistry;
-    GraphiteMeterRegistry graphiteMeterRegistry;
+    private CompositeMeterRegistry globalMeterRegistry = Metrics.globalRegistry;
+    private PrometheusMeterRegistry prometheusMeterRegistry;
+    private GraphiteMeterRegistry graphiteMeterRegistry;
 
 
     public static RegistryRegistrar getInstance() {
-        if(registrar == null)
+        if(registrar == null) {
             registrar = new RegistryRegistrar();
+        }
         return registrar;
     }
 

@@ -10,7 +10,7 @@ import javax.management.MBeanServer;
 
 public class MyTomcatMetrics implements MeterBinder {
 
-    MBeanServer mBeanServer;
+    private MBeanServer mBeanServer;
 
     public MyTomcatMetrics(MBeanServer mBeanServer) {
         this.mBeanServer = mBeanServer;
@@ -19,8 +19,9 @@ public class MyTomcatMetrics implements MeterBinder {
     @Override
     public void bindTo(MeterRegistry registry) {
         new TomcatMetrics(null, null, mBeanServer).bindTo(registry);
-        if(Util.isEnabled("METRICS_TOMCAT_JMX_ENABLED"))
+        if(Util.isEnabled("METRICS_TOMCAT_JMX_ENABLED")) {
             new TomcatBeansMetrics(mBeanServer).bindTo(registry);
+        }
     }
 }
 

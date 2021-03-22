@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 
 public class SolrFTSMetrics implements MeterBinder {
 
-    AlfrescoCoreAdminHandler coreAdminHandler;
-    MeterRegistry registry;
+    private AlfrescoCoreAdminHandler coreAdminHandler;
+    private MeterRegistry registry;
 
-    Logger logger = LoggerFactory.getLogger(SolrFTSMetrics.class);
+    private static final Logger logger = LoggerFactory.getLogger(SolrFTSMetrics.class);
 
     public SolrFTSMetrics(AlfrescoCoreAdminHandler coreAdminHandler) {
         this.coreAdminHandler = coreAdminHandler;
@@ -34,7 +34,7 @@ public class SolrFTSMetrics implements MeterBinder {
                 Thread.currentThread().sleep(10_000);
                 trackerRegistry = coreAdminHandler.getTrackerRegistry();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Fail to wait 10 sec ",e);
             }
         }
 

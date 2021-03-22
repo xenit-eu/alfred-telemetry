@@ -14,14 +14,14 @@ import org.slf4j.LoggerFactory;
  ***/
 public class TomcatBeansMetrics implements MeterBinder {
 
-    MBeanServer mBeanServer;
-    MeterRegistry registry;
+    private MBeanServer mBeanServer;
+    private MeterRegistry registry;
 
     // atm only monitor alfresco core
-    ArrayList<String> beansToMonitorTomcat = new ArrayList(Arrays.asList(
+    private static final ArrayList<String> beansToMonitorTomcat = new ArrayList(Arrays.asList(
             "Catalina:type=Manager,context=/solr4,host=localhost"));
 
-    Logger logger = LoggerFactory.getLogger(TomcatBeansMetrics.class);
+    private static final Logger logger = LoggerFactory.getLogger(TomcatBeansMetrics.class);
 
     public TomcatBeansMetrics(MBeanServer mBeanServer) {
         this.mBeanServer = mBeanServer;
