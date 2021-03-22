@@ -18,7 +18,7 @@ public class SolrTrackerMetrics implements MeterBinder {
     AlfrescoCoreAdminHandler coreAdminHandler;
     MeterRegistry registry;
 
-    Logger logger = LoggerFactory.getLogger(SolrMetrics.class);
+    Logger logger = LoggerFactory.getLogger(SolrTrackerMetrics.class);
 
     public SolrTrackerMetrics(AlfrescoCoreAdminHandler coreAdminHandler) {
         this.coreAdminHandler = coreAdminHandler;
