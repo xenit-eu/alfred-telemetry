@@ -7,6 +7,16 @@ pipeline {
                 sh "./gradlew clean -i"
             }
         }
+        stage("Assemble") {
+            steps {
+                sh "./gradlew assemble -i"
+            }
+        }
+        stage("Unit Tests") {
+            steps {
+                sh "./gradlew test -i"
+            }
+        }
         stage("Enterprise Integration Tests") {
             when {
                 anyOf {
