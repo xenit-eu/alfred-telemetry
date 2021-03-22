@@ -30,15 +30,18 @@ public class MicrometerHandler extends RequestHandlerBase {
     static JettyStatisticsMetrics jettyMetrics = null;
 
     static {
-        if( Util.isEnabled("ALFRED_TELEMETRY_JVM_ENABLED"))
+        if( Util.isEnabled("ALFRED_TELEMETRY_JVM_ENABLED")) {
             new JvmMetrics().bindTo(registry);
-        if( Util.isEnabled("METRICS_PROCESS_ENABLED"))
+        }
+        if( Util.isEnabled("METRICS_PROCESS_ENABLED")) {
             new ProcessMetrics().bindTo(registry);
-        if( Util.isEnabled("METRICS_SYSTEM_ENABLED"))
+        }
+        if( Util.isEnabled("METRICS_SYSTEM_ENABLED")) {
             new SystemMetrics().bindTo(registry);
+        }
     }
 
-    Logger logger = LoggerFactory.getLogger(MicrometerHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(MicrometerHandler.class);
 
 
     @Override

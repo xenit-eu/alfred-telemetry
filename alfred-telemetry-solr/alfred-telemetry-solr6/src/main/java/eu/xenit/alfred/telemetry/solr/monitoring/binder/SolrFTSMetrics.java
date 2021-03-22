@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
 
 public class SolrFTSMetrics implements MeterBinder {
 
-    AlfrescoCoreAdminHandler coreAdminHandler;
-    MeterRegistry registry;
+    private AlfrescoCoreAdminHandler coreAdminHandler;
+    private MeterRegistry registry;
 
-    Logger logger = LoggerFactory.getLogger(SolrFTSMetrics.class);
+    private static final Logger logger = LoggerFactory.getLogger(SolrFTSMetrics.class);
 
     public SolrFTSMetrics(AlfrescoCoreAdminHandler coreAdminHandler) {
         this.coreAdminHandler = coreAdminHandler;
@@ -37,7 +37,7 @@ public class SolrFTSMetrics implements MeterBinder {
                 Thread.currentThread().sleep(10_000);
                 trackerRegistry = coreAdminHandler.getTrackerRegistry();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
 
@@ -55,18 +55,18 @@ public class SolrFTSMetrics implements MeterBinder {
                     method = solrInformationServerClass.getMethod("addContentOutdatedAndUpdatedCounts", partypes);
                 }
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             } catch (NoSuchMethodException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
             Object[] arglist = new Object[1];
             arglist[0] = report;
             try {
                 method.invoke(server, arglist);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
 
             // Keys in ASS >= 2.0.0
@@ -111,18 +111,18 @@ public class SolrFTSMetrics implements MeterBinder {
                 method = solrInformationServerClass.getMethod("addContentOutdatedAndUpdatedCounts", partypes);
             }
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         Object[] arglist = new Object[1];
         arglist[0] = report;
         try {
             method.invoke(server, arglist);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         for (Entry fts : report) {

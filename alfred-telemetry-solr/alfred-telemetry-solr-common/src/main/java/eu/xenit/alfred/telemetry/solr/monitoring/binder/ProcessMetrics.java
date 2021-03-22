@@ -10,9 +10,11 @@ public class ProcessMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        if(Util.isEnabled("METRICS_PROCESS_THREADS_ENABLED"))
+        if(Util.isEnabled("METRICS_PROCESS_THREADS_ENABLED")) {
             new ProcessThreadMetrics().bindTo(registry);
-        if(Util.isEnabled("METRICS_PROCESS_MEMORY_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_PROCESS_MEMORY_ENABLED")) {
             new ProcessMemoryMetrics().bindTo(registry);
+        }
     }
 }
