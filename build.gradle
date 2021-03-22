@@ -1,6 +1,16 @@
 plugins {
     id 'eu.xenit.docker-compose' version '5.2.0' apply false
     id 'de.marcphilipp.nexus-publish' version '0.4.0' apply false
+    id "org.sonarqube" version "3.1.1"
+    id "org.kordamp.gradle.jacoco" version "0.43.0"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "xenit-eu_alfred-telemetry"
+        property "sonar.organization", "xenit-eu"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 subprojects {
