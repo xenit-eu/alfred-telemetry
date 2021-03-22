@@ -11,11 +11,14 @@ public class SystemMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        if(Util.isEnabled("METRICS_SYSTEM_UPTIME_ENABLED"))
+        if(Util.isEnabled("METRICS_SYSTEM_UPTIME_ENABLED")) {
             new UptimeMetrics().bindTo(registry);
-        if(Util.isEnabled("METRICS_SYSTEM_PROCESSOR_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_SYSTEM_PROCESSOR_ENABLED")) {
             new ProcessorMetrics().bindTo(registry);
-        if(Util.isEnabled("METRICS_SYSTEM_FILEDESCRIPTORS_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_SYSTEM_FILEDESCRIPTORS_ENABLED")) {
             new FileDescriptorMetrics().bindTo(registry);
+        }
     }
 }

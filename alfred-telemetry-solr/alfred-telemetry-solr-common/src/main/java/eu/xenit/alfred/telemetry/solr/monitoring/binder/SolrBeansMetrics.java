@@ -11,16 +11,16 @@ import org.slf4j.LoggerFactory;
 
 public class SolrBeansMetrics implements MeterBinder {
 
-    MBeanServer mBeanServer;
-    MeterRegistry registry;
+    private MBeanServer mBeanServer;
+    private MeterRegistry registry;
 
     // atm only monitor alfresco core
-    ArrayList<String> beansToMonitorSolr = new ArrayList(Arrays.asList(
+    private static final ArrayList<String> beansToMonitorSolr = new ArrayList(Arrays.asList(
             "solr/alfresco:type=searcher,id=org.apache.solr.search.SolrIndexSearcher",
             "solr/alfresco:type=/afts,id=org.apache.solr.handler.component.AlfrescoSearchHandler",
             "solr/alfresco:type=/cmis,id=org.apache.solr.handler.component.AlfrescoSearchHandler"));
 
-    Logger logger = LoggerFactory.getLogger(SolrBeansMetrics.class);
+    private static final Logger logger = LoggerFactory.getLogger(SolrBeansMetrics.class);
 
     public SolrBeansMetrics(MBeanServer mBeanServer) {
         this.mBeanServer = mBeanServer;

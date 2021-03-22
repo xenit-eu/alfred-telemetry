@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 public class SolrMetrics implements MeterBinder {
 
-    AlfrescoCoreAdminHandler coreAdminHandler;
-    MBeanServer mBeanServer;
+    private AlfrescoCoreAdminHandler coreAdminHandler;
+    private MBeanServer mBeanServer;
 
-    Logger logger = LoggerFactory.getLogger(SolrMetrics.class);
+    private static final Logger logger = LoggerFactory.getLogger(SolrMetrics.class);
 
     public SolrMetrics(AlfrescoCoreAdminHandler coreAdminHandler, MBeanServer mBeanServer) {
         this.coreAdminHandler = coreAdminHandler;
@@ -22,13 +22,17 @@ public class SolrMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        if(Util.isEnabled("METRICS_SOLR_CORESTATS_ENABLED"))
+        if(Util.isEnabled("METRICS_SOLR_CORESTATS_ENABLED")) {
             new SolrCoreStatsMetrics(coreAdminHandler).bindTo(registry);
-        if(Util.isEnabled("METRICS_SOLR_FTS_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_SOLR_FTS_ENABLED")) {
             new SolrFTSMetrics(coreAdminHandler).bindTo(registry);
-        if(Util.isEnabled("METRICS_SOLR_TRACKER_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_SOLR_TRACKER_ENABLED")) {
             new SolrTrackerMetrics(coreAdminHandler).bindTo(registry);
-        if(Util.isEnabled("METRICS_SOLR_JMX_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_SOLR_JMX_ENABLED")) {
             new SolrBeansMetrics(mBeanServer).bindTo(registry);
+        }
     }
 }

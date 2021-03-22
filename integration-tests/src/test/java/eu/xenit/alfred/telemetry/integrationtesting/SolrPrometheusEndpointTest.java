@@ -8,15 +8,18 @@ import static org.hamcrest.Matchers.isOneOf;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SolrPrometheusEndpointTest extends RestAssuredTestSolr {
+    private static final Logger logger = LoggerFactory.getLogger(SolrPrometheusEndpointTest.class);
 
     @Test
     void solrEndpoint() {
         try {
             Thread.currentThread().sleep(20000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("Fail to wait 20 sec", e);
         }
         ExtractableResponse<Response> response =
                 given()

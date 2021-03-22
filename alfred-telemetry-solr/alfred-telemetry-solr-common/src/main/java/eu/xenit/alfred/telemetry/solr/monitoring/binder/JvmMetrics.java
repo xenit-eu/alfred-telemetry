@@ -12,14 +12,18 @@ public class JvmMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        if(Util.isEnabled("METRICS_JVM_GC_ENABLED"))
+        if(Util.isEnabled("METRICS_JVM_GC_ENABLED")) {
             new JvmGcMetrics().bindTo(registry);
-        if(Util.isEnabled("METRICS_JVM_MEMORY_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_JVM_MEMORY_ENABLED")) {
             new JvmMemoryMetrics().bindTo(registry);
-        if(Util.isEnabled("METRICS_JVM_THREADS_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_JVM_THREADS_ENABLED")) {
             new JvmThreadMetrics().bindTo(registry);
-        if(Util.isEnabled("METRICS_JVM_CLASSLOADER_ENABLED"))
+        }
+        if(Util.isEnabled("METRICS_JVM_CLASSLOADER_ENABLED")) {
             new ClassLoaderMetrics().bindTo(registry);
+        }
     }
 }
 

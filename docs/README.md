@@ -242,6 +242,19 @@ Metrics provided
 | :------------------------------------ | :----------------------- |
 | users.tickets.count                   | status:[valid, expired]  |
 
+
+## Status metrics
+The status metrics bindings will provide a metric about Alfresco being in read-only mode.
+
+**Control Property**: `alfred.telemetry.binder.alfresco-status.enabled`
+
+Metrics provided
+
+| Name                                  | Available tags           |
+| :------------------------------------ | :----------------------- |
+| alfresco.status.readonly              |                          |
+
+
 ## Alfresco Node metrics
 
 **Control property**: `alfred.telemetry.binder.alfresco-node.enabled`
@@ -415,9 +428,16 @@ An overview of the configurable parameters and their default value. These values
     Enables integration between Alfred Telemetry and Alfresco Micrometer metrics. If enabled, all Alfresco metrics 
     will automatically be written to the Alfred Telemetry registries.
 
-* `alfred.telemetry.alfresco-integration.include-default-alfresco-registry=true`  
-    In Alfresco 6.1, Alfresco itself has a Micrometer registry to write metrics to. This property configures if 
-    all metrics (Alfred Telemetry + Alfresco default) need to be written to Alfresco's global registry.
+* `alfred.telemetry.alfresco-integration.use-default-alfresco-registry=false`  
+    Since Alfresco 6.1, Alfresco itself provides a Micrometer meter registry. More specifically:
+    Alfresco provides a `PrometheusMeterRegistry`. With this property it is possible to indicate that Alfred Telemetry
+    should use the registry provided by Alfresco as it's Prometheus registry.  
+    The only advantage of using the default Alfresco registry is that metrics registered by Alfred Telemetry will
+    be available in the Alfresco scrape endpoint (`/alfresco/s/prometheus`). However this default 
+    registry is managed by Alfresco, hence that means no customizations like e.g. common tags are 
+    applied to the Prometheus metrics.  
+    If the default Alfresco registry is used, the prometheus registry initialized by Alfred Telemetry must be disabled
+    (`alfred.telemetry.export.prometheus.enabled=false`). 
 
 ## Known limitations
 * Alfresco's `ServletMetricsFilter` is not compatible with this module.  

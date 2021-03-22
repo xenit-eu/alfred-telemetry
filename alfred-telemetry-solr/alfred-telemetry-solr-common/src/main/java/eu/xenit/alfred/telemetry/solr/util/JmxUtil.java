@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class JmxUtil {
 
-    static Logger logger = LoggerFactory.getLogger(JmxUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(JmxUtil.class);
 
     public static void registerBeans(MBeanServer mBeanServer, ArrayList<String> beansToMonitor,
             MeterRegistry registry) {
