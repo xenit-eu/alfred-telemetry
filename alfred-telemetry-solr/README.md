@@ -62,7 +62,8 @@ Enabling / disabling metrics can be done via environment variables:
 |METRICS_SOLR_TRACKER_ENABLED              | true     |
 |METRICS_SOLR_JMX_ENABLED                  | true     |
 |METRICS_TOMCAT_ENABLED                    | false    |
-|METRICS_TOMCAT_JMX_ENABLED                | true    |
+|METRICS_TOMCAT_JMX_ENABLED                | true     |
+|METRICS_JETTY_ENABLED                     | false    |
 
 ## Jvm metrics
 
