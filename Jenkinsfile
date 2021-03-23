@@ -21,8 +21,6 @@ pipeline {
             when {
                 anyOf {
                     branch "master*"
-                    changeRequest target: "master*"
-                    changeRequest target: "release*"
                 }
             }
             steps {

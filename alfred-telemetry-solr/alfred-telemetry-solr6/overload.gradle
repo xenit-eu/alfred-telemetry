@@ -1,8 +1,6 @@
 ext {
     solrVersion = '6.6.5'
-    //assVersion = '1.4.0'
-    //solrBaseImage = 'hub.xenit.eu/alfresco-enterprise/alfresco-solr6:1.4.0'
-    assVersion = '2.0.0'
-    solrBaseImage = 'hub.xenit.eu/alfresco-enterprise/alfresco-solr6:2.0.0'
+    assVersion = '2.0.1'
+    solrBaseImage = 'hub.xenit.eu/public/alfresco-solr6-xenit:2.0.1'
     solrFlavor = 'solr6'
 }
