@@ -81,6 +81,6 @@ public class MetricsControllerBeanPostProcessor implements BeanDefinitionRegistr
 
     @Override
     public void postProcessBeanFactory(@Nonnull ConfigurableListableBeanFactory beanFactory) throws BeansException {
-
+        // no need to modify the BeanFactory
     }
 }

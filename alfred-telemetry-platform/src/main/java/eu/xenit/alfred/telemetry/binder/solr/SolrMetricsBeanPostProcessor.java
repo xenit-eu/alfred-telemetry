@@ -78,6 +78,6 @@ public class SolrMetricsBeanPostProcessor implements BeanDefinitionRegistryPostP
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-
+        // no need to modify the BeanFactory
     }
 }

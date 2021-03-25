@@ -13,7 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SolrCoreStatsMetrics implements MeterBinder {
-    private AlfrescoCoreAdminHandler coreAdminHandler;
+
+    private static final String METER_ALFRESCO_NODES = "alfresco.nodes";
+    private static final String TAG_STATE = "state";
+    private static final String TAG_VALUE_INDEXED = "Indexed";
+
+    private final AlfrescoCoreAdminHandler coreAdminHandler;
     private MeterRegistry registry;
 
     private static final Logger logger = LoggerFactory.getLogger(SolrCoreStatsMetrics.class);
@@ -39,46 +44,46 @@ public class SolrCoreStatsMetrics implements MeterBinder {
             SolrInformationServer server = (SolrInformationServer) coreAdminHandler.getInformationServers()
                     .get(coreName);
 
-            Tags tags = Tags.of("core", coreName, "state", "Indexed");
-                Gauge.builder("alfresco.nodes", server,
-                        x -> getCoreStat(server,"Alfresco Nodes in Index"))
-                        .tags(tags)
-                        .register(registry);
-
-            tags = Tags.of("core", coreName, "state", "Unindexed");
-            Gauge.builder("alfresco.nodes", server,
-                    x -> getCoreStat(server,"Alfresco Unindexed Nodes"))
+            Tags tags = Tags.of("core", coreName, TAG_STATE, TAG_VALUE_INDEXED);
+            Gauge.builder(METER_ALFRESCO_NODES, server,
+                    x -> getCoreStat(server, "Alfresco Nodes in Index"))
                     .tags(tags)
                     .register(registry);
 
-            tags = Tags.of("core", coreName, "state", "Error");
-            Gauge.builder("alfresco.nodes", trackerRegistry,
-                    x -> getCoreStat(server,"Alfresco Error Nodes in Index"))
+            tags = Tags.of("core", coreName, TAG_STATE, "Unindexed");
+            Gauge.builder(METER_ALFRESCO_NODES, server,
+                    x -> getCoreStat(server, "Alfresco Unindexed Nodes"))
                     .tags(tags)
                     .register(registry);
 
-            tags = Tags.of("core", coreName, "state", "Indexed");
+            tags = Tags.of("core", coreName, TAG_STATE, "Error");
+            Gauge.builder(METER_ALFRESCO_NODES, trackerRegistry,
+                    x -> getCoreStat(server, "Alfresco Error Nodes in Index"))
+                    .tags(tags)
+                    .register(registry);
+
+            tags = Tags.of("core", coreName, TAG_STATE, TAG_VALUE_INDEXED);
             Gauge.builder("alfresco.acls", trackerRegistry,
-                    x -> getCoreStat(server,"Alfresco Acls in Index"))
+                    x -> getCoreStat(server, "Alfresco Acls in Index"))
                     .tags(tags)
                     .register(registry);
 
-            tags = Tags.of("core", coreName, "state", "States");
+            tags = Tags.of("core", coreName, TAG_STATE, "States");
             Gauge.builder("alfresco.states", trackerRegistry,
-                    x -> getCoreStat(server,"Alfresco States in Index"))
+                    x -> getCoreStat(server, "Alfresco States in Index"))
                     .tags(tags)
                     .register(registry);
 
             // technically these metrics are not per core, but in order to filter in grafana the core is added as a tag
-            tags = Tags.of("core", coreName, "state", "Indexed");
+            tags = Tags.of("core", coreName, TAG_STATE, TAG_VALUE_INDEXED);
             Gauge.builder("alfresco.transactions.nodes", trackerRegistry,
-                    x -> getCoreStat(server,"Alfresco Transactions in Index"))
+                    x -> getCoreStat(server, "Alfresco Transactions in Index"))
                     .tags(tags)
                     .register(registry);
 
-            tags = Tags.of("core", coreName, "state", "Indexed");
+            tags = Tags.of("core", coreName, TAG_STATE, TAG_VALUE_INDEXED);
             Gauge.builder("alfresco.transactions.acls", trackerRegistry,
-                    x -> getCoreStat(server,"Alfresco Acl Transactions in Index"))
+                    x -> getCoreStat(server, "Alfresco Acl Transactions in Index"))
                     .tags(tags)
                     .register(registry);
 
@@ -88,8 +93,8 @@ public class SolrCoreStatsMetrics implements MeterBinder {
 
     private long getCoreStat(SolrInformationServer server, String key) {
         try {
-            for(Entry<String,Object> entry : server.getCoreStats()) {
-                if(key.equals(entry.getKey())) {
+            for (Entry<String, Object> entry : server.getCoreStats()) {
+                if (key.equals(entry.getKey())) {
                     return Long.parseLong(entry.getValue().toString());
                 }
             }

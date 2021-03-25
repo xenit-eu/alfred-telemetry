@@ -3,14 +3,14 @@ package eu.xenit.alfred.telemetry.registry.graphite;
 import eu.xenit.alfred.telemetry.registry.RegistryFactory;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.graphite.GraphiteMeterRegistry;
-import io.micrometer.graphite.GraphiteNamingConvention;
 import java.time.Duration;
 import javax.annotation.Nonnull;
 
 public class GraphiteRegistryFactory implements RegistryFactory {
 
-    private GraphiteConfig config;
+    private final GraphiteConfig config;
 
     GraphiteRegistryFactory(GraphiteConfig config) {
         this.config = config;
@@ -50,7 +50,7 @@ public class GraphiteRegistryFactory implements RegistryFactory {
         GraphiteMeterRegistry graphiteRegistry = new GraphiteMeterRegistry(
                 micrometerGraphiteConfig,
                 Clock.SYSTEM);
-        graphiteRegistry.config().namingConvention(GraphiteNamingConvention.dot);
+        graphiteRegistry.config().namingConvention(NamingConvention.dot);
 
         return graphiteRegistry;
     }

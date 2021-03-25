@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 class SolrShardingMetricsTest {
 
     @Test
-    public void testUpdateMetrics() {
+    void testUpdateMetrics() {
         Floc floc = new Floc();
         HashSet<StoreRef> storeRefs = new HashSet();
         storeRefs.add(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
@@ -55,7 +55,7 @@ class SolrShardingMetricsTest {
     }
 
     @Test
-    public void testShardingStateNull(){
+    void testShardingStateNull(){
         Floc floc = new Floc();
         HashSet<StoreRef> storeRefs = new HashSet();
         storeRefs.add(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
@@ -78,6 +78,10 @@ class SolrShardingMetricsTest {
         when(shardRegistry.getFlocs()).thenReturn(metricsInformation);
         //check if we don't get a nullpointer anymore
         solrShardingMetrics.updateMetrics();
+
+        Assertions.assertEquals(0, meterRegistry.getMeters().stream()
+                .filter(meter -> meter.getId().getName().equals("solr.sharding.lastIndexedTxId"))
+                .collect(Collectors.toSet()).size());
 
     }
 }
