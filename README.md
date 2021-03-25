@@ -1,7 +1,7 @@
 # Alfred Telemetry
 
 [![Maven Central](https://img.shields.io/maven-central/v/eu.xenit.alfred.telemetry/alfred-telemetry-platform.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.alfred.telemetry%22%20AND%20a%3A%22alfred-telemetry-platform%22)
-[![Build Status](https://jenkins-2.xenit.eu/buildStatus/icon?job=Xenit+Github%2Falfred-telemetry%2Fmaster)](https://jenkins-2.xenit.eu/job/Xenit%20Github/job/alfred-telemetry/job/master/)
+[![CI](https://github.com/xenit-eu/alfred-telemetry/actions/workflows/ci.yml/badge.svg)](https://github.com/xenit-eu/alfred-telemetry/actions/workflows/ci.yml)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
 
