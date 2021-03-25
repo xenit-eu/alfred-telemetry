@@ -13,6 +13,12 @@ sonarqube {
     }
 }
 
+def copyPropertyValueIfExists(sourcePropertyName, targetPropertyName) {
+    if (project.hasProperty(sourcePropertyName)) {
+        project.ext[targetPropertyName] = project.property(sourcePropertyName)
+    }
+}
+
 allprojects {
     group = 'eu.xenit.alfred.telemetry'
     version = '0.5.1'
@@ -31,6 +37,14 @@ allprojects {
         restAssuredVersion = '4.0.0'
     }
 
+    // It is not possible to set properties with a dot via GitHub Actions env variables, therefore we introduce support
+    // for a non-dotted-equivalent
+    copyPropertyValueIfExists('alfresco_nexus_username', 'org.alfresco.maven.nexus.username')
+    copyPropertyValueIfExists('alfresco_nexus_password', 'org.alfresco.maven.nexus.password')
+    copyPropertyValueIfExists('xenit_docker_registry_url', 'eu.xenit.docker.registry.url')
+    copyPropertyValueIfExists('xenit_docker_registry_username', 'eu.xenit.docker.registry.username')
+    copyPropertyValueIfExists('xenit_docker_registry_password', 'eu.xenit.docker.registry.password')
+
     repositories {
         mavenCentral()
         maven {
@@ -39,10 +53,8 @@ allprojects {
         maven {
             url 'https://artifacts.alfresco.com/nexus/content/groups/private'
             credentials {
-                username project.hasProperty("alfresco_nexus_username") ?
-                        project.property("alfresco_nexus_username") : project.property('org.alfresco.maven.nexus.username')
-                password  project.hasProperty("alfresco_nexus_password") ?
-                        project.property("alfresco_nexus_password") : project.property('org.alfresco.maven.nexus.password')
+                username project.property('org.alfresco.maven.nexus.username')
+                password project.property('org.alfresco.maven.nexus.password')
             }
         }
     }
