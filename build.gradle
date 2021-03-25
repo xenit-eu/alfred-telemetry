@@ -1,9 +1,25 @@
 plugins {
-    id 'eu.xenit.docker-compose' version '5.1.1' apply false
+    id 'eu.xenit.docker-compose' version '5.2.0' apply false
     id 'de.marcphilipp.nexus-publish' version '0.4.0' apply false
+    id "org.sonarqube" version "3.1.1"
+    id "org.kordamp.gradle.jacoco" version "0.44.0"
 }
 
-subprojects {
+sonarqube {
+    properties {
+        property "sonar.projectKey", "xenit-eu_alfred-telemetry"
+        property "sonar.organization", "xenit-eu"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
+
+def copyPropertyValueIfExists(sourcePropertyName, targetPropertyName) {
+    if (project.hasProperty(sourcePropertyName)) {
+        project.ext[targetPropertyName] = project.property(sourcePropertyName)
+    }
+}
+
+allprojects {
     group = 'eu.xenit.alfred.telemetry'
     version = '0.5.1'
 
@@ -20,6 +36,14 @@ subprojects {
         hamcrestVersion = '1.3'
         restAssuredVersion = '4.0.0'
     }
+
+    // It is not possible to set properties with a dot via GitHub Actions env variables, therefore we introduce support
+    // for a non-dotted-equivalent
+    copyPropertyValueIfExists('alfresco_nexus_username', 'org.alfresco.maven.nexus.username')
+    copyPropertyValueIfExists('alfresco_nexus_password', 'org.alfresco.maven.nexus.password')
+    copyPropertyValueIfExists('xenit_docker_registry_url', 'eu.xenit.docker.registry.url')
+    copyPropertyValueIfExists('xenit_docker_registry_username', 'eu.xenit.docker.registry.username')
+    copyPropertyValueIfExists('xenit_docker_registry_password', 'eu.xenit.docker.registry.password')
 
     repositories {
         mavenCentral()

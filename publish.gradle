@@ -36,31 +36,14 @@ publishing {
 nexusPublishing {
     repositories {
         sonatype {
-            username = project.hasProperty('publish_username') ? project.publish_username : ''
-            password = project.hasProperty('publish_password') ? project.publish_password : ''
+            username = project.hasProperty('sonatype_username') ? project.sonatype_username : ''
+            password = project.hasProperty('sonatype_password') ? project.sonatype_password : ''
         }
     }
 }
 
-afterEvaluate {
-    signing {
-        required { !version.endsWith('SNAPSHOT') && gradle.taskGraph.hasTask("publish") }
-        sign publishing.publications
-    }
-}
-
-gradle.taskGraph.whenReady { graph ->
-    if (graph.hasTask(publish)) {
-        if (!project.hasProperty('keyId') || !project.hasProperty('secretKeyRingFile') || !project.hasProperty('password')) {
-            throw new GradleException('You need to provide signing params in order to sign artifacts')
-        }
-
-        def id = project.hasProperty('keyId') ? project.keyId : ''
-        def file = project.hasProperty('secretKeyRingFile') ? project.secretKeyRingFile : ''
-        def password = project.hasProperty('password') ? project.password : ''
-
-        ext."signing.keyId" = id
-        ext."signing.secretKeyRingFile" = file
-        ext."signing.password" = password
-    }
+signing {
+    required { !version.toString().endsWith("SNAPSHOT") }
+    useInMemoryPgpKeys(findProperty("signingKeyId"), findProperty("signingKey"), findProperty("signingPassword"))
+    sign publishing.publications
 }

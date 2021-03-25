@@ -143,10 +143,7 @@ Unit tests can be executed with the Gradle `test` task:
 ```
 
 The projects also includes integration tests which startup and test 
-an Alfresco with the Alfred Telemetry extension installed. 
-
-> The integration tests make use of Xenit Alfresco docker images, which are still private _for now_. Therefore,
-> at this point, the integration tests can only be executed by people who have access to these private images.
+an Alfresco with the Alfred Telemetry extension installed.
 
 To execute all the available integration tests, following Gradle task can be used:
 

@@ -9,8 +9,6 @@ java {
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
-apply from: './overload.gradle'
-
 
 dependencies {
     alfrescoProvided ("org.apache.solr:solr-core:${solrVersion}") {
