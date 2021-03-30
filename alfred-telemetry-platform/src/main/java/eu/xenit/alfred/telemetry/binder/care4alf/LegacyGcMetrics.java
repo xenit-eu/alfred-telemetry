@@ -9,6 +9,8 @@ import javax.annotation.Nonnull;
 
 public class LegacyGcMetrics implements MeterBinder {
 
+    private static final String METER_PREFIX_JVM_GC = "jvm.gc.";
+
     @Override
     public void bindTo(@Nonnull MeterRegistry registry) {
         ManagementFactory.getGarbageCollectorMXBeans().forEach(b -> this.monitorBean(b, registry));
@@ -17,18 +19,18 @@ public class LegacyGcMetrics implements MeterBinder {
     private void monitorBean(@Nonnull final GarbageCollectorMXBean bean, @Nonnull final MeterRegistry registry) {
         final String beanName = bean.getName().replace(" ", "");
 
-        Gauge.builder("jvm.gc." + beanName + ".count", bean, GarbageCollectorMXBean::getCollectionCount)
+        Gauge.builder(METER_PREFIX_JVM_GC + beanName + ".count", bean, GarbageCollectorMXBean::getCollectionCount)
                 .description(
                         "Returns the total number of collections that have occurred or -1 if the collection count is undefined for this collector.")
                 .register(registry);
 
-        Gauge.builder("jvm.gc." + beanName + ".time.ms", bean, GarbageCollectorMXBean::getCollectionTime)
+        Gauge.builder(METER_PREFIX_JVM_GC + beanName + ".time.ms", bean, GarbageCollectorMXBean::getCollectionTime)
                 .description("Returns the approximate accumulated collection elapsed time in milliseconds "
                         + "or -1 if the collection elapsed time is undefined for this collector.")
                 .baseUnit("milliseconds")
                 .register(registry);
 
-        Gauge.builder("jvm.gc." + beanName + ".time.s", bean, b -> b.getCollectionTime() / 1000)
+        Gauge.builder(METER_PREFIX_JVM_GC + beanName + ".time.s", bean, b -> b.getCollectionTime() / 1000)
                 .description("Returns the approximate accumulated collection elapsed time in seconds "
                         + "or -1 if the collection elapsed time is undefined for this collector.")
                 .baseUnit("seconds")

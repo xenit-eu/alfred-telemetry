@@ -22,11 +22,14 @@ public class SolrShardingMetrics {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SolrShardingMetrics.class);
 
+    private static final String BASE_UNIT_NUMBER = "number";
+    private static final String BASE_UNIT_TIMESTAMP = "timestamp";
     public static final String SOLR_SHARDING_METRICS_PREFIX = "solr.sharding";
-    private boolean flocIdEnabled;
 
-    private SolrShardingMetricsContainer solrShardingMetricsContainer;
-    private MeterRegistry registry;
+    private final boolean flocIdEnabled;
+
+    private final SolrShardingMetricsContainer solrShardingMetricsContainer;
+    private final MeterRegistry registry;
 
     public SolrShardingMetrics(ShardRegistry shardRegistry, MeterRegistry registry, boolean flocIdEnabled) {
         this.solrShardingMetricsContainer = new SolrShardingMetricsContainer(shardRegistry);
@@ -45,7 +48,7 @@ public class SolrShardingMetrics {
                     .and(floc.getStoreRefs().stream().map(storeRef -> Tag
                             .of("storeRef", String.format("%s_%s", storeRef.getProtocol(), storeRef.getIdentifier())))
                             .collect(Collectors.toSet()));
-            setAndCreateMetricIfNotExists("shards", floc.getNumberOfShards(), flocTags, "number");
+            setAndCreateMetricIfNotExists("shards", floc.getNumberOfShards(), flocTags, BASE_UNIT_NUMBER);
             solrShardingMetricsContainer.getShards(floc).forEach(shard -> {
                 Tags shardTags = flocTags.and(Tags.of("shard", String.valueOf(shard.getInstance())));
                 Set<ShardInstance> shardInstances = solrShardingMetricsContainer.getShardInstances(shard);
@@ -68,22 +71,22 @@ public class SolrShardingMetrics {
                         return state;
                     });
                     setAndCreateMetricIfNotExists("lastIndexedChangeSetId",
-                            shardState.getLastIndexedChangeSetId(), instanceTags, "number");
+                            shardState.getLastIndexedChangeSetId(), instanceTags, BASE_UNIT_NUMBER);
                     setAndCreateMetricIfNotExists("lastIndexedTxId", shardState.getLastIndexedTxId(),
-                            instanceTags, "number");
+                            instanceTags, BASE_UNIT_NUMBER);
                     int instanceMode = replicaState.map(ReplicaState::ordinal).orElse(-1);
                     setAndCreateMetricIfNotExists("instanceMode", instanceMode, instanceTags, "enumValue");
                     setAndCreateMetricIfNotExists("master", shardState.isMaster() ? 1 : 0,
                             instanceTags, "boolean");
                     setAndCreateMetricIfNotExists("lastIndexedChangeSetCommitTime",
-                            shardState.getLastIndexedChangeSetCommitTime(), instanceTags, "timestamp");
+                            shardState.getLastIndexedChangeSetCommitTime(), instanceTags, BASE_UNIT_TIMESTAMP);
                     setAndCreateMetricIfNotExists("lastIndexedTxCommitTime",
-                            shardState.getLastIndexedTxCommitTime(), instanceTags, "timestamp");
+                            shardState.getLastIndexedTxCommitTime(), instanceTags, BASE_UNIT_TIMESTAMP);
                     setAndCreateMetricIfNotExists("lastUpdated",
-                            shardState.getLastUpdated(), instanceTags, "timestamp");
+                            shardState.getLastUpdated(), instanceTags, BASE_UNIT_TIMESTAMP);
                 });
                 setAndCreateMetricIfNotExists("activeShardInstances", numberOfActiveShardInstances.intValue(),
-                        shardTags, "number");
+                        shardTags, BASE_UNIT_NUMBER);
             });
         });
     }
@@ -97,7 +100,8 @@ public class SolrShardingMetrics {
         if (!metrics.containsKey(metricIdentifier)) {
             LOGGER.debug("Registering new metric {}", fullMetricName);
             AtomicLong atomicLongValue = new AtomicLong(value);
-            Gauge.builder(fullMetricName, atomicLongValue, Number::doubleValue).tags(tags).baseUnit(baseUnit).register(registry);
+            Gauge.builder(fullMetricName, atomicLongValue, Number::doubleValue).tags(tags).baseUnit(baseUnit)
+                    .register(registry);
             metrics.put(metricIdentifier, atomicLongValue);
         } else {
             AtomicLong metric = metrics.get(metricIdentifier);
