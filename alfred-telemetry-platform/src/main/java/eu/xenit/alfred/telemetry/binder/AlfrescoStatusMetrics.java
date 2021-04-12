@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
 
 public class AlfrescoStatusMetrics implements MeterBinder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AlfrescoStatusMetrics.class);
+    private static final Logger logger = LoggerFactory.getLogger(AlfrescoStatusMetrics.class);
     private static final String STATUS_PREFIX = "alfresco.status";
 
     private RepoAdminService repoAdminService;
@@ -27,7 +27,6 @@ public class AlfrescoStatusMetrics implements MeterBinder {
 
     @Override
     public void bindTo(@Nonnull MeterRegistry meterRegistry) {
-        LOGGER.info("Registering Alfresco Status metrics");
         Gauge.builder(STATUS_PREFIX + ".readonly", repoAdminService, this::getReadOnly)
                 .description("Metric about Alfresco being in read-only mode")
                 .register(meterRegistry);
@@ -42,10 +41,6 @@ public class AlfrescoStatusMetrics implements MeterBinder {
                                 isReadOnly[0] = repoAdminService.getUsage().isReadOnly()),
                 true);
 
-        if (isReadOnly[0]) {
-            return 1d;
-        } else {
-            return 0d;
-        }
+       return (isReadOnly[0] ? 1d : 0d);
     }
 }
