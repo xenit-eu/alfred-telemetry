@@ -6,14 +6,11 @@ import io.micrometer.core.instrument.binder.MeterBinder;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.cmr.admin.RepoAdminService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 
 public class AlfrescoStatusMetrics implements MeterBinder {
 
-    private static final Logger logger = LoggerFactory.getLogger(AlfrescoStatusMetrics.class);
     private static final String STATUS_PREFIX = "alfresco.status";
 
     private RepoAdminService repoAdminService;

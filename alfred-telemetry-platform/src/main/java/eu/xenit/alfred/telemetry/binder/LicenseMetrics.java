@@ -33,7 +33,7 @@ public class LicenseMetrics implements MeterBinder, ApplicationContextAware {
         // do not do anything for Community
         Descriptor serverDescriptor = descriptorService.getServerDescriptor();
         if(!"Enterprise".equals(serverDescriptor.getEdition())) {
-            logger.info("Edition=" + serverDescriptor.getEdition() + ", license metrics are not available");
+            logger.info("Edition={}, license metrics are not available", serverDescriptor.getEdition());
             return;
         }
 
@@ -65,7 +65,7 @@ public class LicenseMetrics implements MeterBinder, ApplicationContextAware {
     private static double getValid(final ApplicationContext ctx) {
         LicenseService licenseService = ctx.getBeansOfType(LicenseService.class, false, false).get("licenseService");
         if(licenseService!=null)
-            return (licenseService.isLicenseValid()==true?1:0);
+            return (licenseService.isLicenseValid() ? 1 : 0);
         return -1;
     }
 
