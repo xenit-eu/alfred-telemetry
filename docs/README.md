@@ -254,6 +254,24 @@ Metrics provided
 | :------------------------------------ | :----------------------- |
 | alfresco.status.readonly              |                          |
 
+## License metrics
+The license metrics bindings will provide metrics about Alfresco license. Enterprise-only feature.
+
+**Control Property**: `alfred.telemetry.binder.license.enabled`
+
+Metrics provided
+
+| Name                                  | Available tags           |
+| :------------------------------------ | :----------------------- |
+| license.valid                         |                          |
+| license.maxUsers                      |                          |
+| license.maxDocs                       |                          |
+| license.remainingDays                 |                          |
+| license.isClusterEnabled              |                          |
+| license.isCryptodocEnabled            |                          |
+| license.isHeartbeatDisabled           |                          |
+
+
 
 ## Alfresco Node metrics
 
