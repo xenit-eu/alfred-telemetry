@@ -80,35 +80,35 @@ public class LicenseMetrics implements MeterBinder, ApplicationContextAware {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
         if(licenseDescriptor!=null && licenseDescriptor.getMaxDocs()!=null)
             return licenseDescriptor.getMaxDocs();
-        return 0L;
+        return -1L;
     }
 
     private static long getMaxUsers(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
         if(licenseDescriptor!=null && licenseDescriptor.getMaxUsers()!=null)
             return licenseDescriptor.getMaxUsers();
-        return 0L;
+        return -1L;
     }
 
     private static double isClusterEnabled(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
         if(licenseDescriptor!=null)
             return (licenseDescriptor.isClusterEnabled()?1:0);
-        return 0;
+        return -1;
     }
 
     private static double isCryptodocEnabled(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
         if(licenseDescriptor!=null)
             return (licenseDescriptor.isCryptodocEnabled()?1:0);
-        return 0;
+        return -1;
     }
 
     private static double isHeartbeatDisabled(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
         if(licenseDescriptor!=null)
             return (licenseDescriptor.isHeartBeatDisabled()?1:0);
-        return 0;
+        return -1;
     }
 
     @Override
