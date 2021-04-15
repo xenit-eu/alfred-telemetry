@@ -36,9 +36,9 @@ subprojects {
     apply plugin: 'java'
 
     def alfrescoVersion = project.name[-2..-1]
-    def edition = "Community"
+    def alfrescoEdition = "Community"
     if(project.hasProperty("enterprise")) {
-        edition = "Enterprise"
+        alfrescoEdition = "Enterprise"
     }
 
     apply from: "${project.projectDir}/overload.gradle"
@@ -56,7 +56,7 @@ subprojects {
         doFirst {
             dockerCompose.solr.exposeAsSystemProperties(integrationTest)
             systemProperty 'solrFlavor', "${solrFlavor}"
-            systemProperty 'edition', edition
+            systemProperty 'alfrescoEdition', alfrescoEdition
 
         }
     }

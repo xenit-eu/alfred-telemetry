@@ -80,7 +80,7 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
     }
 
     @Test
-    @EnabledIfSystemProperty(named="edition",matches = "Enterprise")
+    @EnabledIfSystemProperty(named="alfrescoEdition",matches = "Enterprise")
     void metersEnterpriseListedInMetricsEndpoint() {
         final List<String> availableMeters = given()
                 .log().ifValidationFails()
@@ -115,7 +115,7 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
 
     @ParameterizedTest
     @MethodSource("expectedMetersEnterprise")
-    @EnabledIfSystemProperty(named="edition",matches = "Enterprise")
+    @EnabledIfSystemProperty(named="alfrescoEdition",matches = "Enterprise")
     void meterEnterpriseOverview(String expectedMeter) {
         given()
                 .log().ifValidationFails()
