@@ -23,6 +23,11 @@ Version template:
 # Alfred Telemetry Changelog
 ## [0.5.1] - UNRELEASED
 
+### Added
+* Alfresco license metrics [#82]
+
+[#82]: https://github.com/xenit-eu/alfred-telemetry/pull/82
+
 ## [0.5.0] - 2021-03-22
 
 ### Added

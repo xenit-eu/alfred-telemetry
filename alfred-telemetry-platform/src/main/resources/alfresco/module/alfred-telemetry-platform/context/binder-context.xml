@@ -3,7 +3,7 @@
 <beans>
 
     <bean id="alfred-telemetry.MeterBinderRegistrar"
-            class="eu.xenit.alfred.telemetry.binder.MeterBinderRegistrar">
+          class="eu.xenit.alfred.telemetry.binder.MeterBinderRegistrar">
         <constructor-arg ref="meterRegistry"/>
         <property name="properties" ref="global-properties"/>
         <property name="enabled" value="${alfred.telemetry.binder.enabled}"/>
@@ -14,7 +14,7 @@
     </bean>
 
     <bean id="alfred-telemetry.Care4AlfMeterBinderRegistrar"
-            class="eu.xenit.alfred.telemetry.binder.care4alf.Care4AlfMeterBinderRegistrar">
+          class="eu.xenit.alfred.telemetry.binder.care4alf.Care4AlfMeterBinderRegistrar">
         <constructor-arg ref="meterRegistry"/>
         <property name="properties" ref="global-properties"/>
         <property name="enabled" value="${alfred.telemetry.binder.care4alf.enabled}"/>
@@ -36,6 +36,10 @@
     </bean>
 
     <bean class="eu.xenit.alfred.telemetry.binder.cache.CacheMetricsFactory">
+        <constructor-arg ref="DescriptorService"/>
+    </bean>
+
+    <bean class="eu.xenit.alfred.telemetry.binder.LicenseMetrics">
         <constructor-arg ref="DescriptorService"/>
     </bean>
 

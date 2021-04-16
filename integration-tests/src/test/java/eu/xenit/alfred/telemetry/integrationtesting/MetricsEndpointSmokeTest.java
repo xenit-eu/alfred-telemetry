@@ -1,14 +1,16 @@
 package eu.xenit.alfred.telemetry.integrationtesting;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 
 class MetricsEndpointSmokeTest extends RestAssuredTest {
 
@@ -45,8 +47,41 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
         );
     }
 
+    static Stream<String> expectedMetersEnterprise() {
+        return Stream.of(
+                "license.valid",
+                "license.users",
+                "license.docs",
+                "license.days",
+                "license.cluster.enabled",
+                "license.encryption.enabled",
+                "license.heartbeat.enabled"
+        );
+    }
+
     @Test
     void metersListedInMetricsEndpoint() {
+        final List<String> availableMeters = given()
+                .log().ifValidationFails()
+                .when()
+                .get("s/alfred/telemetry/metrics")
+                .then()
+                .log().ifValidationFails()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList("names");
+
+        expectedMeters().forEach(expected ->
+                assertThat(
+                        "The metrics endpoint should contain meter '" + expected + "'",
+                        availableMeters, hasItem(expected))
+        );
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named="alfrescoEdition",matches = "Enterprise")
+    void metersEnterpriseListedInMetricsEndpoint() {
         final List<String> availableMeters = given()
                 .log().ifValidationFails()
                 .when()
@@ -68,6 +103,20 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
     @ParameterizedTest
     @MethodSource("expectedMeters")
     void meterOverview(String expectedMeter) {
+        given()
+                .log().ifValidationFails()
+                .when()
+                .pathParam("meterName", expectedMeter)
+                .get("s/alfred/telemetry/metrics/{meterName}")
+                .then()
+                .log().ifValidationFails()
+                .statusCode(200);
+    }
+
+    @ParameterizedTest
+    @MethodSource("expectedMetersEnterprise")
+    @EnabledIfSystemProperty(named="alfrescoEdition",matches = "Enterprise")
+    void meterEnterpriseOverview(String expectedMeter) {
         given()
                 .log().ifValidationFails()
                 .when()
