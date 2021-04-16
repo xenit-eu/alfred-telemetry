@@ -42,7 +42,8 @@ public class LicenseMetricsTest {
 
         when(descriptorService.getServerDescriptor()).thenReturn(serverDescriptor);
         when(descriptorService.getLicenseDescriptor()).thenReturn(licenseDescriptor);
-        when(applicationContext.getBeansOfType(LicenseService.class,false,false)).thenReturn(Collections.singletonMap("licenseService", licenseService));
+        when(applicationContext.getBeansOfType(LicenseService.class, false, false))
+                .thenReturn(Collections.singletonMap("licenseService", licenseService));
         when(serverDescriptor.getEdition()).thenReturn("Enterprise");
     }
 
@@ -55,16 +56,17 @@ public class LicenseMetricsTest {
 
     @Test
     public void testNoLicenseService() {
-        when(applicationContext.getBeansOfType(LicenseService.class,false,false)).thenReturn(Collections.singletonMap("licenseService", null));
+        when(applicationContext.getBeansOfType(LicenseService.class, false, false))
+                .thenReturn(Collections.singletonMap("licenseService", null));
         licenseMetrics.bindTo(meterRegistry);
-        assertThat(meterRegistry.get("license.valid").gauge().value(),is(-1.0));
+        assertThat(meterRegistry.get("license.valid").gauge().value(), is(-1.0));
     }
 
     @Test
     public void testNoLicenseDescriptor() {
         when(descriptorService.getLicenseDescriptor()).thenReturn(null);
         licenseMetrics.bindTo(meterRegistry);
-        assertThat(meterRegistry.get("license.maxDocs").gauge().value(),is(-1.0));
+        assertThat(meterRegistry.get("license.docs").tag("status", "max").gauge().value(), is(-1.0));
     }
 
     @Test
@@ -72,45 +74,45 @@ public class LicenseMetricsTest {
         licenseMetrics.bindTo(meterRegistry);
 
         when(licenseService.isLicenseValid()).thenReturn(true);
-        assertThat(meterRegistry.get("license.valid").gauge().value(),is(1.0));
+        assertThat(meterRegistry.get("license.valid").gauge().value(), is(1.0));
 
         when(licenseService.isLicenseValid()).thenReturn(false);
-        assertThat(meterRegistry.get("license.valid").gauge().value(),is(0.0));
+        assertThat(meterRegistry.get("license.valid").gauge().value(), is(0.0));
 
         when(licenseDescriptor.getMaxDocs()).thenReturn(100L);
-        assertThat(meterRegistry.get("license.maxDocs").gauge().value(),is(100.0));
+        assertThat(meterRegistry.get("license.docs").tag("status", "max").gauge().value(), is(100.0));
 
         when(licenseDescriptor.getMaxDocs()).thenReturn(null);
-        assertThat(meterRegistry.get("license.maxDocs").gauge().value(),is(-1.0));
+        assertThat(meterRegistry.get("license.docs").tag("status", "max").gauge().value(), is(-1.0));
 
         when(licenseDescriptor.getMaxUsers()).thenReturn(100L);
-        assertThat(meterRegistry.get("license.maxUsers").gauge().value(),is(100.0));
+        assertThat(meterRegistry.get("license.users").tag("status", "max").gauge().value(), is(100.0));
 
         when(licenseDescriptor.getMaxUsers()).thenReturn(null);
-        assertThat(meterRegistry.get("license.maxUsers").gauge().value(),is(-1.0));
+        assertThat(meterRegistry.get("license.users").tag("status", "max").gauge().value(), is(-1.0));
 
         when(licenseDescriptor.getRemainingDays()).thenReturn(100);
-        assertThat(meterRegistry.get("license.remainingDays").gauge().value(),is(100.0));
+        assertThat(meterRegistry.get("license.days").tag("status", "remaining").gauge().value(), is(100.0));
 
         when(licenseDescriptor.getRemainingDays()).thenReturn(null);
-        assertThat(meterRegistry.get("license.remainingDays").gauge().value(),is(-1.0));
+        assertThat(meterRegistry.get("license.days").tag("status", "remaining").gauge().value(), is(-1.0));
 
         when(licenseDescriptor.isClusterEnabled()).thenReturn(false);
-        assertThat(meterRegistry.get("license.isClusterEnabled").gauge().value(),is(0.0));
+        assertThat(meterRegistry.get("license.cluster.enabled").gauge().value(), is(0.0));
 
         when(licenseDescriptor.isClusterEnabled()).thenReturn(true);
-        assertThat(meterRegistry.get("license.isClusterEnabled").gauge().value(),is(1.0));
+        assertThat(meterRegistry.get("license.cluster.enabled").gauge().value(), is(1.0));
 
         when(licenseDescriptor.isCryptodocEnabled()).thenReturn(false);
-        assertThat(meterRegistry.get("license.isCryptodocEnabled").gauge().value(),is(0.0));
+        assertThat(meterRegistry.get("license.encryption.enabled").gauge().value(), is(0.0));
 
         when(licenseDescriptor.isCryptodocEnabled()).thenReturn(true);
-        assertThat(meterRegistry.get("license.isCryptodocEnabled").gauge().value(),is(1.0));
+        assertThat(meterRegistry.get("license.encryption.enabled").gauge().value(), is(1.0));
 
         when(licenseDescriptor.isHeartBeatDisabled()).thenReturn(false);
-        assertThat(meterRegistry.get("license.isHeartbeatDisabled").gauge().value(),is(0.0));
+        assertThat(meterRegistry.get("license.heartbeat.enabled").gauge().value(), is(1.0));
 
         when(licenseDescriptor.isHeartBeatDisabled()).thenReturn(true);
-        assertThat(meterRegistry.get("license.isHeartbeatDisabled").gauge().value(),is(1.0));
+        assertThat(meterRegistry.get("license.heartbeat.enabled").gauge().value(), is(0.0));
     }
 }

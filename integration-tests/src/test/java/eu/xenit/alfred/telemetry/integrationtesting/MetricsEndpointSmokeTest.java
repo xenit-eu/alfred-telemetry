@@ -50,12 +50,12 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
     static Stream<String> expectedMetersEnterprise() {
         return Stream.of(
                 "license.valid",
-                "license.maxUsers",
-                "license.maxDocs",
-                "license.remainingDays",
-                "license.isClusterEnabled",
-                "license.isCryptodocEnabled",
-                "license.isHeartbeatDisabled"
+                "license.users",
+                "license.docs",
+                "license.days",
+                "license.cluster.enabled",
+                "license.encryption.enabled",
+                "license.heartbeat.enabled"
         );
     }
 

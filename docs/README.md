@@ -264,12 +264,12 @@ Metrics provided
 | Name                                  | Available tags           |
 | :------------------------------------ | :----------------------- |
 | license.valid                         |                          |
-| license.maxUsers                      |                          |
-| license.maxDocs                       |                          |
-| license.remainingDays                 |                          |
-| license.isClusterEnabled              |                          |
-| license.isCryptodocEnabled            |                          |
-| license.isHeartbeatDisabled           |                          |
+| license.users                         |       max                |
+| license.docs                          |       max                |
+| license.days                          |       remaining          |
+| license.cluster.enabled               |                          |
+| license.encryption.enabled            |                          |
+| license.heartbeat.enabled             |                          |
 
 
 

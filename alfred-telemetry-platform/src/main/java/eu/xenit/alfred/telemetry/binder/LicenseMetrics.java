@@ -32,7 +32,7 @@ public class LicenseMetrics implements MeterBinder, ApplicationContextAware {
     public void bindTo(@Nonnull MeterRegistry registry) {
         // do not do anything for Community
         Descriptor serverDescriptor = descriptorService.getServerDescriptor();
-        if(!"Enterprise".equals(serverDescriptor.getEdition())) {
+        if (!"Enterprise".equals(serverDescriptor.getEdition())) {
             logger.info("Edition={}, license metrics are not available", serverDescriptor.getEdition());
             return;
         }
@@ -41,73 +41,84 @@ public class LicenseMetrics implements MeterBinder, ApplicationContextAware {
                 .description("Whether the license is still valid")
                 .register(registry);
 
-        Gauge.builder(METRIC_NAME_LICENSE + ".remainingDays", descriptorService, LicenseMetrics::getRemainingDays)
+        Gauge.builder(METRIC_NAME_LICENSE + ".days", descriptorService, LicenseMetrics::getRemainingDays)
                 .description("Remaining days")
+                .tags("status", "remaining")
                 .register(registry);
-        Gauge.builder(METRIC_NAME_LICENSE + ".maxDocs", descriptorService, LicenseMetrics::getMaxDocs)
+        Gauge.builder(METRIC_NAME_LICENSE + ".docs", descriptorService, LicenseMetrics::getMaxDocs)
                 .description("Max docs")
+                .tags("status", "max")
                 .register(registry);
-        Gauge.builder(METRIC_NAME_LICENSE + ".maxUsers", descriptorService, LicenseMetrics::getMaxUsers)
+        Gauge.builder(METRIC_NAME_LICENSE + ".users", descriptorService, LicenseMetrics::getMaxUsers)
                 .description("Max users")
+                .tags("status", "max")
                 .register(registry);
-        Gauge.builder(METRIC_NAME_LICENSE + ".isClusterEnabled", descriptorService, LicenseMetrics::isClusterEnabled)
+        Gauge.builder(METRIC_NAME_LICENSE + ".cluster.enabled", descriptorService, LicenseMetrics::isClusterEnabled)
                 .description("Clustering enabled")
                 .register(registry);
-        Gauge.builder(METRIC_NAME_LICENSE + ".isCryptodocEnabled", descriptorService, LicenseMetrics::isCryptodocEnabled)
+        Gauge.builder(METRIC_NAME_LICENSE + ".encryption.enabled", descriptorService,
+                LicenseMetrics::isCryptodocEnabled)
                 .description("Encription enabled")
                 .register(registry);
-        Gauge.builder(METRIC_NAME_LICENSE + ".isHeartbeatDisabled", descriptorService, LicenseMetrics::isHeartbeatDisabled)
-                .description("Heartbeat disabled")
+        Gauge.builder(METRIC_NAME_LICENSE + ".heartbeat.enabled", descriptorService, LicenseMetrics::isHeartbeatEnabled)
+                .description("Heartbeat enabled")
                 .register(registry);
     }
 
 
     private static double getValid(final ApplicationContext ctx) {
         LicenseService licenseService = ctx.getBeansOfType(LicenseService.class, false, false).get("licenseService");
-        if(licenseService!=null)
+        if (licenseService != null) {
             return (licenseService.isLicenseValid() ? 1 : 0);
+        }
         return -1;
     }
 
     private static int getRemainingDays(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
-        if(licenseDescriptor!=null && licenseDescriptor.getRemainingDays()!=null)
+        if (licenseDescriptor != null && licenseDescriptor.getRemainingDays() != null) {
             return licenseDescriptor.getRemainingDays();
+        }
         return -1;
     }
 
     private static long getMaxDocs(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
-        if(licenseDescriptor!=null && licenseDescriptor.getMaxDocs()!=null)
+        if (licenseDescriptor != null && licenseDescriptor.getMaxDocs() != null) {
             return licenseDescriptor.getMaxDocs();
+        }
         return -1L;
     }
 
     private static long getMaxUsers(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
-        if(licenseDescriptor!=null && licenseDescriptor.getMaxUsers()!=null)
+        if (licenseDescriptor != null && licenseDescriptor.getMaxUsers() != null) {
             return licenseDescriptor.getMaxUsers();
+        }
         return -1L;
     }
 
     private static double isClusterEnabled(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
-        if(licenseDescriptor!=null)
-            return (licenseDescriptor.isClusterEnabled()?1:0);
+        if (licenseDescriptor != null) {
+            return (licenseDescriptor.isClusterEnabled() ? 1 : 0);
+        }
         return -1;
     }
 
     private static double isCryptodocEnabled(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
-        if(licenseDescriptor!=null)
-            return (licenseDescriptor.isCryptodocEnabled()?1:0);
+        if (licenseDescriptor != null) {
+            return (licenseDescriptor.isCryptodocEnabled() ? 1 : 0);
+        }
         return -1;
     }
 
-    private static double isHeartbeatDisabled(final DescriptorService descriptorService) {
+    private static double isHeartbeatEnabled(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
-        if(licenseDescriptor!=null)
-            return (licenseDescriptor.isHeartBeatDisabled()?1:0);
+        if (licenseDescriptor != null) {
+            return (licenseDescriptor.isHeartBeatDisabled() ? 0 : 1);
+        }
         return -1;
     }
 
