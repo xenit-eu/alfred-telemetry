@@ -264,9 +264,9 @@ Metrics provided
 | Name                                  | Available tags           |
 | :------------------------------------ | :----------------------- |
 | license.valid                         |                          |
-| license.users                         |       max                |
-| license.docs                          |       max                |
-| license.days                          |       remaining          |
+| license.users                         |       status:[max]       |
+| license.docs                          |       status:[max]       |
+| license.days                          |       status:[remaining] |
 | license.cluster.enabled               |                          |
 | license.encryption.enabled            |                          |
 | license.heartbeat.enabled             |                          |
