@@ -13,8 +13,8 @@
 Alfred Telemetry integrates Alfresco and [Micrometer](https://micrometer.io/), an application metrics facade that 
 supports numerous monitoring systems.
 
-> To learn more about Micrometer’s capabilities, please refer to its [reference documentation](https://micrometer.io/docs)
-> , in particular the [concepts section](https://micrometer.io/docs/concepts).
+To learn more about Micrometer’s capabilities, please refer to its [reference documentation](https://micrometer.io/docs)
+, in particular the [concepts section](https://micrometer.io/docs/concepts).
 
 ![Grafana Dashboard](docs/images/grafanana.png)
 
