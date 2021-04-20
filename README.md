@@ -4,6 +4,11 @@
 [![CI](https://github.com/xenit-eu/alfred-telemetry/actions/workflows/ci.yml/badge.svg)](https://github.com/xenit-eu/alfred-telemetry/actions/workflows/ci.yml)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
+> [![Xenit Logo](https://xenit.eu/wp-content/uploads/2017/09/XeniT_Website_Logo.png)](https://xenit.eu/open-source)
+> 
+> Alfred Telemetry is a part of the Xenit Open Source Tooling around Alfresco. Xenit is company with a big expertise and
+> a strong team
+> around Alfresco. If you'd like to learn more about our [tools](https://xenit.eu/open-source), [services](https://xenit.eu/alfresco) and [products](https://xenit.eu/alfresco-products), please visit our [website](https://xenit.eu).
 
 Alfred Telemetry integrates Alfresco and [Micrometer](https://micrometer.io/), an application metrics facade that 
 supports numerous monitoring systems.
