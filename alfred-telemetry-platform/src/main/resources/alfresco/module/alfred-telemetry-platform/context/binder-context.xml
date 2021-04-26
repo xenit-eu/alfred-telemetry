@@ -41,6 +41,7 @@
 
     <bean class="eu.xenit.alfred.telemetry.binder.LicenseMetrics">
         <constructor-arg ref="DescriptorService"/>
+        <constructor-arg ref="RepoAdminService"/>
     </bean>
 
     <bean class="eu.xenit.alfred.telemetry.binder.DataSourceMetrics">
