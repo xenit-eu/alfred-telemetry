@@ -106,13 +106,9 @@ public class LicenseMetrics implements MeterBinder, ApplicationContextAware {
     }
 
     private static long getAuthorizedUsers(final RepoAdminService repoAdminService) {
-        return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Long>() {
-            @Override
-            public Long doWork() {
-                return repoAdminService.getUsage().getUsers();
-            }
-        });
+        return AuthenticationUtil.runAsSystem(() -> repoAdminService.getUsage().getUsers());
     }
+
 
     private static double isClusterEnabled(final DescriptorService descriptorService) {
         LicenseDescriptor licenseDescriptor = descriptorService.getLicenseDescriptor();
