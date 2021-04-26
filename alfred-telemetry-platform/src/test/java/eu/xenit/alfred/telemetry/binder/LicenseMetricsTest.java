@@ -2,6 +2,8 @@ package eu.xenit.alfred.telemetry.binder;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.alfresco.service.cmr.admin.RepoAdminService;
+import org.alfresco.service.cmr.admin.RepoUsage;
 import org.alfresco.service.descriptor.Descriptor;
 import org.alfresco.service.descriptor.DescriptorService;
 import org.alfresco.service.license.LicenseDescriptor;
@@ -27,6 +29,8 @@ public class LicenseMetricsTest {
     private LicenseService licenseService;
     private Descriptor serverDescriptor;
     private LicenseDescriptor licenseDescriptor;
+    private RepoAdminService repoAdminService;
+    private RepoUsage repoUsage;
 
     @BeforeEach
     void setup() {
@@ -35,11 +39,14 @@ public class LicenseMetricsTest {
         descriptorService = mock(DescriptorService.class);
         serverDescriptor = mock(Descriptor.class);
         licenseDescriptor = mock(LicenseDescriptor.class);
+        repoAdminService = mock(RepoAdminService.class);
+        repoUsage = mock(RepoUsage.class);
 
         meterRegistry = new SimpleMeterRegistry();
-        licenseMetrics = new LicenseMetrics(descriptorService);
+        licenseMetrics = new LicenseMetrics(descriptorService,repoAdminService);
         licenseMetrics.setApplicationContext(applicationContext);
 
+        when(repoAdminService.getUsage()).thenReturn(repoUsage);
         when(descriptorService.getServerDescriptor()).thenReturn(serverDescriptor);
         when(descriptorService.getLicenseDescriptor()).thenReturn(licenseDescriptor);
         when(applicationContext.getBeansOfType(LicenseService.class, false, false))
@@ -87,6 +94,9 @@ public class LicenseMetricsTest {
 
         when(licenseDescriptor.getMaxUsers()).thenReturn(100L);
         assertThat(meterRegistry.get("license.users").tag("status", "max").gauge().value(), is(100.0));
+
+        when(repoUsage.getUsers()).thenReturn(3L);
+        assertThat(meterRegistry.get("license.users").tag("status", "current").gauge().value(), is(3.0));
 
         when(licenseDescriptor.getMaxUsers()).thenReturn(null);
         assertThat(meterRegistry.get("license.users").tag("status", "max").gauge().value(), is(-1.0));
