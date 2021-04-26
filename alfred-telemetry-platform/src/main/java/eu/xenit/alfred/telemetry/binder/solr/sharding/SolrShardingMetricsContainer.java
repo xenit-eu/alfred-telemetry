@@ -1,7 +1,5 @@
 package eu.xenit.alfred.telemetry.binder.solr.sharding;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,7 +16,7 @@ import org.alfresco.repo.index.shard.ShardState;
 public class SolrShardingMetricsContainer {
 
     private ShardRegistry shardRegistry;
-    private Map<Floc, HashMap<Shard, HashSet<ShardState>>> rawData;
+    private Map<Floc, ? extends Map<Shard, ? extends Set<ShardState>>> rawData;
     private long lastRefresh;
     private long ttl; // how long before the raw data will be refreshed
 
