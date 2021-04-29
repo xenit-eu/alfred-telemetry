@@ -1,6 +1,5 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-apply plugin: 'de.marcphilipp.nexus-publish'
 
 publishing {
     publications {
@@ -31,13 +30,17 @@ publishing {
             }
         }
     }
-}
 
-nexusPublishing {
     repositories {
-        sonatype {
-            username = project.hasProperty('sonatype_username') ? project.sonatype_username : ''
-            password = project.hasProperty('sonatype_password') ? project.sonatype_password : ''
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username = project.findProperty('sonatype_username')
+                password = project.findProperty('sonatype_password')
+            }
         }
     }
 }
