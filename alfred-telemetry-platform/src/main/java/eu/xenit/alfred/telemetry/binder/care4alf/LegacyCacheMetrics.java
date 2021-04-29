@@ -44,12 +44,13 @@ import org.springframework.context.ApplicationEvent;
  */
 public class LegacyCacheMetrics implements EventTriggeredMeterBinder, ApplicationContextAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LegacyCacheMetrics.class);
+    private static final Logger logger = LoggerFactory.getLogger(LegacyCacheMetrics.class);
 
     private static final String CLASS_NAME_CLUSTERSERVICEINITIALISEDEVENT =
             "org.alfresco.enterprise.repo.cluster.core.ClusterServiceInitialisedEvent";
+    private static final String METHOD_GET_OPERATION_STATS = "getOperationStats";
 
-    private Properties properties;
+    private final Properties properties;
     private ApplicationContext ctx;
 
     public LegacyCacheMetrics(Properties properties) {
@@ -64,7 +65,7 @@ public class LegacyCacheMetrics implements EventTriggeredMeterBinder, Applicatio
                     (Class<? extends ApplicationEvent>) Class.forName(CLASS_NAME_CLUSTERSERVICEINITIALISEDEVENT)
             );
         } catch (ClassNotFoundException e) {
-            LOGGER.trace("{} not present in Alfresco Community Edition", CLASS_NAME_CLUSTERSERVICEINITIALISEDEVENT, e);
+            logger.trace("{} not present in Alfresco Community Edition", CLASS_NAME_CLUSTERSERVICEINITIALISEDEVENT, e);
             return Collections.emptyList();
         }
     }
@@ -80,7 +81,7 @@ public class LegacyCacheMetrics implements EventTriggeredMeterBinder, Applicatio
         try {
             monitorCache(cacheName, cache, registry);
         } catch (Throwable e) {
-            LOGGER.warn("Unable to monitor cache '{}' of type '{}'", cacheName, cache.getClass().getCanonicalName(), e);
+            logger.warn("Unable to monitor cache '{}' of type '{}'", cacheName, cache.getClass().getCanonicalName(), e);
         }
     }
 
@@ -101,7 +102,7 @@ public class LegacyCacheMetrics implements EventTriggeredMeterBinder, Applicatio
             monitorHazelcastSimpleCache(cacheName, cache, registry);
             Gauge.builder(buildKey(cacheName, "type"), null, o -> 3L).register(registry);
         } else {
-            LOGGER.debug("Ignoring cache {} of type {}", cacheName, cacheType);
+            logger.debug("Ignoring cache {} of type {}", cacheName, cacheType);
             Gauge.builder(buildKey(cacheName, "type"), null, o -> -1L).register(registry);
         }
     }
@@ -129,16 +130,19 @@ public class LegacyCacheMetrics implements EventTriggeredMeterBinder, Applicatio
         final Object stats = mapStatMethod.invoke(map);
 
         Gauge.builder(buildKey(cacheName, "nbGets"), stats,
-                s -> Hazelcast2CacheMetrics.extractMetricWithReflection(s, "getOperationStats", "getNumberOfGets"))
+                s -> Hazelcast2CacheMetrics
+                        .extractMetricWithReflection(s, METHOD_GET_OPERATION_STATS, "getNumberOfGets"))
                 .register(registry);
         Gauge.builder(buildKey(cacheName, "nbPuts"), stats,
-                s -> Hazelcast2CacheMetrics.extractMetricWithReflection(s, "getOperationStats", "getNumberOfPuts"))
+                s -> Hazelcast2CacheMetrics
+                        .extractMetricWithReflection(s, METHOD_GET_OPERATION_STATS, "getNumberOfPuts"))
                 .register(registry);
         Gauge.builder(buildKey(cacheName, "nbMiss"), stats,
                 s -> -1L)
                 .register(registry);
         Gauge.builder(buildKey(cacheName, "nbEvictions"), stats,
-                s -> Hazelcast2CacheMetrics.extractMetricWithReflection(s, "getOperationStats", "getNumberOfRemoves"))
+                s -> Hazelcast2CacheMetrics
+                        .extractMetricWithReflection(s, METHOD_GET_OPERATION_STATS, "getNumberOfRemoves"))
                 .register(registry);
     }
 
@@ -164,11 +168,11 @@ public class LegacyCacheMetrics implements EventTriggeredMeterBinder, Applicatio
                 Gauge.builder(buildKey(cacheName, "nbMiss"), stats, CacheStats::missCount).register(registry);
                 Gauge.builder(buildKey(cacheName, "nbEvictions"), stats, CacheStats::evictionCount).register(registry);
             } catch (ClassCastException cce) {
-                LOGGER.warn("Exception while trying to cast cache , issue might be related to guava version :", cce);
+                logger.warn("Exception while trying to cast cache , issue might be related to guava version :", cce);
             }
         } catch (NoSuchFieldException | NoClassDefFoundError e) {
             // This field got introduced in Alfresco 5.x, ignore this exception
-            LOGGER.debug("Skipping cache statistics collection: unsopported Alfresco version");
+            logger.debug("Skipping cache statistics collection: unsopported Alfresco version");
         }
     }
 

@@ -21,7 +21,14 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
-## [0.5.0] - UNRELEASED
+## [0.5.1] - UNRELEASED
+
+### Added
+* Alfresco license metrics [#82]
+
+[#82]: https://github.com/xenit-eu/alfred-telemetry/pull/82
+
+## [0.5.0] - 2021-03-22
 
 ### Added
 * Alfresco 6.2.1 support [#20]
@@ -33,7 +40,7 @@ Version template:
 ### Fixed
 
 * Sharded solr monitoring throws exception in Alfresco 6.2
-* Fixed and refactored code for solr, so that it works for ASS>=2.0.0. Improved handling of solrconfig.xml for solr6.
+* Fixed and refactored code for solr, so that it works for ASS>=2.0.0. Improved handling of solrconfig.xml for solr6 [#74]
 
 [#74] https://github.com/xenit-eu/alfred-telemetry/pull/74
 

@@ -12,10 +12,10 @@ import org.springframework.context.ApplicationContextAware;
 
 public class CacheMetricsFactory extends AbstractFactoryBean<MeterBinder> implements ApplicationContextAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CacheMetricsFactory.class);
+    private static final Logger slf4jLogger = LoggerFactory.getLogger(CacheMetricsFactory.class);
 
     private ApplicationContext ctx;
-    private DescriptorService descriptorService;
+    private final DescriptorService descriptorService;
 
     public CacheMetricsFactory(DescriptorService descriptorService) {
         this.descriptorService = descriptorService;
@@ -36,12 +36,12 @@ public class CacheMetricsFactory extends AbstractFactoryBean<MeterBinder> implem
 
     private boolean isEnterpriseEdition() {
         if (descriptorService == null || descriptorService.getServerDescriptor() == null) {
-            LOGGER.debug("descriptorService is null, assuming ACE");
+            slf4jLogger.debug("descriptorService is null, assuming ACE");
             return false;
         }
 
         final String edition = descriptorService.getServerDescriptor().getEdition();
-        LOGGER.debug("Alfresco Edition: '{}'", edition);
+        slf4jLogger.debug("Alfresco Edition: '{}'", edition);
 
         return "enterprise".equalsIgnoreCase(edition);
     }

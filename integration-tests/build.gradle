@@ -36,6 +36,11 @@ subprojects {
     apply plugin: 'java'
 
     def alfrescoVersion = project.name[-2..-1]
+    def alfrescoEdition = "Community"
+    if(project.hasProperty("enterprise")) {
+        alfrescoEdition = "Enterprise"
+    }
+
     apply from: "${project.projectDir}/overload.gradle"
 
     description = "Alfresco ${alfrescoVersion} with Alfred Micrometer"
@@ -51,6 +56,8 @@ subprojects {
         doFirst {
             dockerCompose.solr.exposeAsSystemProperties(integrationTest)
             systemProperty 'solrFlavor', "${solrFlavor}"
+            systemProperty 'alfrescoEdition', alfrescoEdition
+
         }
     }
 
@@ -159,6 +166,7 @@ subprojects {
         solrPrometheus {
             environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor) ? 'solr4' : 'solr')
             environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor) ? 'true' : 'false')
+            environment.put 'METRICS_JETTY_ENABLED', ('solr6'.equals(solrFlavor) ? 'true' : 'false')
             environment.put 'INDEX', solrFlavor
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
             if ("solr4".equals(solrFlavor)) {
@@ -181,6 +189,7 @@ subprojects {
         solrGraphite {
             environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor) ? 'solr4' : 'solr')
             environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor) ? 'true' : 'false')
+            environment.put 'METRICS_JETTY_ENABLED', ('solr6'.equals(solrFlavor) ? 'true' : 'false')
             environment.put 'INDEX', solrFlavor
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'true'
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST', 'carbon'

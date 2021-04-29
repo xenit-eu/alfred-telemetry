@@ -3,15 +3,12 @@ package eu.xenit.alfred.telemetry.config;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Meter.Id;
 import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.config.MeterFilter;
-import io.micrometer.core.instrument.config.MeterFilterReply;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +16,11 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommonTagFilterFactory.class);
+    private static final Logger slf4jLogger = LoggerFactory.getLogger(CommonTagFilterFactory.class);
 
     static final String PROP_KEY_PREFIX_COMMONTAG = "alfred.telemetry.tags.";
 
-    private Properties globalProperties;
+    private final Properties globalProperties;
 
     public CommonTagFilterFactory(Properties globalProperties) {
         this.globalProperties = globalProperties;
@@ -94,7 +91,7 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
         try {
             return InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            LOGGER.warn("Unable to retrieve name of local host", e);
+            slf4jLogger.warn("Unable to retrieve name of local host", e);
             return "unknown-host";
         }
 

@@ -21,7 +21,10 @@ import org.slf4j.LoggerFactory;
  */
 public class Hazelcast2CacheMetrics extends CacheMeterBinder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Hazelcast2CacheMetrics.class);
+    private static final Logger logger = LoggerFactory.getLogger(Hazelcast2CacheMetrics.class);
+
+    private static final String TAG_OWNERSHIP = "ownership";
+    private static final String METHOD_GET_OPERATION_STATS = "getOperationStats";
 
     private final IMap<?, ?> cache;
 
@@ -100,29 +103,30 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
     @Override
     protected void bindImplementationSpecificMetrics(@Nonnull MeterRegistry registry) {
         Gauge.builder("cache.entries", cache, cache -> cache.getLocalMapStats().getBackupEntryCount())
-                .tags(getTagsWithCacheName()).tag("ownership", "backup")
+                .tags(getTagsWithCacheName()).tag(TAG_OWNERSHIP, "backup")
                 .description("The number of backup entries held by this member")
                 .register(registry);
 
         Gauge.builder("cache.entries", cache, cache -> cache.getLocalMapStats().getOwnedEntryCount())
-                .tags(getTagsWithCacheName()).tag("ownership", "owned")
+                .tags(getTagsWithCacheName()).tag(TAG_OWNERSHIP, "owned")
                 .description("The number of owned entries held by this member")
                 .register(registry);
 
         Gauge.builder("cache.entry.memory", cache, cache -> cache.getLocalMapStats().getBackupEntryMemoryCost())
-                .tags(getTagsWithCacheName()).tag("ownership", "backup")
+                .tags(getTagsWithCacheName()).tag(TAG_OWNERSHIP, "backup")
                 .description("Memory cost of backup entries held by this member")
                 .baseUnit("bytes")
                 .register(registry);
 
         Gauge.builder("cache.entry.memory", cache, cache -> cache.getLocalMapStats().getOwnedEntryMemoryCost())
-                .tags(getTagsWithCacheName()).tag("ownership", "owned")
+                .tags(getTagsWithCacheName()).tag(TAG_OWNERSHIP, "owned")
                 .description("Memory cost of owned entries held by this member")
                 .baseUnit("bytes")
                 .register(registry);
 
         FunctionCounter.builder("cache.partition.gets", cache,
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), "getOperationStats", "getNumberOfGets"))
+                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
+                        "getNumberOfGets"))
                 .tags(getTagsWithCacheName())
                 .description("The total number of get operations executed against this partition")
                 .register(registry);
@@ -133,24 +137,30 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
 
     private void timings(MeterRegistry registry) {
         FunctionTimer.builder("cache.gets.latency", cache,
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), "getOperationStats", "getNumberOfGets"),
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), "getOperationStats", "getTotalGetLatency"),
+                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
+                        "getNumberOfGets"),
+                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
+                        "getTotalGetLatency"),
                 TimeUnit.NANOSECONDS)
                 .tags(getTagsWithCacheName())
                 .description("Cache gets")
                 .register(registry);
 
         FunctionTimer.builder("cache.puts.latency", cache,
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), "getOperationStats", "getNumberOfPuts"),
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), "getOperationStats", "getTotalPutLatency"),
+                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
+                        "getNumberOfPuts"),
+                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
+                        "getTotalPutLatency"),
                 TimeUnit.NANOSECONDS)
                 .tags(getTagsWithCacheName())
                 .description("Cache puts")
                 .register(registry);
 
         FunctionTimer.builder("cache.removals.latency", cache,
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), "getOperationStats", "getNumberOfRemoves"),
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), "getOperationStats", "getTotalRemoveLatency"),
+                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
+                        "getNumberOfRemoves"),
+                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
+                        "getTotalRemoveLatency"),
                 TimeUnit.NANOSECONDS)
                 .tags(getTagsWithCacheName())
                 .description("Cache removals")
@@ -167,7 +177,7 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
             }
             return (long) currentObject;
         } catch (Throwable e) {
-            LOGGER.warn("Unable to extract metric using reflection", e);
+            logger.warn("Unable to extract metric using reflection", e);
             return -1;
         }
     }

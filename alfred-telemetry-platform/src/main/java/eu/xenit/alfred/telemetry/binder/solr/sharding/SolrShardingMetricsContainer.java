@@ -1,7 +1,6 @@
 package eu.xenit.alfred.telemetry.binder.solr.sharding;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,7 +17,7 @@ import org.alfresco.repo.index.shard.ShardState;
 public class SolrShardingMetricsContainer {
 
     private ShardRegistry shardRegistry;
-    private Map<Floc, HashMap<Shard, HashSet<ShardState>>> rawData;
+    private Map<Floc, Map<Shard, Set<ShardState>>> rawData;
     private long lastRefresh;
     private long ttl; // how long before the raw data will be refreshed
 
@@ -35,7 +34,7 @@ public class SolrShardingMetricsContainer {
     public void refresh() {
         long now = System.currentTimeMillis();
         if (rawData == null || now - lastRefresh > ttl) {
-            rawData = shardRegistry.getFlocs();
+            rawData = getFlocsWithReflection();
         }
     }
 
@@ -62,6 +61,21 @@ public class SolrShardingMetricsContainer {
     public Optional<ReplicaState> getReplicaState(ShardInstance shardInstance) {
         return getShardState(shardInstance)
                 .map(shardState -> ReplicaState.valueOf(shardState.getPropertyBag().get(ShardRegistryImpl.INSTANCE_STATE)));
+    }
+
+    /**
+     * The return type of {@link ShardRegistry#getFlocs()} changed from 'HashMap<Floc, HashMap<Shard,
+     * HashSet<ShardState>>>' to 'Map<Floc, Map<Shard, Set<ShardState>>>'. We invoke the method with reflection to catch
+     * this change.
+     */
+    private Map<Floc, Map<Shard, Set<ShardState>>> getFlocsWithReflection() {
+        try {
+            // noinspection unchecked
+            return (Map<Floc, Map<Shard, Set<ShardState>>>)
+                    shardRegistry.getClass().getMethod("getFlocs").invoke(shardRegistry);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            throw new IllegalStateException("Failed to invoke ShardRegistry#getFlocs() using reflection", e);
+        }
     }
 
 }
