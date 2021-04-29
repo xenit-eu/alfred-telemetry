@@ -1,5 +1,6 @@
 plugins {
     id 'eu.xenit.docker-compose' version '5.2.0' apply false
+    id "be.vbgn.ci-detect" version "0.5.0"
     id "org.sonarqube" version "3.1.1"
     id "org.kordamp.gradle.jacoco" version "0.44.0"
 }
@@ -22,9 +23,10 @@ allprojects {
     group = 'eu.xenit.alfred.telemetry'
     version = '0.5.1'
 
-    boolean isRelease = System.env.BRANCH_NAME?.startsWith("release")
-    if (!isRelease)
+    boolean isRelease = ci.branch?.startsWith("release")
+    if (!isRelease) {
         version += "-SNAPSHOT"
+    }
 
     ext {
         micrometerVersion = '1.0.6'
