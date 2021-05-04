@@ -51,7 +51,8 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
         return Stream.of(
                 "license.valid",
                 "license.users",
-                "license.docs",
+                "license.users.max",
+                "license.docs.max",
                 "license.days",
                 "license.cluster.enabled",
                 "license.encryption.enabled",
