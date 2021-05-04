@@ -261,16 +261,16 @@ The license metrics bindings will provide metrics about Alfresco license. Enterp
 
 Metrics provided
 
-| Name                                  | Available tags           | Comment |
-| :------------------------------------ | :----------------------- |         |
-| license.valid                         |                          |         |
-| license.users                         |       status:[max]       |         |
+| Name                                  | Available tags           | Comment                                    |
+| :------------------------------------ | :----------------------  | :----------------------------------------- |
+| license.valid                         |                          |                                            |
+| license.users.max                      |                          |                                            |
 | license.users                         |       status:[current]   | User needs to have logged in at least once |
-| license.docs                          |       status:[max]       |         |
-| license.days                          |       status:[remaining] |         |
-| license.cluster.enabled               |                          |         |
-| license.encryption.enabled            |                          |         |
-| license.heartbeat.enabled             |                          |         |
+| license.docs.max                       |                          |                                            |
+| license.days                          |       status:[remaining] |                                            |
+| license.cluster.enabled               |                          |                                            |
+| license.encryption.enabled            |                          |                                            |
+| license.heartbeat.enabled             |                          |                                            |
 
 
 
