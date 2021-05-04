@@ -264,9 +264,9 @@ Metrics provided
 | Name                                  | Available tags           | Comment                                    |
 | :------------------------------------ | :----------------------  | :----------------------------------------- |
 | license.valid                         |                          |                                            |
-| license.maxUsers                      |                          |                                            |
+| license.users.max                      |                          |                                            |
 | license.users                         |       status:[current]   | User needs to have logged in at least once |
-| license.maxDocs                       |                          |                                            |
+| license.docs.max                       |                          |                                            |
 | license.days                          |       status:[remaining] |                                            |
 | license.cluster.enabled               |                          |                                            |
 | license.encryption.enabled            |                          |                                            |
