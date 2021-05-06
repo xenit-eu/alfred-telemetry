@@ -1,4 +1,5 @@
-# Introduction
+# Alfred Telemetry for Solr
+
 Alfred Telemetry Solr integrates Solr and [Micrometer](https://micrometer.io/), an application metrics facade that 
 supports numerous monitoring systems.
 
