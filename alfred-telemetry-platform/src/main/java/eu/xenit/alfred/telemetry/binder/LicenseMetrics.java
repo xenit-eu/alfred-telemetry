@@ -50,11 +50,9 @@ public class LicenseMetrics implements MeterBinder, ApplicationContextAware {
                 .register(registry);
         Gauge.builder(METRIC_NAME_LICENSE + ".docs.max", descriptorService, LicenseMetrics::getMaxDocs)
                 .description("Max docs")
-                .tags("status", "max")
                 .register(registry);
         Gauge.builder(METRIC_NAME_LICENSE + ".users.max", descriptorService, LicenseMetrics::getMaxUsers)
                 .description("Max users")
-                .tags("status", "max")
                 .register(registry);
         Gauge.builder(METRIC_NAME_LICENSE + ".users", repoAdminService, LicenseMetrics::getAuthorizedUsers)
                 .description("Authorized users")
