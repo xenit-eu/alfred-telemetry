@@ -31,6 +31,11 @@ Version template:
 
 [#82]: https://github.com/xenit-eu/alfred-telemetry/pull/82
 
+### Fixed
+* NoSuchMethodError: 'java.util.HashMap org.alfresco.repo.index.shard.ShardRegistry.getFlocs()' [#85]
+
+[#85]: https://github.com/xenit-eu/alfred-telemetry/pull/85
+
 ## [0.5.0] - 2021-03-22
 
 ### Added
