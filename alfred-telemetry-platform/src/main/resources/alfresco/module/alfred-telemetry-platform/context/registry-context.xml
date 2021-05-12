@@ -60,6 +60,7 @@
     <bean id="alfred-telemetry.PrometheusConfig"
             class="eu.xenit.alfred.telemetry.registry.prometheus.PrometheusConfig">
         <property name="enabled" value="${alfred.telemetry.export.prometheus.enabled}"/>
+        <property name="maxRequests" value="${alfred.telemetry.export.prometheus.max-requests}"/>
     </bean>
 
     <bean id="alfred-telemetry.PrometheusRegistryFactoryWrapper"
