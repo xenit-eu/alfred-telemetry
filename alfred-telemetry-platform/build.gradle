@@ -49,6 +49,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
+    testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
 
     testRuntimeOnly 'org.alfresco:alfresco-remote-api'
 }

@@ -1,8 +1,10 @@
 package eu.xenit.alfred.telemetry.webscripts;
 
+import eu.xenit.alfred.telemetry.registry.prometheus.PrometheusConfig;
 import eu.xenit.alfred.telemetry.util.PrometheusRegistryUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
@@ -11,10 +13,15 @@ import org.springframework.util.ClassUtils;
 
 public class PrometheusWebScript extends AbstractWebScript {
 
-    private MeterRegistry meterRegistry;
+    private final int maxRequests;
+    private final Semaphore semaphore;
 
-    public PrometheusWebScript(MeterRegistry meterRegistry) {
+    private final MeterRegistry meterRegistry;
+
+    public PrometheusWebScript(MeterRegistry meterRegistry, PrometheusConfig prometheusConfig) {
         this.meterRegistry = meterRegistry;
+        this.maxRequests = prometheusConfig.getMaxRequests();
+        this.semaphore = new Semaphore(maxRequests);
     }
 
     private static boolean prometheusAvailableOnClasspath() {
@@ -33,8 +40,20 @@ public class PrometheusWebScript extends AbstractWebScript {
             throw new WebScriptException(404, "The global MeterRegistry doesn't contain a PrometheusMeterRegistry");
         }
 
-        webScriptResponse.setStatus(200);
-        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(meterRegistry), webScriptResponse);
+        if (!semaphore.tryAcquire()) {
+            throw new WebScriptException(503, "Max number of active requests (" + maxRequests + ") reached");
+        }
+
+        try {
+            executeInternal(webScriptResponse);
+        } finally {
+            semaphore.release();
+        }
+    }
+
+    private void executeInternal(WebScriptResponse response) throws IOException {
+        response.setStatus(200);
+        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(meterRegistry), response);
     }
 
     private void writeTextToResponse(final String text, final WebScriptResponse response) throws IOException {

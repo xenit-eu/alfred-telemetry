@@ -35,6 +35,7 @@ allprojects {
         junitJupiterVersion = '5.4.2'
         mockitoVersion = '2.27.0'
         hamcrestVersion = '1.3'
+        awaitilityVersion = '4.1.0'
         restAssuredVersion = '4.0.0'
     }
 
