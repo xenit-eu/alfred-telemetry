@@ -21,10 +21,13 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
-## [0.5.2] - UNRELEASED
+## [0.5.2] - 2021-05-19
 
 ### Added
 * Configurable number of maximum prometheus scrape requests [#70]
+
+### Changed
+* Optimize names and tags of license metrics
 
 [#70]: https://github.com/xenit-eu/alfred-telemetry/pull/70 
 
