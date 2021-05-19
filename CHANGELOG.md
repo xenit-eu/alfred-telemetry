@@ -21,12 +21,27 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
+## [0.5.2] - 2021-05-19
+
+### Added
+* Configurable number of maximum prometheus scrape requests [#70]
+
+### Changed
+* Optimize names and tags of license metrics
+
+[#70]: https://github.com/xenit-eu/alfred-telemetry/pull/70 
+
 ## [0.5.1] - 2021-04-29
 
 ### Added
 * Alfresco license metrics [#82]
 
 [#82]: https://github.com/xenit-eu/alfred-telemetry/pull/82
+
+### Fixed
+* NoSuchMethodError: 'java.util.HashMap org.alfresco.repo.index.shard.ShardRegistry.getFlocs()' [#85]
+
+[#85]: https://github.com/xenit-eu/alfred-telemetry/pull/85
 
 ## [0.5.0] - 2021-03-22
 

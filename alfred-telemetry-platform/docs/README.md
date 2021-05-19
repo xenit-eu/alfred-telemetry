@@ -110,6 +110,13 @@ to present a [Prometheus scrape](https://prometheus.io/) with the appropriate fo
 > If the micrometer-registry-prometheus module is not available on the classpath, requests to the endpoint 
 > will result in a HTTP Status code 404
 
+Additional Prometheus configuration:
+
+```properties
+# The maximum number of concurrent requests the Prometheus endpoint should handle. Once the maximum number of 
+# requests is being processed, the response for new requests will have status code 503.
+alfred.telemetry.export.prometheus.max-requests=1
+```
 
 # Supported metrics
 
@@ -261,16 +268,16 @@ The license metrics bindings will provide metrics about Alfresco license. Enterp
 
 Metrics provided
 
-| Name                                  | Available tags           | Comment |
-| :------------------------------------ | :----------------------- |         |
-| license.valid                         |                          |         |
-| license.users                         |       status:[max]       |         |
+| Name                                  | Available tags           | Comment                                    |
+| :------------------------------------ | :----------------------  | :----------------------------------------- |
+| license.valid                         |                          |                                            |
+| license.users.max                      |                          |                                            |
 | license.users                         |       status:[current]   | User needs to have logged in at least once |
-| license.docs                          |       status:[max]       |         |
-| license.days                          |       status:[remaining] |         |
-| license.cluster.enabled               |                          |         |
-| license.encryption.enabled            |                          |         |
-| license.heartbeat.enabled             |                          |         |
+| license.docs.max                       |                          |                                            |
+| license.days                          |       status:[remaining] |                                            |
+| license.cluster.enabled               |                          |                                            |
+| license.encryption.enabled            |                          |                                            |
+| license.heartbeat.enabled             |                          |                                            |
 
 
 

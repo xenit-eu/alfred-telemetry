@@ -72,7 +72,7 @@ public class LicenseMetricsTest {
     public void testNoLicenseDescriptor() {
         when(descriptorService.getLicenseDescriptor()).thenReturn(null);
         licenseMetrics.bindTo(meterRegistry);
-        assertThat(meterRegistry.get("license.docs").tag("status", "max").gauge().value(), is(-1.0));
+        assertThat(meterRegistry.get("license.docs.max").gauge().value(), is(-1.0));
     }
 
     @Test
@@ -86,19 +86,19 @@ public class LicenseMetricsTest {
         assertThat(meterRegistry.get("license.valid").gauge().value(), is(0.0));
 
         when(licenseDescriptor.getMaxDocs()).thenReturn(100L);
-        assertThat(meterRegistry.get("license.docs").tag("status", "max").gauge().value(), is(100.0));
+        assertThat(meterRegistry.get("license.docs.max").gauge().value(), is(100.0));
 
         when(licenseDescriptor.getMaxDocs()).thenReturn(null);
-        assertThat(meterRegistry.get("license.docs").tag("status", "max").gauge().value(), is(-1.0));
+        assertThat(meterRegistry.get("license.docs.max").gauge().value(), is(-1.0));
 
         when(licenseDescriptor.getMaxUsers()).thenReturn(100L);
-        assertThat(meterRegistry.get("license.users").tag("status", "max").gauge().value(), is(100.0));
+        assertThat(meterRegistry.get("license.users.max").gauge().value(), is(100.0));
 
         when(repoUsage.getUsers()).thenReturn(3L);
         assertThat(meterRegistry.get("license.users").tag("status", "current").gauge().value(), is(3.0));
 
         when(licenseDescriptor.getMaxUsers()).thenReturn(null);
-        assertThat(meterRegistry.get("license.users").tag("status", "max").gauge().value(), is(-1.0));
+        assertThat(meterRegistry.get("license.users.max").gauge().value(), is(-1.0));
 
         when(licenseDescriptor.getRemainingDays()).thenReturn(100);
         assertThat(meterRegistry.get("license.days").tag("status", "remaining").gauge().value(), is(100.0));
