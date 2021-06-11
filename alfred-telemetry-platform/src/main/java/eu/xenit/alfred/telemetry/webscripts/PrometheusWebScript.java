@@ -4,14 +4,19 @@ import eu.xenit.alfred.telemetry.registry.prometheus.PrometheusConfig;
 import eu.xenit.alfred.telemetry.util.PrometheusRegistryUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Semaphore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.extensions.webscripts.AbstractWebScript;
-import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.ClassUtils;
 
 public class PrometheusWebScript extends AbstractWebScript {
+
+    private static final Logger logger = LoggerFactory.getLogger(PrometheusWebScript.class);
 
     private final int maxRequests;
     private final Semaphore semaphore;
@@ -24,42 +29,56 @@ public class PrometheusWebScript extends AbstractWebScript {
         this.semaphore = new Semaphore(maxRequests);
     }
 
-    private static boolean prometheusAvailableOnClasspath() {
-        return ClassUtils.isPresent("io.micrometer.prometheus.PrometheusMeterRegistry",
-                PrometheusWebScript.class.getClassLoader());
-    }
-
     @Override
-    public void execute(WebScriptRequest webScriptRequest, WebScriptResponse webScriptResponse) throws IOException {
+    public void execute(WebScriptRequest request, WebScriptResponse response) throws IOException {
 
         if (!prometheusAvailableOnClasspath()) {
-            throw new WebScriptException(404, "micrometer-prometheus-registry not available on the classpath");
+            setStatusCodeAndWriteResponse(response, HttpStatus.NOT_FOUND,
+                    "micrometer-prometheus-registry not available on the classpath");
+            return;
         }
 
         if (!PrometheusRegistryUtil.isOrContainsPrometheusRegistry(meterRegistry)) {
-            throw new WebScriptException(404, "The global MeterRegistry doesn't contain a PrometheusMeterRegistry");
+            setStatusCodeAndWriteResponse(response, HttpStatus.NOT_FOUND,
+                    "The global MeterRegistry doesn't contain a PrometheusMeterRegistry");
+            return;
         }
 
         if (!semaphore.tryAcquire()) {
-            throw new WebScriptException(503, "Max number of active requests (" + maxRequests + ") reached");
+            final String message = "Max number of active requests (" + maxRequests + ") reached";
+            logger.error(message);
+            setStatusCodeAndWriteResponse(response, HttpStatus.SERVICE_UNAVAILABLE, message);
+            return;
         }
 
         try {
-            executeInternal(webScriptResponse);
+            executeInternal(response);
         } finally {
             semaphore.release();
         }
     }
 
-    private void executeInternal(WebScriptResponse response) throws IOException {
-        response.setStatus(200);
-        writeTextToResponse(PrometheusRegistryUtil.extractPrometheusScrapeData(meterRegistry), response);
+    private static boolean prometheusAvailableOnClasspath() {
+        return ClassUtils.isPresent("io.micrometer.prometheus.PrometheusMeterRegistry",
+                PrometheusWebScript.class.getClassLoader());
     }
 
-    private void writeTextToResponse(final String text, final WebScriptResponse response) throws IOException {
+    private void executeInternal(WebScriptResponse response) throws IOException {
+        setStatusCodeAndWriteResponse(response, HttpStatus.OK,
+                PrometheusRegistryUtil.extractPrometheusScrapeData(meterRegistry));
+    }
+
+    private void setStatusCodeAndWriteResponse(WebScriptResponse response, HttpStatus status, String message)
+            throws IOException {
+        response.setStatus(status.value());
+        writeResponse(response, message);
+    }
+
+    private void writeResponse(final WebScriptResponse response, final String text) throws IOException {
         response.setContentType("text/plain");
         response.setContentEncoding("UTF-8");
-        response.setHeader("length", String.valueOf(text.getBytes().length));
-        response.getOutputStream().write(text.getBytes());
+        byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+        response.setHeader("length", String.valueOf(bytes.length));
+        response.getOutputStream().write(bytes);
     }
 }

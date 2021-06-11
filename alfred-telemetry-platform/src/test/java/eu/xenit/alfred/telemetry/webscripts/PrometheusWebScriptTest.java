@@ -4,7 +4,6 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,14 +13,14 @@ import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
@@ -33,23 +32,30 @@ class PrometheusWebScriptTest {
     @Mock
     private PrometheusMeterRegistry registry;
 
+    @Mock
+    private WebScriptRequest mockedRequest;
+    @Mock
+    private WebScriptResponse mockedResponse;
+    private ByteArrayOutputStream responseOutputStream;
+
+    @BeforeEach
+    void setup() throws IOException {
+        responseOutputStream = new ByteArrayOutputStream();
+        when(mockedResponse.getOutputStream()).thenReturn(responseOutputStream);
+    }
+
     @Test
     void execute() throws IOException {
         PrometheusWebScript webScript = initWebScript(1);
         when(registry.scrape()).thenReturn(TEST_SCRAPE_TEXT);
 
-        WebScriptRequest request = mock(WebScriptRequest.class);
-        WebScriptResponse response = mock(WebScriptResponse.class);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        when(response.getOutputStream()).thenReturn(out);
-
-        webScript.execute(request, response);
-        verify(response).setStatus(200);
-        assertThat(out.toString("UTF-8"), is(equalTo(TEST_SCRAPE_TEXT)));
+        webScript.execute(mockedRequest, mockedResponse);
+        verify(mockedResponse).setStatus(200);
+        assertThat(responseOutputStream.toString("UTF-8"), is(equalTo(TEST_SCRAPE_TEXT)));
     }
 
     @Test
-    void execute_maxRequestsReached() {
+    void execute_maxRequestsReached() throws IOException {
         PrometheusWebScript webScript = initWebScript(1);
 
         when(registry.scrape()).thenAnswer(answer -> {
@@ -57,6 +63,7 @@ class PrometheusWebScriptTest {
             return TEST_SCRAPE_TEXT;
         });
 
+        // Trigger a first response on a separate thread
         Runnable firstHttpRequest = () -> {
             WebScriptRequest request = mock(WebScriptRequest.class);
             WebScriptResponse response = mock(WebScriptResponse.class);
@@ -67,26 +74,22 @@ class PrometheusWebScriptTest {
             }
         };
 
-        Runnable secondHttpRequest = () -> {
-            WebScriptRequest request = mock(WebScriptRequest.class);
-            WebScriptResponse response = mock(WebScriptResponse.class);
-            WebScriptException e = assertThrows(WebScriptException.class, () -> webScript.execute(request, response));
-            assertThat(e.getStatus(), is(equalTo(503)));
-        };
-
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
         executorService.submit(firstHttpRequest);
-        Future<?> future = executorService.submit(secondHttpRequest);
 
-        await().until(future::isDone);
+        await().during(Duration.ofSeconds(1)).until(() -> true);
+
+        webScript.execute(mockedRequest, mockedResponse);
+        verify(mockedResponse).setStatus(503);
+
         executorService.shutdownNow();
+
     }
 
     private PrometheusWebScript initWebScript(int maxRequests) {
         PrometheusConfig config = new PrometheusConfig();
         config.setMaxRequests(maxRequests);
         return new PrometheusWebScript(registry, config);
-
     }
 
 }
