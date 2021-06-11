@@ -4,6 +4,8 @@ import eu.xenit.alfred.telemetry.registry.prometheus.PrometheusConfig;
 import eu.xenit.alfred.telemetry.util.PrometheusRegistryUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Semaphore;
 import org.slf4j.Logger;
@@ -19,13 +21,23 @@ public class PrometheusWebScript extends AbstractWebScript {
     private static final Logger logger = LoggerFactory.getLogger(PrometheusWebScript.class);
 
     private final int maxRequests;
+    private final int suppressMaxRequestsFailuresDuringUptimeMinutes;
+    private final RuntimeMXBean runtimeMXBean;
     private final Semaphore semaphore;
 
     private final MeterRegistry meterRegistry;
 
     public PrometheusWebScript(MeterRegistry meterRegistry, PrometheusConfig prometheusConfig) {
+        this(meterRegistry, ManagementFactory.getRuntimeMXBean(), prometheusConfig);
+    }
+
+    public PrometheusWebScript(MeterRegistry meterRegistry, RuntimeMXBean runtimeMXBean,
+            PrometheusConfig prometheusConfig) {
         this.meterRegistry = meterRegistry;
         this.maxRequests = prometheusConfig.getMaxRequests();
+        this.suppressMaxRequestsFailuresDuringUptimeMinutes = prometheusConfig
+                .getSuppressMaxRequestsFailuresDuringUptimeMinutes();
+        this.runtimeMXBean = runtimeMXBean;
         this.semaphore = new Semaphore(maxRequests);
     }
 
@@ -46,7 +58,7 @@ public class PrometheusWebScript extends AbstractWebScript {
 
         if (!semaphore.tryAcquire()) {
             final String message = "Max number of active requests (" + maxRequests + ") reached";
-            logger.error(message);
+            logMaxRequestsViolation(message);
             setStatusCodeAndWriteResponse(response, HttpStatus.SERVICE_UNAVAILABLE, message);
             return;
         }
@@ -80,5 +92,17 @@ public class PrometheusWebScript extends AbstractWebScript {
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         response.setHeader("length", String.valueOf(bytes.length));
         response.getOutputStream().write(bytes);
+    }
+
+    private void logMaxRequestsViolation(String message) {
+        if (uptimeAtLeast(suppressMaxRequestsFailuresDuringUptimeMinutes)) {
+            logger.error(message);
+        } else {
+            logger.debug(message);
+        }
+    }
+
+    private boolean uptimeAtLeast(int minutes) {
+        return runtimeMXBean.getUptime() > (1000L * 60 * minutes);
     }
 }
