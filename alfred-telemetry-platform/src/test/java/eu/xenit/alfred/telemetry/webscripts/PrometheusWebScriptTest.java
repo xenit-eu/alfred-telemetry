@@ -13,9 +13,9 @@ import io.micrometer.prometheus.PrometheusMeterRegistry;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,8 +57,10 @@ class PrometheusWebScriptTest {
     @Test
     void execute_maxRequestsReached() throws IOException {
         PrometheusWebScript webScript = initWebScript(1);
+        AtomicBoolean firstThreadIsBlocked = new AtomicBoolean(false);
 
         when(registry.scrape()).thenAnswer(answer -> {
+            firstThreadIsBlocked.set(true);
             await().forever().until(() -> false);
             return TEST_SCRAPE_TEXT;
         });
@@ -77,7 +79,7 @@ class PrometheusWebScriptTest {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         executorService.submit(firstHttpRequest);
 
-        await().during(Duration.ofSeconds(1)).until(() -> true);
+        await().untilAtomic(firstThreadIsBlocked, is(true));
 
         webScript.execute(mockedRequest, mockedResponse);
         verify(mockedResponse).setStatus(503);
