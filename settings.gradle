@@ -11,7 +11,7 @@ include ':alfred-telemetry-solr'
 
 include ':integration-tests'
 
-def integrationTestVersions = ["52", "60", "61", "62"];
+def integrationTestVersions = ["52", "60", "61", "62", "70"];
 if (hasProperty("enterprise")) {
     integrationTestVersions.each {version ->
         include ":integration-tests:alfresco-enterprise-${version}"

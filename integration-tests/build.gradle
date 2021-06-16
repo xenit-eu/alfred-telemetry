@@ -74,6 +74,9 @@ subprojects {
         alfrescoSM "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
         alfrescoSM "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
 
+        if (project.hasProperty("alfrescoBaseWarBom")) {
+            baseAlfrescoWar platform("${alfrescoBaseWarBom}")
+        }
         baseAlfrescoWar "${alfrescoBaseWar}"
     }
 
