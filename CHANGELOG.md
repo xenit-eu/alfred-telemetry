@@ -21,9 +21,16 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
-## [0.6.0] - UNRELEASED
+## [0.6.0] - 2021-06-30
 
+### Added
+* Alfresco 7 support [#107]
 
+### Fixed
+* Prometheus scraping: max number of requests reached during Alfresco startup [#104]
+
+[#107]: https://github.com/xenit-eu/alfred-telemetry/pull/107
+[#104]: https://github.com/xenit-eu/alfred-telemetry/pull/104
 
 ## [0.5.2] - 2021-05-19
 
