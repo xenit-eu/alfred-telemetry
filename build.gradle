@@ -21,7 +21,7 @@ def copyPropertyValueIfExists(sourcePropertyName, targetPropertyName) {
 
 allprojects {
     group = 'eu.xenit.alfred.telemetry'
-    version = '0.6.0'
+    version = '0.6.1'
 
     boolean isRelease = ci.branch?.startsWith("release")
     if (!isRelease) {
