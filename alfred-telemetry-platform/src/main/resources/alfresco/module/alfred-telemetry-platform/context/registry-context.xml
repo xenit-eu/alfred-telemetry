@@ -61,6 +61,8 @@
             class="eu.xenit.alfred.telemetry.registry.prometheus.PrometheusConfig">
         <property name="enabled" value="${alfred.telemetry.export.prometheus.enabled}"/>
         <property name="maxRequests" value="${alfred.telemetry.export.prometheus.max-requests}"/>
+        <property name="suppressMaxRequestsFailuresDuringUptimeMinutes"
+                value="${alfred.telemetry.export.prometheus.suppress-max-request-failures-during-uptime-minutes}"/>
     </bean>
 
     <bean id="alfred-telemetry.PrometheusRegistryFactoryWrapper"
