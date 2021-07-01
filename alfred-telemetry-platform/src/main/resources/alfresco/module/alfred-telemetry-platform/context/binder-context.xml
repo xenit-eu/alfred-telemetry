@@ -59,6 +59,11 @@
 
     <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacySystemMetrics"/>
 
+    <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacyLicenseMetrics">
+        <constructor-arg ref="DescriptorService"/>
+        <constructor-arg ref="RepoAdminService"/>
+    </bean>
+
     <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacyGcMetrics"/>
 
     <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacyCacheMetrics">
