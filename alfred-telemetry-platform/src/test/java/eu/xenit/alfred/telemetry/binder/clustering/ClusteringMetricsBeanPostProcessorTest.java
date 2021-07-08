@@ -23,7 +23,7 @@ class ClusteringMetricsBeanPostProcessorTest {
     }
 
     @Test
-    public void testEnterpriseAndClusteringMetricsEnabled() {
+    void testEnterpriseAndClusteringMetricsEnabled() {
         BeanDefinitionRegistry beanDefinitionRegistry = mock(BeanDefinitionRegistry.class);
         clusteringMetricsBeanPostProcessor.postProcessBeanDefinitionRegistry(beanDefinitionRegistry);
         verify(beanDefinitionRegistry)
@@ -31,7 +31,7 @@ class ClusteringMetricsBeanPostProcessorTest {
     }
 
     @Test
-    public void testCommunityAndClusteringMetricsEnabled() {
+    void testCommunityAndClusteringMetricsEnabled() {
         BeanDefinitionRegistry beanDefinitionRegistry = mock(BeanDefinitionRegistry.class);
         when(beanDefinitionRegistry.getBeanDefinition(ClusteringMetricsBeanPostProcessor.CLUSTER_SERVICE)).thenThrow(new NoSuchBeanDefinitionException("Bean not found"));
         clusteringMetricsBeanPostProcessor.postProcessBeanDefinitionRegistry(beanDefinitionRegistry);

@@ -1,6 +1,5 @@
 package eu.xenit.alfred.telemetry.binder.clustering;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
