@@ -61,7 +61,7 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
                 "license.cluster.enabled",
                 "license.encryption.enabled",
                 "license.heartbeat.enabled",
-                "repository.nodes.count"
+                "repository.cluster.nodes.count"
         );
     }
 

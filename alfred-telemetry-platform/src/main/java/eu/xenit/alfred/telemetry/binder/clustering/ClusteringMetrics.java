@@ -8,8 +8,8 @@ import org.alfresco.enterprise.repo.cluster.core.ClusterService;
 
 public class ClusteringMetrics implements MeterBinder {
     private static final String CLUSTER_TYPE = "clustertype";
-    public static final String GAUGE_NAME = "repository.nodes.count";
-    public static final String GAUGE_DESCRIPTION = "The amount of repository nodes";
+    public static final String GAUGE_NAME = "repository.cluster.nodes.count";
+    public static final String GAUGE_DESCRIPTION = "The amount of repository cluster nodes";
 
     private ClusterService clusterService;
 

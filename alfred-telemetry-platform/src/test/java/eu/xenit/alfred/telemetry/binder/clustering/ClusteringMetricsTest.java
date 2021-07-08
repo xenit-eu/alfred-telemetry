@@ -1,8 +1,12 @@
 package eu.xenit.alfred.telemetry.binder.clustering;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.search.RequiredSearch;
+import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.HashSet;
 import javax.management.AttributeList;
@@ -24,7 +28,6 @@ class ClusteringMetricsTest {
     private ClusteringMetrics clusteringMetrics;
 
     private MeterRegistry meterRegistry;
-    private AttributeList attributes;
 
     void initClusterMetricsWithClusterService() {
         meterRegistry = new SimpleMeterRegistry();
@@ -92,5 +95,13 @@ class ClusteringMetricsTest {
         when(clusterService.isClusteringEnabled()).thenReturn(false);
         Assertions.assertEquals(0, clusteringMetrics.getOfflineMemberCount(clusterService));
         Assertions.assertEquals(0, clusteringMetrics.getClusterMemberCount(clusterService));
+    }
+
+    @Test
+    void testBindTo() {
+        initClusterMetricsWithClusterService();
+        clusteringMetrics.bindTo(meterRegistry);
+        RequiredSearch search = meterRegistry.get(ClusteringMetrics.GAUGE_NAME);
+        Assertions.assertEquals(3, search.gauges().size());
     }
 }
