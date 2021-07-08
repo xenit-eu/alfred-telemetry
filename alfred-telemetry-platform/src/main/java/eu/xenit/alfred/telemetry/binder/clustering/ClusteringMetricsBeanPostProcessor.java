@@ -16,7 +16,6 @@ public class ClusteringMetricsBeanPostProcessor implements BeanDefinitionRegistr
     private static final Logger logger = LoggerFactory.getLogger(ClusteringMetricsBeanPostProcessor.class);
 
     public static final String CLUSTER_SERVICE = "clusterService";
-    public static final String CLUSTERING_METRICS_ENABLED_PROPERTY = "alfred.telemetry.binder.clustering.enabled";
     public static final String CLUSTERING_METRICS_BEAN_ID = "eu.xenit.alfred.telemetry.binder.clustering.ClusteringMetrics";
 
     @Override
@@ -37,9 +36,7 @@ public class ClusteringMetricsBeanPostProcessor implements BeanDefinitionRegistr
             beanDefinitionRegistry.registerBeanDefinition(CLUSTERING_METRICS_BEAN_ID, clusteringMetricsBean);
             logger.info("Registered ClusteringMetrics bean");
         } catch (NoSuchBeanDefinitionException e) {
-            logger.warn(String.format(
-                    "%s not found, this feature only works on Alfresco enterprise. Consider setting `%s` to `false` to avoid this message.",
-                    CLUSTER_SERVICE, CLUSTERING_METRICS_ENABLED_PROPERTY));
+            logger.info("%s not found, this feature only works on Alfresco enterprise.", CLUSTER_SERVICE);
         }
     }
 
