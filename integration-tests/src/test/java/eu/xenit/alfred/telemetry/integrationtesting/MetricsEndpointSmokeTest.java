@@ -99,7 +99,7 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
                 .jsonPath()
                 .getList("names");
 
-        expectedMeters().forEach(expected ->
+        expectedMetersEnterprise().forEach(expected ->
                 assertThat(
                         "The metrics endpoint should contain meter '" + expected + "'",
                         availableMeters, hasItem(expected))
