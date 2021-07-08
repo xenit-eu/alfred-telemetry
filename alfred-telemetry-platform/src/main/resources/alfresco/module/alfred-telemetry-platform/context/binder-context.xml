@@ -39,7 +39,6 @@
 
     <bean id="alfred-telemetry.ClusteringMetricsBeanPostProcessor"
             class="eu.xenit.alfred.telemetry.binder.clustering.ClusteringMetricsBeanPostProcessor">
-        <constructor-arg ref="global-properties"/>
     </bean>
 
     <bean class="eu.xenit.alfred.telemetry.binder.DataSourceMetrics">

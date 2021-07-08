@@ -295,7 +295,7 @@ Metrics provided
 
 
 ## Clustering metrics
-The Cluster metrics will provide info about the ammount of clusters setup. Enterprise-only feature the metric will return -1 on Community.
+The Cluster metrics will provide info about the ammount of clusters setup. Enterprise-only feature the metric will not be there on Community.
 
 **Control Property**: `alfred.telemetry.binder.clustering.enabled`
 

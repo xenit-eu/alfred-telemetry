@@ -1,6 +1,5 @@
 package eu.xenit.alfred.telemetry.binder.clustering;
 
-import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -19,13 +18,6 @@ public class ClusteringMetricsBeanPostProcessor implements BeanDefinitionRegistr
     public static final String CLUSTER_SERVICE = "clusterService";
     public static final String CLUSTERING_METRICS_ENABLED_PROPERTY = "alfred.telemetry.binder.clustering.enabled";
     public static final String CLUSTERING_METRICS_BEAN_ID = "eu.xenit.alfred.telemetry.binder.clustering.ClusteringMetrics";
-    public static final String COMMUNITY_CLUSTERING_METRICS_BEAN_ID = "eu.xenit.alfred.telemetry.binder.clustering.CommunityClusteringMetrics";
-
-    private final Properties globalProperties;
-
-    public ClusteringMetricsBeanPostProcessor(Properties globalProperties) {
-        this.globalProperties = globalProperties;
-    }
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
@@ -41,17 +33,13 @@ public class ClusteringMetricsBeanPostProcessor implements BeanDefinitionRegistr
             ConstructorArgumentValues constructorArgumentValues = new ConstructorArgumentValues();
             constructorArgumentValues.addGenericArgumentValue(clusterServiceBean);
             clusteringMetricsBean.setConstructorArgumentValues(constructorArgumentValues);
+            clusteringMetricsBean.setLazyInit(true);
             beanDefinitionRegistry.registerBeanDefinition(CLUSTERING_METRICS_BEAN_ID, clusteringMetricsBean);
             logger.info("Registered ClusteringMetrics bean");
         } catch (NoSuchBeanDefinitionException e) {
-            logger.error(String.format("%s not found, this feature only works on Alfresco enterprise", CLUSTER_SERVICE));
-            GenericBeanDefinition clusteringMetricsBean = new GenericBeanDefinition();
-            clusteringMetricsBean.setBeanClass(CommunityClusteringMetrics.class);
-            ConstructorArgumentValues constructorArgumentValues = new ConstructorArgumentValues();
-            constructorArgumentValues.addGenericArgumentValue(globalProperties);
-            clusteringMetricsBean.setConstructorArgumentValues(constructorArgumentValues);
-            clusteringMetricsBean.setLazyInit(true);
-            beanDefinitionRegistry.registerBeanDefinition(COMMUNITY_CLUSTERING_METRICS_BEAN_ID, clusteringMetricsBean);
+            logger.warn(String.format(
+                    "%s not found, this feature only works on Alfresco enterprise. Consider setting `%s` to `false` to avoid this message.",
+                    CLUSTER_SERVICE, CLUSTERING_METRICS_ENABLED_PROPERTY));
         }
     }
 
