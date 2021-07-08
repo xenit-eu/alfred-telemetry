@@ -142,12 +142,14 @@ Unit tests can be executed with the Gradle `test` task:
 The projects also includes integration tests which startup and test
 an Alfresco with the Alfred Telemetry extension installed.
 
-To execute all the available integration tests, following Gradle task can be used:
+To execute all the available integration tests for community versions, following Gradle task can be used:
 
 ```
-./gradlew integrationTest
+./gradlew integrationTest -Pcommunity
 ```
 
+Leaving out the `-Pcommunity` will also trigger the Alfresco Enterprise integration tests. You need extra credentials to
+make that work.
 To only run the integration tests for a specific Alfresco version, execute the task in the corresponding subproject:
 
 ```

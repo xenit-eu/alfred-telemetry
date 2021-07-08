@@ -478,28 +478,4 @@ An overview of the configurable parameters and their default value. These values
     
     Therefore this module automatically disables the `ServletMetricsFilter` metrics by setting following global 
     property: `metrics.tomcatMetricsReporter.enabled=false`.
-    
-
-# Care4Alf metrics support
-
-To simplify the switch from [Care4Alf](https://bitbucket.org/xenit/care4alf) to Alfred Telemetry as an Alfresco 
-metrics integration, most Care4Alf metrics are made available in Alfred Telemetry.  
-Metrics which are only provided for Care4Alf legacy support are disabled by default and can be enabled 
-with following property:
-
-`alfred.telemetry.binder.care4alf.enabled=true`
-
-When enabled, all Care4Alf metrics included in Alfred Telemetry will be exported. It is possible to disable 
-specific Care4Alf metrics by disable the specific metric. An overview of the metrics which are only included
-in Alfred Telemetry for legacy support:
-
-```properties
-alfred.telemetry.binder.care4alf.ticket.enabled=true
-alfred.telemetry.binder.care4alf.legacy-system.enabled=true
-alfred.telemetry.binder.care4alf.legacy-memory.enabled=true
-alfred.telemetry.binder.care4alf.legacy-gc.enabled=true
-alfred.telemetry.binder.care4alf.legacy-cache.enabled=true
-```
-
-For an overview of the exported Care4Alf metrics, please consult the 
-[Care4Alf documentation](https://bitbucket.org/xenit/care4alf/src/master/monitoring-docs.md). 
+  

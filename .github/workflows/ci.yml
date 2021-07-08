@@ -31,6 +31,7 @@ jobs:
     strategy:
       matrix:
         flavour: [ "community", "enterprise" ]
+        version: [ "52", "60", "61", "62", "70"]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -39,7 +40,7 @@ jobs:
         with:
           java-version: 11
       - name: Test
-        run: ./gradlew integrationTest -P${{ matrix.flavour }}
+        run: ./gradlew :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest
         env:
           ORG_GRADLE_PROJECT_xenit_docker_registry_url: ${{ secrets.XENIT_DOCKER_REGISTRY_URL }}
           ORG_GRADLE_PROJECT_xenit_docker_registry_username: ${{ secrets.XENIT_DOCKER_REGISTRY_USERNAME }}
