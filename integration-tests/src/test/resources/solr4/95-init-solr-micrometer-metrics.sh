@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [ "${ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED}" = true ]
 then
  if [ none = "${ALFRESCO_SSL}" ]
