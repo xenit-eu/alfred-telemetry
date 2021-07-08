@@ -1,15 +1,11 @@
 package eu.xenit.alfred.telemetry.binder.clustering;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.search.RequiredSearch;
-import io.micrometer.core.instrument.search.Search;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.util.HashSet;
-import javax.management.AttributeList;
 import org.alfresco.enterprise.repo.cluster.core.ClusterService;
 import org.alfresco.enterprise.repo.cluster.core.RegisteredServerInfoImpl;
 import org.junit.jupiter.api.Assertions;

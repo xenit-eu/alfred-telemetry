@@ -24,6 +24,6 @@ class CommunityClusteringMetricsTest {
         communityClusteringMetrics = new CommunityClusteringMetrics(globalProperties);
         communityClusteringMetrics.bindTo(meterRegistry);
 
-        Assertions.assertEquals(-1, meterRegistry.get("repository.nodes.count").gauge().value());
+        Assertions.assertEquals(-1, meterRegistry.get(ClusteringMetrics.GAUGE_NAME).gauge().value());
     }
 }
