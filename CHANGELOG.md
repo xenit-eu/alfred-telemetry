@@ -21,8 +21,16 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
-## [0.6.1] - UNRELEASED
+## [0.7.0] - 2021-07-09
 
+### Added
+* Clustering metrics
+
+### Removed
+* Legacy Care4alf metrics where removed
+
+### Fixed
+* Solr tracking metrics were no longer registered since 0.6.0 [#113]
 
 ## [0.6.0] - 2021-06-30
 
