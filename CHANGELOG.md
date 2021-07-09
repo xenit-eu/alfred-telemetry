@@ -21,7 +21,7 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
-## [0.6.1] - UNRELEASED
+## [0.7.0] - 2021-07-09
 
 ### Added
 * Clustering metrics
