@@ -37,7 +37,7 @@ subprojects {
 
     def alfrescoVersion = project.name[-2..-1]
     def alfrescoEdition = "Community"
-    if(project.hasProperty("enterprise")) {
+    if(project.name.contains("-enterprise-")) {
         alfrescoEdition = "Enterprise"
     }
 

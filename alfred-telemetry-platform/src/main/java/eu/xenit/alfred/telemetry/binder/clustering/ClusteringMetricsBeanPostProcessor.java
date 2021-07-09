@@ -36,7 +36,7 @@ public class ClusteringMetricsBeanPostProcessor implements BeanDefinitionRegistr
             beanDefinitionRegistry.registerBeanDefinition(CLUSTERING_METRICS_BEAN_ID, clusteringMetricsBean);
             logger.info("Registered ClusteringMetrics bean");
         } catch (NoSuchBeanDefinitionException e) {
-            logger.info("%s not found, this feature only works on Alfresco enterprise.", CLUSTER_SERVICE);
+            logger.info("{} not found, this feature only works on Alfresco enterprise.", CLUSTER_SERVICE);
         }
     }
 
