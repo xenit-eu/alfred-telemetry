@@ -25,6 +25,7 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
 
     private static final String TAG_OWNERSHIP = "ownership";
     private static final String METHOD_GET_OPERATION_STATS = "getOperationStats";
+    private static final String METHOD_GET_PUT_OPERATION_COUNT = "getPutOperationCount";
 
     private final IMap<?, ?> cache;
 
@@ -97,7 +98,7 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
 
     @Override
     protected long putCount() {
-        return cache.getLocalMapStats().getPutOperationCount();
+        return extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_PUT_OPERATION_COUNT);
     }
 
     @Override
