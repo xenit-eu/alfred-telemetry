@@ -21,6 +21,9 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
+
+## [0.7.1] - UNRELEASED
+
 ## [0.7.0] - 2021-07-09
 
 ### Added
