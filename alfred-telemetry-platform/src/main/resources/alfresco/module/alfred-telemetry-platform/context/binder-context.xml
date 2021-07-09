@@ -3,7 +3,7 @@
 <beans>
 
     <bean id="alfred-telemetry.MeterBinderRegistrar"
-          class="eu.xenit.alfred.telemetry.binder.MeterBinderRegistrar">
+            class="eu.xenit.alfred.telemetry.binder.MeterBinderRegistrar">
         <constructor-arg ref="meterRegistry"/>
         <property name="properties" ref="global-properties"/>
         <property name="enabled" value="${alfred.telemetry.binder.enabled}"/>
@@ -13,19 +13,12 @@
         <constructor-arg ref="global-properties"/>
     </bean>
 
-    <bean id="alfred-telemetry.Care4AlfMeterBinderRegistrar"
-          class="eu.xenit.alfred.telemetry.binder.care4alf.Care4AlfMeterBinderRegistrar">
-        <constructor-arg ref="meterRegistry"/>
-        <property name="properties" ref="global-properties"/>
-        <property name="enabled" value="${alfred.telemetry.binder.care4alf.enabled}"/>
-    </bean>
-
     <bean class="eu.xenit.alfred.telemetry.binder.JvmMetrics"/>
     <bean class="eu.xenit.alfred.telemetry.binder.FilesMetrics"/>
     <bean class="eu.xenit.alfred.telemetry.binder.ProcessMetrics"/>
     <bean class="eu.xenit.alfred.telemetry.binder.AlfrescoNodeMeterBinder">
         <constructor-arg ref="nodeDAO"/>
-        <constructor-arg ref="aclDAO" />
+        <constructor-arg ref="aclDAO"/>
         <constructor-arg ref="transactionService"/>
     </bean>
     <bean class="io.micrometer.core.instrument.binder.system.ProcessorMetrics"/>
@@ -44,6 +37,11 @@
         <constructor-arg ref="RepoAdminService"/>
     </bean>
 
+    <bean id="alfred-telemetry.ClusteringMetricsBeanPostProcessor"
+            class="eu.xenit.alfred.telemetry.binder.clustering.ClusteringMetricsBeanPostProcessor"
+            depends-on="log4JHierarchyInit">
+    </bean>
+
     <bean class="eu.xenit.alfred.telemetry.binder.DataSourceMetrics">
         <constructor-arg ref="dataSource"/>
     </bean>
@@ -52,23 +50,4 @@
         <constructor-arg ref="repoAdminService"/>
         <constructor-arg ref="retryingTransactionHelper"/>
     </bean>
-
-    <!-- Care4Alf Legacy metrics support -->
-
-    <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacyMemoryMetrics"/>
-
-    <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacySystemMetrics"/>
-
-    <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacyGcMetrics"/>
-
-    <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacyCacheMetrics">
-        <constructor-arg ref="global-properties"/>
-    </bean>
-
-    <bean class="eu.xenit.alfred.telemetry.binder.care4alf.LegacyJdbcMetrics">
-        <constructor-arg ref="dataSource"/>
-        <constructor-arg ref="currentRepoDescriptorDAO"/>
-        <constructor-arg ref="global-properties"/>
-    </bean>
-
 </beans>

@@ -24,6 +24,7 @@ public class SolrTrackingMetrics {
         this.solrTrackingComponent = solrTrackingComponent;
         this.transactionService = transactionService;
         this.registry = registry;
+        registerMetrics();
     }
 
     private void registerMetrics() {

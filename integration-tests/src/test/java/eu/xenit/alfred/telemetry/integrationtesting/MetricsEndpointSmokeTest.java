@@ -43,7 +43,11 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
                 "jdbc.connections.count",
                 "jdbc.connections.max",
                 "jdbc.connections.min",
-                "users.tickets.count"
+                "users.tickets.count",
+                "solr.tracking.maxTxnId",
+                "solr.tracking.maxTxnCommitTime",
+                "solr.tracking.maxChangeSetId",
+                "solr.tracking.maxChangeSetCommitTime"
         );
     }
 
@@ -56,7 +60,8 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
                 "license.days",
                 "license.cluster.enabled",
                 "license.encryption.enabled",
-                "license.heartbeat.enabled"
+                "license.heartbeat.enabled",
+                "repository.cluster.nodes.count"
         );
     }
 
@@ -94,7 +99,7 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
                 .jsonPath()
                 .getList("names");
 
-        expectedMeters().forEach(expected ->
+        expectedMetersEnterprise().forEach(expected ->
                 assertThat(
                         "The metrics endpoint should contain meter '" + expected + "'",
                         availableMeters, hasItem(expected))

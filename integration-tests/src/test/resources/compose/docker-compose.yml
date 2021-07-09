@@ -6,9 +6,9 @@ services:
     ports:
       - target: 8080
         mode: host
- #      - target: 8000
- #       mode: host
- #       published: 8000
+#      - target: 8000
+#        mode: host
+#        published: 8000
  #     - target: 5000
  #       mode: host
  #       published: 5000
@@ -21,8 +21,6 @@ services:
       - GLOBAL_alfred.telemetry.alfresco-integration.enabled=true
       # Expose AT metrics in the Alfresco endpoint:
       - GLOBAL_alfred.telemetry.alfresco-integration.use-default-alfresco-registry=true
-      # Enable Care4Alf metrics:
-      - GLOBAL_alfred.telemetry.binder.care4alf.enabled=true
       # Enable Alfresco cache metrics:
       - GLOBAL_alfred.telemetry.binder.cache.enabled=true
 
