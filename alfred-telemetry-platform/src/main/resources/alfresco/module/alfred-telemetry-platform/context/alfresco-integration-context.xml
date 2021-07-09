@@ -7,7 +7,8 @@
         since Alfresco Enterprise 6.1
         -->
 
-    <bean class="eu.xenit.alfred.telemetry.alfrescointegration.MetricsControllerBeanPostProcessor">
+    <bean class="eu.xenit.alfred.telemetry.alfrescointegration.MetricsControllerBeanPostProcessor"
+            depends-on="log4JHierarchyInit">
         <constructor-arg index="0" ref="global-properties"/>
     </bean>
 

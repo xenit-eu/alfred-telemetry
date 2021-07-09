@@ -3,7 +3,7 @@
 <beans>
 
     <bean id="alfred-telemetry.MeterBinderRegistrar"
-          class="eu.xenit.alfred.telemetry.binder.MeterBinderRegistrar">
+            class="eu.xenit.alfred.telemetry.binder.MeterBinderRegistrar">
         <constructor-arg ref="meterRegistry"/>
         <property name="properties" ref="global-properties"/>
         <property name="enabled" value="${alfred.telemetry.binder.enabled}"/>
@@ -18,7 +18,7 @@
     <bean class="eu.xenit.alfred.telemetry.binder.ProcessMetrics"/>
     <bean class="eu.xenit.alfred.telemetry.binder.AlfrescoNodeMeterBinder">
         <constructor-arg ref="nodeDAO"/>
-        <constructor-arg ref="aclDAO" />
+        <constructor-arg ref="aclDAO"/>
         <constructor-arg ref="transactionService"/>
     </bean>
     <bean class="io.micrometer.core.instrument.binder.system.ProcessorMetrics"/>
@@ -35,6 +35,11 @@
     <bean class="eu.xenit.alfred.telemetry.binder.LicenseMetrics">
         <constructor-arg ref="DescriptorService"/>
         <constructor-arg ref="RepoAdminService"/>
+    </bean>
+
+    <bean id="alfred-telemetry.ClusteringMetricsBeanPostProcessor"
+            class="eu.xenit.alfred.telemetry.binder.clustering.ClusteringMetricsBeanPostProcessor"
+            depends-on="log4JHierarchyInit">
     </bean>
 
     <bean class="eu.xenit.alfred.telemetry.binder.DataSourceMetrics">

@@ -293,6 +293,19 @@ Metrics provided
 | alfresco.acl.maxChangeSetCommitTime   |
 | alfresco.acl.maxChangeSetId           |
 
+
+## Clustering metrics
+The Cluster metrics will provide info about the amount of clusters setup. Enterprise-only feature the metric will not be there on Community.
+
+**Control Property**: `alfred.telemetry.binder.clustering.enabled`
+
+Metrics provided
+
+| Name                                  | Available tags           
+| :------------------------------------ | :----------------------  
+| repository.cluster.nodes.count        | : clustertype:[member, non-member, offline]                                           |
+
+
 ## Solr metrics
 
 
