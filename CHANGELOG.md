@@ -22,7 +22,10 @@ Version template:
  
 # Alfred Telemetry Changelog
 
-## [0.7.1] - UNRELEASED
+## [0.7.1] - 2021-07-12
+
+### Fixed
+* Hazelcast cache metrics broken causing, among other things, a broken Prometheus scrape endpoint [#116]
 
 ## [0.7.0] - 2021-07-09
 
