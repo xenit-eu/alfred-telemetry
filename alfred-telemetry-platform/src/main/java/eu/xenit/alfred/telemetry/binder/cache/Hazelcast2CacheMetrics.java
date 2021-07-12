@@ -10,22 +10,15 @@ import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.cache.CacheMeterBinder;
 import io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics;
 import io.micrometer.core.lang.Nullable;
-import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link HazelcastCacheMetrics} equivalent which is compatible with Hazelcast 2 (Alfresco 5.x)
  */
 public class Hazelcast2CacheMetrics extends CacheMeterBinder {
 
-    private static final Logger logger = LoggerFactory.getLogger(Hazelcast2CacheMetrics.class);
-
     private static final String TAG_OWNERSHIP = "ownership";
-    private static final String METHOD_GET_OPERATION_STATS = "getOperationStats";
-    private static final String METHOD_GET_PUT_OPERATION_COUNT = "getPutOperationCount";
 
     private final IMap<?, ?> cache;
 
@@ -98,7 +91,7 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
 
     @Override
     protected long putCount() {
-        return extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_PUT_OPERATION_COUNT);
+        return cache.getLocalMapStats().getOperationStats().getNumberOfPuts();
     }
 
     @Override
@@ -126,8 +119,7 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
                 .register(registry);
 
         FunctionCounter.builder("cache.partition.gets", cache,
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
-                        "getNumberOfGets"))
+                c -> c.getLocalMapStats().getOperationStats().getNumberOfGets())
                 .tags(getTagsWithCacheName())
                 .description("The total number of get operations executed against this partition")
                 .register(registry);
@@ -138,49 +130,28 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
 
     private void timings(MeterRegistry registry) {
         FunctionTimer.builder("cache.gets.latency", cache,
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
-                        "getNumberOfGets"),
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
-                        "getTotalGetLatency"),
+                c -> c.getLocalMapStats().getOperationStats().getNumberOfGets(),
+                c -> c.getLocalMapStats().getOperationStats().getTotalGetLatency(),
                 TimeUnit.NANOSECONDS)
                 .tags(getTagsWithCacheName())
                 .description("Cache gets")
                 .register(registry);
 
         FunctionTimer.builder("cache.puts.latency", cache,
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
-                        "getNumberOfPuts"),
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
-                        "getTotalPutLatency"),
+                c -> c.getLocalMapStats().getOperationStats().getNumberOfPuts(),
+                c -> c.getLocalMapStats().getOperationStats().getTotalPutLatency(),
                 TimeUnit.NANOSECONDS)
                 .tags(getTagsWithCacheName())
                 .description("Cache puts")
                 .register(registry);
 
         FunctionTimer.builder("cache.removals.latency", cache,
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
-                        "getNumberOfRemoves"),
-                cache -> extractMetricWithReflection(cache.getLocalMapStats(), METHOD_GET_OPERATION_STATS,
-                        "getTotalRemoveLatency"),
+                c -> c.getLocalMapStats().getOperationStats().getNumberOfRemoves(),
+                c -> c.getLocalMapStats().getOperationStats().getTotalRemoveLatency(),
                 TimeUnit.NANOSECONDS)
                 .tags(getTagsWithCacheName())
                 .description("Cache removals")
                 .register(registry);
-    }
-
-    public static long extractMetricWithReflection(final Object object, final String... methods) {
-        try {
-            Object currentObject = object;
-            for (String methodToExecute : methods) {
-                final Method method = currentObject.getClass().getMethod(methodToExecute);
-                method.setAccessible(true);
-                currentObject = method.invoke(currentObject);
-            }
-            return (long) currentObject;
-        } catch (Throwable e) {
-            logger.warn("Unable to extract metric using reflection", e);
-            return -1;
-        }
     }
 
 }
