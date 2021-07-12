@@ -18,6 +18,10 @@ import javax.annotation.Nonnull;
  */
 public class Hazelcast2CacheMetrics extends CacheMeterBinder {
 
+    static final String METER_CACHE_GETS_LATENCY = "cache.gets.latency";
+    static final String METER_CACHE_PUTS_LATENCY = "cache.puts.latency";
+    static final String METER_CACHE_REMOVALS_LATENCY = "cache.removals.latency";
+
     private static final String TAG_OWNERSHIP = "ownership";
 
     private final IMap<?, ?> cache;
@@ -129,7 +133,7 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
     }
 
     private void timings(MeterRegistry registry) {
-        FunctionTimer.builder("cache.gets.latency", cache,
+        FunctionTimer.builder(METER_CACHE_GETS_LATENCY, cache,
                 c -> c.getLocalMapStats().getOperationStats().getNumberOfGets(),
                 c -> c.getLocalMapStats().getOperationStats().getTotalGetLatency(),
                 TimeUnit.NANOSECONDS)
@@ -137,7 +141,7 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
                 .description("Cache gets")
                 .register(registry);
 
-        FunctionTimer.builder("cache.puts.latency", cache,
+        FunctionTimer.builder(METER_CACHE_PUTS_LATENCY, cache,
                 c -> c.getLocalMapStats().getOperationStats().getNumberOfPuts(),
                 c -> c.getLocalMapStats().getOperationStats().getTotalPutLatency(),
                 TimeUnit.NANOSECONDS)
@@ -145,7 +149,7 @@ public class Hazelcast2CacheMetrics extends CacheMeterBinder {
                 .description("Cache puts")
                 .register(registry);
 
-        FunctionTimer.builder("cache.removals.latency", cache,
+        FunctionTimer.builder(METER_CACHE_REMOVALS_LATENCY, cache,
                 c -> c.getLocalMapStats().getOperationStats().getNumberOfRemoves(),
                 c -> c.getLocalMapStats().getOperationStats().getTotalRemoveLatency(),
                 TimeUnit.NANOSECONDS)
