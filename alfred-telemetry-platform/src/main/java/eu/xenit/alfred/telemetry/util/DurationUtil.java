@@ -28,12 +28,10 @@ public class DurationUtil {
     }
 
     enum DurationParser {
-        SIMPLE("^([+-]?\\d+)([a-zA-Z]{0,2})$", matcher -> {
-            return Duration.of(Long.parseLong(matcher.group(1)), suffixToUnit(matcher.group(2)));
-        }),
-        ISO8601("^[+-]?P.*$", matcher -> {
-            return Duration.parse(matcher.group());
-        });
+        SIMPLE("^([+-]?\\d+)([a-zA-Z]{0,2})$",
+                matcher -> Duration.of(Long.parseLong(matcher.group(1)), suffixToUnit(matcher.group(2)))),
+        ISO8601("^[+-]?P.*$",
+                matcher -> Duration.parse(matcher.group()));
 
         private final Pattern pattern;
         private final Function<Matcher, Duration> converter;
