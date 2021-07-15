@@ -14,7 +14,7 @@ public class TicketMetrics implements MeterBinder {
     public final static String METRIC_TAG_VALUE_EXPIRED = "expired";
     public final static String METRIC_TAG_VALUE_NON_EXPIRED = "valid";
 
-    private TicketComponent ticketComponent;
+    private final TicketComponent ticketComponent;
 
     public TicketMetrics(TicketComponent ticketComponent) {
         this.ticketComponent = ticketComponent;
@@ -38,7 +38,7 @@ public class TicketMetrics implements MeterBinder {
     }
 
     private static long getExpiredTicketsCount(final TicketComponent ticketComponent) {
-        return ticketComponent.getUsersWithTickets(false).size()
+        return (long) ticketComponent.getUsersWithTickets(false).size()
                 - ticketComponent.getUsersWithTickets(true).size();
     }
 }

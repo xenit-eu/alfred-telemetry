@@ -24,6 +24,9 @@ Version template:
 
 ## [0.7.2] - UNRELEASED
 
+### Added
+* Support more flexible Graphite step duration configuration
+
 
 ## [0.7.1] - 2021-07-12
 
