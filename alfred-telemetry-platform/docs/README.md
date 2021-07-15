@@ -83,8 +83,9 @@ alfred.telemetry.export.graphite.port=2004
 Additional Graphite configuration:
 
 ```properties
-# The interval at which metrics are sent to Graphite, in seconds.
-alfred.telemetry.export.graphite.step=5
+# The interval at which metrics are sent to Graphite. The duration can be provided in a simple format (5s, 1m, ...)
+# or in an ISO8601 compliant format (PT5S, PT1M, ... see java.time.Duration#parse(CharSequence))
+alfred.telemetry.export.graphite.step=5s
 
 # Applies the tag value of a set of common tags as a prefix
 alfred.telemetry.export.graphite.tags-as-prefix=application,host
