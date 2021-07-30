@@ -100,11 +100,17 @@ public class SolrShardingMetrics {
         if (!metrics.containsKey(metricIdentifier)) {
             LOGGER.debug("Registering new metric {}", fullMetricName);
             AtomicLong atomicLongValue = new AtomicLong(value);
-            Gauge.builder(fullMetricName, atomicLongValue, Number::doubleValue).tags(tags).baseUnit(baseUnit)
+            Gauge registered = Gauge.builder(fullMetricName, atomicLongValue, Number::doubleValue).tags(tags)
+                    .baseUnit(baseUnit)
                     .register(registry);
+            LOGGER.debug("Registered new metric {} with gauge {} and AtomicLong@{} value {}", metricIdentifier,
+                    registered,
+                    System.identityHashCode(atomicLongValue), value);
             metrics.put(metricIdentifier, atomicLongValue);
         } else {
             AtomicLong metric = metrics.get(metricIdentifier);
+            LOGGER.debug("Updating metric {} with AtomicLong@{} value {}", metricIdentifier,
+                    System.identityHashCode(metric), value);
             metric.set(value);
         }
     }
