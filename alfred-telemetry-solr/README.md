@@ -62,6 +62,7 @@ Enabling / disabling metrics can be done via environment variables:
 |METRICS_SOLR_FTS_ENABLED                  | true     |
 |METRICS_SOLR_TRACKER_ENABLED              | true     |
 |METRICS_SOLR_JMX_ENABLED                  | true     |
+|METRICS_SOLR_BACKUP_ENABLED               | true     |
 |METRICS_TOMCAT_ENABLED                    | false    |
 |METRICS_TOMCAT_JMX_ENABLED                | true     |
 |METRICS_JETTY_ENABLED                     | false    |
@@ -139,7 +140,6 @@ At the moment following metrics are included, for each core tracked by solr:
 | alfresco.states{core=\<core\>}                            |
 
 
-
 ### Solr FTS metrics
 
 At the moment following metrics are included, for each core tracked by solr:
@@ -194,6 +194,20 @@ At the moment following metrics are included, only for core "alfresco" for \<typ
 | solr.alfresco.maxDoc{type="searcher"}                                         |
 | solr.alfresco.numDocs{type="searcher"}                                        |
 | solr.alfresco.indexVersion{type="searcher"}                                   |
+
+
+### Solr backup metrics
+
+At the moment following metrics are included, for each core tracked by solr:
+
+| Name                                   |
+| ---------------------------------------|
+| snapshoot.start{core=\<core\>}         |
+| snapshoot.completed{core=\<core\>}     |
+| snapshoot.status{core=\<core\>}        |
+| snapshoot.file.count{core=\<core\>}    |
+
+In case no snapshoot has been taken yet, metrics return -1. Metrics reset at restart / reload of core.
 
 ### Tomcat jmx metrics
 
