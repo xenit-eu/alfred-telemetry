@@ -27,13 +27,11 @@ public class SolrSnapshootMetrics implements MeterBinder {
             "success", "1",
             "failed", "0"
     );
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss 'UTC' YYYY");
-    static {
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-    }
+    private SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss 'UTC' yyyy");
 
     public SolrSnapshootMetrics(AlfrescoCoreAdminHandler coreAdminHandler) {
         this.coreAdminHandler = coreAdminHandler;
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     private void registerSnapshootMetrics() {
@@ -41,7 +39,6 @@ public class SolrSnapshootMetrics implements MeterBinder {
         SolrCore core = coreAdminHandler.getCoreContainer().getCore("alfresco");
         SolrRequestHandler handler = core.getRequestHandler(ReplicationHandler.PATH);
         ReplicationHandler replication = (ReplicationHandler) handler;
-        Field snapField = null;
         Tags  tags = Tags.of("core", core.getName());
         Gauge.builder("snapshot.start", replication, x -> getValueFromReport(replication, "startTime"))
                 .tags(tags)
@@ -64,6 +61,7 @@ public class SolrSnapshootMetrics implements MeterBinder {
             snapField = ReplicationHandler.class.getDeclaredField("snapShootDetails");
         } catch (NoSuchFieldException e) {
             logger.error("No snapShootDetails field in the ReplicationHandler",e);
+	    return -1;
         }
         snapField.setAccessible(true);
         NamedList<?> snapValue = null;
@@ -77,9 +75,9 @@ public class SolrSnapshootMetrics implements MeterBinder {
 
         Object value = snapValue.get(key);
         if(value instanceof Integer)
-            return Long.valueOf((Integer)value).longValue();
+            return ((Integer)value).longValue();
         if("status".equals(key))
-            return Long.valueOf(statusMapping.get(value)).longValue();
+            return Long.parseLong(statusMapping.get(value));
         if("startTime".equals(key) || "snapshotCompletedAt".equals(key)) {
             try {
                 return formatter.parse((String)value).getTime();
