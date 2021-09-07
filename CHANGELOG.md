@@ -26,6 +26,9 @@ Version template:
 
 ### Added
 * Support more flexible Graphite step duration configuration
+* Add metrics for solr backup [#124]
+
+[#124]: https://github.com/xenit-eu/alfred-telemetry/pull/124
 
 
 ## [0.7.1] - 2021-07-12
