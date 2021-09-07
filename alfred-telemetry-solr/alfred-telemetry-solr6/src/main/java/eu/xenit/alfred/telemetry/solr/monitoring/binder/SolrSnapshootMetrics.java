@@ -42,17 +42,6 @@ public class SolrSnapshootMetrics implements MeterBinder {
         SolrRequestHandler handler = core.getRequestHandler(ReplicationHandler.PATH);
         ReplicationHandler replication = (ReplicationHandler) handler;
         Field snapField = null;
-        try {
-            snapField = ReplicationHandler.class.getDeclaredField("snapShootDetails");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-        snapField.setAccessible(true);
-        try {
-            NamedList<?> snapValue = (NamedList<?>) snapField.get(replication);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
         Tags  tags = Tags.of("core", core.getName());
         Gauge.builder("snapshot.start", replication, x -> getValueFromReport(replication, "startTime"))
                 .tags(tags)
@@ -74,14 +63,14 @@ public class SolrSnapshootMetrics implements MeterBinder {
         try {
             snapField = ReplicationHandler.class.getDeclaredField("snapShootDetails");
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            logger.error("No snapShootDetails field in the ReplicationHandler",e);
         }
         snapField.setAccessible(true);
         NamedList<?> snapValue = null;
         try {
             snapValue = (NamedList<?>) snapField.get(replication);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.info("No backup taken yet",e);
         }
         if(snapValue==null)
             return -1;
@@ -95,7 +84,7 @@ public class SolrSnapshootMetrics implements MeterBinder {
             try {
                 return formatter.parse((String)value).getTime();
             } catch (ParseException e) {
-                e.printStackTrace();
+                logger.error("Start time or completed time of snapshoot not in correct format",e);
             }
         }
 
