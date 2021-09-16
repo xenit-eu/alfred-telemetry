@@ -41,6 +41,10 @@ public class SolrTrackerMetrics implements MeterBinder {
 
         Set<String> coreNames = trackerRegistry.getCoreNames();
         for (String coreName : coreNames) {
+            if(trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class) == null || trackerRegistry.getTrackerForCore(coreName, AclTracker.class) == null) {
+                logger.error("No tracker found for {}, might have been explicitelly disabled", coreName);
+                continue;
+            }
             TrackerState metadataTrackerState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class)
                     .getTrackerState();
             TrackerState aclsTrackerState = trackerRegistry.getTrackerForCore(coreName, AclTracker.class)
