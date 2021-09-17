@@ -24,6 +24,11 @@ Version template:
 
 ## [0.7.2] - UNRELEASED
 
+### Fixed
+* Bug apearring when tracker is explicitelly disabled [#125]
+
+[#125]: https://github.com/xenit-eu/alfred-telemetry/pull/125
+
 ### Added
 * Support more flexible Graphite step duration configuration
 * Add metrics for solr backup [#124]
