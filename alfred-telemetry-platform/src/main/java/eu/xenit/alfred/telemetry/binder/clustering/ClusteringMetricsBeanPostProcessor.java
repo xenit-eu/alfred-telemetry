@@ -1,5 +1,6 @@
 package eu.xenit.alfred.telemetry.binder.clustering;
 
+import eu.xenit.alfred.telemetry.util.MicrometerModules;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -20,7 +21,9 @@ public class ClusteringMetricsBeanPostProcessor implements BeanDefinitionRegistr
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
-        createClusteringMetricsBean(beanDefinitionRegistry);
+        if (MicrometerModules.isMicrometerOnClasspath()) {
+            createClusteringMetricsBean(beanDefinitionRegistry);
+        }
     }
 
     private void createClusteringMetricsBean(BeanDefinitionRegistry beanDefinitionRegistry) {

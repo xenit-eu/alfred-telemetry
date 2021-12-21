@@ -25,7 +25,7 @@ Version template:
 ## [0.7.2] - UNRELEASED
 
 ### Fixed
-* Bug apearring when tracker is explicitelly disabled [#125]
+* Fixes bug when tracker is explicitly disabled [#125]
 
 [#125]: https://github.com/xenit-eu/alfred-telemetry/pull/125
 

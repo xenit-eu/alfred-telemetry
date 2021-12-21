@@ -6,8 +6,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 
-import eu.xenit.alfred.telemetry.util.VersionUtil;
-import eu.xenit.alfred.telemetry.util.VersionUtil.Version;
+import eu.xenit.alfred.telemetry.util.MicrometerModules;
+import eu.xenit.alfred.telemetry.util.MicrometerModules.Version;
 import org.junit.jupiter.api.Test;
 
 public class VersionUtilTest {
@@ -24,7 +24,7 @@ public class VersionUtilTest {
     @Test
     void retrieveVersionOfMicrometerModule_core() {
         assertThat(
-                VersionUtil.getMicrometerModuleVersion("micrometer-core"),
+                MicrometerModules.getMicrometerModuleVersion("micrometer-core"),
                 is(equalTo(getMicrometerVersionFromGradle()))
         );
     }
@@ -32,7 +32,7 @@ public class VersionUtilTest {
     @Test
     void retrieveVersionOfMicrometerModule_jmxRegistry() {
         assertThat(
-                VersionUtil.getMicrometerModuleVersion("micrometer-registry-jmx"),
+                MicrometerModules.getMicrometerModuleVersion("micrometer-registry-jmx"),
                 is(equalTo(getMicrometerVersionFromGradle()))
         );
     }

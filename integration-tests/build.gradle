@@ -5,6 +5,7 @@ plugins {
 
 ext {
     slf4jVersion = '1.7.25'
+    extraDependencies = []
 }
 
 java {
@@ -69,14 +70,13 @@ subprojects {
     dependencies {
         alfrescoAmp project(path: ":alfred-telemetry-platform", configuration: "amp")
 
-        // If customers want to use specific MeterRegistries, they should be added to the classpath:
-        alfrescoSM "io.micrometer:micrometer-registry-graphite:${micrometerVersion}"
-        alfrescoSM "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
-        alfrescoSM "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
-
         if (project.hasProperty("alfrescoBaseWarBom")) {
             baseAlfrescoWar platform("${alfrescoBaseWarBom}")
         }
+
+        // load extra dependencies from overload.gradle
+        alfrescoSM project.extraDependencies
+
         baseAlfrescoWar "${alfrescoBaseWar}"
     }
 

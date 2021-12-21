@@ -3,8 +3,8 @@ package eu.xenit.alfred.telemetry.registry;
 
 import eu.xenit.alfred.telemetry.MeterRegistryCustomizer;
 import eu.xenit.alfred.telemetry.util.LambdaSafe;
-import eu.xenit.alfred.telemetry.util.VersionUtil;
-import eu.xenit.alfred.telemetry.util.VersionUtil.Version;
+import eu.xenit.alfred.telemetry.util.MicrometerModules;
+import eu.xenit.alfred.telemetry.util.MicrometerModules.Version;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
@@ -53,7 +53,7 @@ public class RegistryRegistrar implements InitializingBean, ApplicationContextAw
             return;
         }
 
-        final Version coreVersion = VersionUtil.getMicrometerCoreVersion();
+        final Version coreVersion = MicrometerModules.getMicrometerCoreVersion();
         final Version registryVersion = factoryWrapper.getRegistryVersion();
         if (coreVersion != null && registryVersion != null && !coreVersion.isCompatible(registryVersion)) {
             LOGGER.warn(
