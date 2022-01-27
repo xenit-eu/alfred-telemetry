@@ -24,10 +24,15 @@ Version template:
 
 ## [0.7.2] - UNRELEASED
 
+### BREAKING
+
+* Alfred Telemetry declares `micrometer-core` and `micrometer-jvm-extras` as a provided-dependency. See [#129]
+
 ### Fixed
 * Fixes bug when tracker is explicitly disabled [#125]
 
 [#125]: https://github.com/xenit-eu/alfred-telemetry/pull/125
+[#129]: https://github.com/xenit-eu/alfred-telemetry/pull/129
 
 ### Added
 * Support more flexible Graphite step duration configuration
