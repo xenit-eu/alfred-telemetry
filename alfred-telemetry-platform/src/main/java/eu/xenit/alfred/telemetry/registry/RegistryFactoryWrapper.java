@@ -1,7 +1,7 @@
 package eu.xenit.alfred.telemetry.registry;
 
-import eu.xenit.alfred.telemetry.util.VersionUtil;
-import eu.xenit.alfred.telemetry.util.VersionUtil.Version;
+import eu.xenit.alfred.telemetry.util.MicrometerModules;
+import eu.xenit.alfred.telemetry.util.MicrometerModules.Version;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.util.ClassUtils;
 
@@ -34,7 +34,7 @@ public interface RegistryFactoryWrapper {
     RegistryFactory getRegistryFactory();
 
     default Version getRegistryVersion() {
-        return VersionUtil.getMicrometerModuleVersion(getModuleName());
+        return MicrometerModules.getMicrometerModuleVersion(getModuleName());
     }
 
     /**

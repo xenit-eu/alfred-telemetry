@@ -27,9 +27,11 @@ used to build an Alfresco docker image with Alfred Telemetry installed:
 ```groovy
 // Alfresco Simple Module: 
 alfrescoSM "eu.xenit.alfred.telemetry:alfred-telemetry-platform:${last-version}"
+
 // Alfresco Module Package:
 alfrescoAmp "eu.xenit.alfred.telemetry:alfred-telemetry-platform:${last-version}@amp"
 ```
+
 
 ### Maven
 
@@ -52,13 +54,30 @@ in your distribution:
 </dependency>
 ```
 
+### BREAKING CHANGE IN 0.8
+
+Starting from Alfred Telemetry 0.8, Alfred Telemetry assumes the micrometer dependency is provided by Alfresco.
+This change avoids multiple versions of micrometer on the classpath and Alfred Telemetry does not need
+to split up releases for different Alfresco versions and editions.
+
+* Alfresco Enterprise ships with micrometer, starting from Alfresco v6.1.
+* Alfresco Community and Alfresco Enterprise < v6.1 do NOT have the required dependencies installed.
+
+In the latter case, you need to add the dependencies yourself:
+
+```groovy
+alfrescoSM "io.micrometer:micrometer-core:${micrometerVersion}"
+alfrescoSM "io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}"
+```
+
 ### Manual download and install
 Please consult the official Alfresco documentation on how to install Simple Modules and Module Packages manually.
 
 ### Supported Alfresco versions
 
-Alfred Telemetry is systematically integration tested against Alfresco 5.2, 6.0, 6.1 and 6.2.
-Furthermore the extension is also known to work on Alfresco 5.0 and 5.1.
+Alfred Telemetry is systematically integration tested against:
+* Alfresco Enterprise 5.2, 6.0, 6.1, 6.2 and 7.0
+* Alfresco Community 5.2, 6.0, 6.1, 6.2 and 7.0
 
 
 ## Configuration
@@ -66,7 +85,7 @@ Furthermore the extension is also known to work on Alfresco 5.0 and 5.1.
 By default, Alfred Telemetry exposes all metrics on
 [the `alfresco/s/alfred/telemetry/metrics` endpoint](docs/README.md#metrics-endpoint). If
 metrics should be exported to a specific monitoring system, the corresponding
-`micrometer-registry-${monitoring-system}` should be included in the classpath of Alfresco. For a detailed
+`micrometer-registry-${monitoring-system}` dependency should be included in the classpath of Alfresco. For a detailed
 description have a look at the [relevant documentation](docs/README.md#supported-monitoring-systems).
 
 Once the desired monitoring systems are configured, out of the box metrics are available and custom

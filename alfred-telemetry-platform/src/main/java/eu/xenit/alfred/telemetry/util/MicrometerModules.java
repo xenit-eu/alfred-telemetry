@@ -1,23 +1,32 @@
 package eu.xenit.alfred.telemetry.util;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import eu.xenit.alfred.telemetry.webscripts.PrometheusWebScript;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.util.ClassUtils;
 
-public class VersionUtil {
+public class MicrometerModules {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(VersionUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MicrometerModules.class);
 
     public static final String MODULE_MICROMETER_CORE = "micrometer-core";
 
-    private VersionUtil() {
+    private MicrometerModules() {
         // private ctor to hide implicit public one
+    }
+
+    public static boolean isMicrometerOnClasspath() {
+        return ClassUtils.isPresent("io.micrometer.core.instrument.Meter",
+                MicrometerModules.class.getClassLoader());
     }
 
     public static Version getMicrometerCoreVersion() {
@@ -42,6 +51,9 @@ public class VersionUtil {
             return extractVersionFromResource(
                     new PathMatchingResourcePatternResolver()
                             .getResource("classpath:/META-INF/" + moduleName + ".properties"));
+        } catch (FileNotFoundException fileNotFoundException) {
+            // micrometer not on the classpath
+            return null;
         } catch (IOException e) {
             LOGGER.warn("Unable to retrieve the version of module '{}'", moduleName, e);
             return null;
