@@ -2,6 +2,7 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
 
+
     <bean id="alfred-telemetry.MeterBinderRegistrar"
             class="eu.xenit.alfred.telemetry.binder.MeterBinderRegistrar">
         <constructor-arg ref="meterRegistry"/>

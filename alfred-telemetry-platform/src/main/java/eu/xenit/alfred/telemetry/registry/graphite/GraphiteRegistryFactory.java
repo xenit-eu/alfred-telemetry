@@ -33,7 +33,7 @@ public class GraphiteRegistryFactory implements RegistryFactory {
             @Override
             @Nonnull
             public Duration step() {
-                return Duration.ofSeconds(config.getStep());
+                return config.getStep();
             }
 
             @Override

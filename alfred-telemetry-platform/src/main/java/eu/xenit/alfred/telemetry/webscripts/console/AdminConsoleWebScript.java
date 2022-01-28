@@ -1,7 +1,7 @@
 package eu.xenit.alfred.telemetry.webscripts.console;
 
 import com.google.common.annotations.VisibleForTesting;
-import eu.xenit.alfred.telemetry.util.VersionUtil;
+import eu.xenit.alfred.telemetry.util.MicrometerModules;
 import eu.xenit.alfred.telemetry.webscripts.console.AdminConsoleWebscriptResponseModel.AlfredTelemetryModule;
 import eu.xenit.alfred.telemetry.webscripts.console.AdminConsoleWebscriptResponseModel.TelemetryBinderConfigModel;
 import eu.xenit.alfred.telemetry.webscripts.console.AdminConsoleWebscriptResponseModel.TelemetryDependencyModel;
@@ -26,7 +26,6 @@ import org.springframework.extensions.webscripts.DeclarativeWebScript;
 import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
-import org.springframework.util.StringUtils;
 
 public class AdminConsoleWebScript extends DeclarativeWebScript {
 
@@ -81,7 +80,7 @@ public class AdminConsoleWebScript extends DeclarativeWebScript {
 
     private Map<String, TelemetryDependencyModel> getDependenciesModel() {
         return Stream.of(
-                    new TelemetryDependencyModel("micrometer", VersionUtil.getMicrometerCoreVersion().toString())
+                    new TelemetryDependencyModel("micrometer", MicrometerModules.getMicrometerCoreVersion().toString())
             ).collect(Collectors.toMap(TelemetryDependencyModel::getId, Function.identity()));
     }
 

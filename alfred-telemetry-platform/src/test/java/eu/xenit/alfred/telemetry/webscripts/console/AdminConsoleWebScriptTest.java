@@ -161,7 +161,7 @@ class AdminConsoleWebScriptTest {
     private Matcher<Map<String, String>> isValidGraphiteConfig() {
         return allOf(
                 hasEntry(is("alfred.telemetry.export.graphite.enabled"), isBoolean()),
-                hasEntry(is("alfred.telemetry.export.graphite.step"), isInteger()),
+                hasEntry(is("alfred.telemetry.export.graphite.step"), not(isEmptyString())),
                 hasEntry(is("alfred.telemetry.export.graphite.host"), not(isEmptyString())),
                 hasEntry(is("alfred.telemetry.export.graphite.port"), isInteger()),
                 hasKey(is("alfred.telemetry.export.graphite.tags-as-prefix"))

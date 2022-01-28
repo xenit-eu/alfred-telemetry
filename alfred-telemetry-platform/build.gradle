@@ -37,10 +37,10 @@ dependencies {
         transitive = false
     }
 
-    implementation("io.micrometer:micrometer-core:${micrometerVersion}") {
+    alfrescoProvided("io.micrometer:micrometer-core:${micrometerVersion}") {
         exclude group: "org.slf4j", module: "*"
     }
-    implementation("io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}") {
+    alfrescoProvided("io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}") {
         exclude group: "org.slf4j", module: "*"
     }
 

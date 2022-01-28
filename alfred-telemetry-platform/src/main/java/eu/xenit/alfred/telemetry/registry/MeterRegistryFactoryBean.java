@@ -1,5 +1,6 @@
 package eu.xenit.alfred.telemetry.registry;
 
+import eu.xenit.alfred.telemetry.util.MicrometerModules;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import javax.annotation.Nonnull;
@@ -19,6 +20,12 @@ public class MeterRegistryFactoryBean extends AbstractFactoryBean<MeterRegistry>
     @Override
     @Nonnull
     protected MeterRegistry createInstance() {
+
+        MicrometerModules.Version version = MicrometerModules.getMicrometerCoreVersion();
+        if (version == null) {
+            throw new RuntimeException("Alfred Telemetry is missing required dependency 'io.micrometer:micrometer-core'");
+        }
+
         return Metrics.globalRegistry;
     }
 }

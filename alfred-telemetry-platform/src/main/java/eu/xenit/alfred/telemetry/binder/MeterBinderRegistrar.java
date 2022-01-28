@@ -29,10 +29,10 @@ public class MeterBinderRegistrar implements InitializingBean, ApplicationContex
     private Properties properties = new Properties();
 
     /* DEPENDENCIES */
-    private MeterRegistry meterRegistry;
+    private final MeterRegistry meterRegistry;
     private ApplicationContext ctx;
 
-    private List<EventTriggeredMeterBinder> eventTriggeredMeterBinders = new ArrayList<>();
+    private final List<EventTriggeredMeterBinder> eventTriggeredMeterBinders = new ArrayList<>();
 
     public MeterBinderRegistrar(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
@@ -99,7 +99,7 @@ public class MeterBinderRegistrar implements InitializingBean, ApplicationContex
         return enabled;
     }
 
-    private String getEnabledPropertyKey(final MeterBinder binder) {
+    public static String getPropertyKey(final MeterBinder binder) {
         String binderName = null;
         if (binder instanceof NamedMeterBinder) {
             binderName = ((NamedMeterBinder) binder).getName();
@@ -108,11 +108,11 @@ public class MeterBinderRegistrar implements InitializingBean, ApplicationContex
             binderName = getMeterNameFromClass(binder.getClass());
         }
 
-        return getBinderPropertyPrefix() + binderName + PROP_BINDER_SUFFIX_ENABLED;
+        return PROP_BINDER_PREFIX + binderName;
     }
 
-    protected String getBinderPropertyPrefix() {
-        return PROP_BINDER_PREFIX;
+    public static String getEnabledPropertyKey(final MeterBinder binder) {
+        return getPropertyKey(binder) + PROP_BINDER_SUFFIX_ENABLED;
     }
 
     static String getMeterNameFromClass(Class<?> clazz) {

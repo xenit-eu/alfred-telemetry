@@ -22,10 +22,32 @@ Version template:
  
 # Alfred Telemetry Changelog
 
+## [0.8.0] - 2022-01-28
+
+### BREAKING
+
+* Alfred Telemetry declares `micrometer-core` and `micrometer-jvm-extras` as a provided-dependency [#129]
+
+### Fixed
+* Fixes bug when tracker is explicitly disabled [#125]
+
+[#125]: https://github.com/xenit-eu/alfred-telemetry/pull/125
+[#129]: https://github.com/xenit-eu/alfred-telemetry/pull/129
+
+### Added
+* Support more flexible Graphite step duration configuration [#123]
+* Add metrics for solr backup [#124]
+
+[#123]: https://github.com/xenit-eu/alfred-telemetry/pull/123
+[#124]: https://github.com/xenit-eu/alfred-telemetry/pull/124
+
+
 ## [0.7.1] - 2021-07-12
 
 ### Fixed
-* Hazelcast cache metrics broken causing, among other things, a broken Prometheus scrape endpoint [#116]
+* Hazelcast cache metrics broken, resulting in a broken Prometheus scrape endpoint [[#116]]
+  
+[#116]: https://github.com/xenit-eu/alfred-telemetry/pull/116
 
 ## [0.7.0] - 2021-07-09
 
@@ -33,18 +55,20 @@ Version template:
 * Clustering metrics
 
 ### Removed
-* Legacy Care4alf metrics where removed
+* Legacy Care4alf metrics
 
 ### Fixed
-* Solr tracking metrics were no longer registered since 0.6.0 [#113]
+* Solr tracking metrics were no longer registered since 0.6.0 [[#113]]
+
+[#113]: https://github.com/xenit-eu/alfred-telemetry/pull/113
 
 ## [0.6.0] - 2021-06-30
 
 ### Added
-* Alfresco 7 support [#107]
+* Alfresco 7 support [[#107]]
 
 ### Fixed
-* Prometheus scraping: max number of requests reached during Alfresco startup [#104]
+* Prometheus scraping: max number of requests reached during Alfresco startup [[#104]]
 
 [#107]: https://github.com/xenit-eu/alfred-telemetry/pull/107
 [#104]: https://github.com/xenit-eu/alfred-telemetry/pull/104
@@ -52,7 +76,7 @@ Version template:
 ## [0.5.2] - 2021-05-19
 
 ### Added
-* Configurable number of maximum prometheus scrape requests [#70]
+* Configurable number of maximum prometheus scrape requests [[#70]]
 
 ### Changed
 * Optimize names and tags of license metrics
@@ -62,36 +86,34 @@ Version template:
 ## [0.5.1] - 2021-04-29
 
 ### Added
-* Alfresco license metrics [#82]
-
-[#82]: https://github.com/xenit-eu/alfred-telemetry/pull/82
+* Alfresco license metrics [[#82]]
 
 ### Fixed
-* NoSuchMethodError: 'java.util.HashMap org.alfresco.repo.index.shard.ShardRegistry.getFlocs()' [#85]
+* NoSuchMethodError: 'java.util.HashMap org.alfresco.repo.index.shard.ShardRegistry.getFlocs()' [[#85]]
 
+[#82]: https://github.com/xenit-eu/alfred-telemetry/pull/82
 [#85]: https://github.com/xenit-eu/alfred-telemetry/pull/85
 
 ## [0.5.0] - 2021-03-22
 
 ### Added
-* Alfresco 6.2.1 support [#20]
-* Status metric - read-only - for alfresco [#69]
-
-[#20]: https://github.com/xenit-eu/alfred-telemetry/pull/20
-[#69]: https://github.com/xenit-eu/alfred-telemetry/pull/69
+* Alfresco 6.2.1 support [[#20]]
+* Status metric - read-only - for alfresco [[#69]]
 
 ### Fixed
 
 * Sharded solr monitoring throws exception in Alfresco 6.2
-* Fixed and refactored code for solr, so that it works for ASS>=2.0.0. Improved handling of solrconfig.xml for solr6 [#74]
+* Fixed and refactored code for solr, so that it works for ASS>=2.0.0. Improved handling of solrconfig.xml for solr6 [[#74]]
 
-[#74] https://github.com/xenit-eu/alfred-telemetry/pull/74
+[#20]: https://github.com/xenit-eu/alfred-telemetry/pull/20
+[#69]: https://github.com/xenit-eu/alfred-telemetry/pull/69
+[#74]: https://github.com/xenit-eu/alfred-telemetry/pull/74
 
 ## [0.4.0] - 2020-01-12
 
 ### Added
 
-* Jetty metrics for alfred-telemetry-solr [#61]
+* Jetty metrics for alfred-telemetry-solr [[#61]]
 
 [#61]: https://github.com/xenit-eu/alfred-telemetry/pull/61
 

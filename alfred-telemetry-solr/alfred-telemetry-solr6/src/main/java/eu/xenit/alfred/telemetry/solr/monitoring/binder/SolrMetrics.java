@@ -22,6 +22,9 @@ public class SolrMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
+        if(Util.isEnabled("METRICS_SOLR_BACKUP_ENABLED")) {
+            new SolrSnapshootMetrics(coreAdminHandler).bindTo(registry);
+        }
         if(Util.isEnabled("METRICS_SOLR_CORESTATS_ENABLED")) {
             new SolrCoreStatsMetrics(coreAdminHandler).bindTo(registry);
         }
