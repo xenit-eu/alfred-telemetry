@@ -33,6 +33,8 @@ public class SolrPrometheusEndpointTest extends RestAssuredTestSolr {
 
         String responseBody = response.body().asString();
         assertThat(responseBody, containsString("alfresco_nodes"));
+        assertThat(responseBody, containsString("application=\"solr\""));
+        assertThat(responseBody, containsString(",host=\""));
     }
 
 }
