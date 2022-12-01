@@ -13,6 +13,13 @@ public class AlfrescoPrometheusEndpointTest extends RestAssuredTest {
 
     @Test
     void alfrescoEndpointExposesAlfredTelemetryMetrics() {
+        // First call fails due to
+        // org.springframework.jdbc.UncategorizedSQLException:
+        // Error selecting key or setting result to parameter object.
+        // Cause: org.postgresql.util.PSQLException:
+        // ERROR: cannot execute nextval() in a read-only transaction
+        given().when().get("s/prometheus");
+        // Actual test
         ExtractableResponse<Response> response =
                 given()
                         .log().ifValidationFails()

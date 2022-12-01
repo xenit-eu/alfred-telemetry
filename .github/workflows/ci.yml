@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         flavour: [ "community", "enterprise" ]
-        version: [ "52", "60", "61", "62", "70"]
+        version: [ "61", "62", "70", "71", "72", "73" ]
     steps:
       - uses: actions/checkout@v2
         with:
