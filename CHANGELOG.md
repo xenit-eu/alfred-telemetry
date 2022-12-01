@@ -1,6 +1,6 @@
 ---
 title: Changelog - Alfred Telemetry
-date: 07 October 2021
+date: 06 December 2022
 report: true
 colorlinks: true
 ---
@@ -21,6 +21,17 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
+
+## [0.9.0] - 2022-12-01
+
+### Fixed
+* Fixes broken Apache Commons dbcp dependencies [#132]
+
+### Added
+* Added support Alfresco 7.1, 7.2 and 7.3
+
+### Removed
+* Dropped support for Alfresco 5.x and 6.0 
 
 ## [0.8.0] - 2022-01-28
 
