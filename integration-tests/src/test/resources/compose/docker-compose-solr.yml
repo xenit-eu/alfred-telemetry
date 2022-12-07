@@ -15,7 +15,7 @@ services:
       - SOLR_ENDPOINT
       - ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED
       - ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST
-#      - ALFRED_TELEMETRY_COMMON_TAGS=host:localhost,xyz:test
+#      - ALFRED_TELEMETRY_COMMON_TAGS=host:localhost,application:solr
       - METRICS_TOMCAT_ENABLED=true
       - METRICS_JETTY_ENABLED=true
       - DEBUG=true
