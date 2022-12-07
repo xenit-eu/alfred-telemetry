@@ -22,6 +22,6 @@ dependencies {
 createDockerFile {
     from "${solrBaseImage}"
     smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/solrconfig.xml", "/opt/alfresco/solr4/workspace-SpacesStore/conf/solrconfig.xml"
-    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/${solrFlavor}/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
+    smartCopy "${rootProject.projectDir}/integration-tests/src/test/resources/solr-shared/95-init-solr-micrometer-metrics.sh", "/docker-entrypoint.d/"
     smartCopy shadowJar.outputs.files, "/opt/alfresco/solr4/lib/"
 }

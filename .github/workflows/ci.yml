@@ -54,6 +54,13 @@ jobs:
           ORG_GRADLE_PROJECT_xenit_docker_registry_url: ${{ secrets.XENIT_DOCKER_REGISTRY_URL }}
           ORG_GRADLE_PROJECT_xenit_docker_registry_username: ${{ secrets.XENIT_DOCKER_REGISTRY_USERNAME }}
           ORG_GRADLE_PROJECT_xenit_docker_registry_password: ${{ secrets.XENIT_DOCKER_REGISTRY_PASSWORD }}
+      - name: 'Upload Test Reports'
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: /home/runner/**/build/reports
+          retention-days: 14
   publish:
     needs: [test, integration-test]
     runs-on: ubuntu-latest
