@@ -6,16 +6,14 @@ global:
 scrape_configs:
   - job_name: 'alfresco'
     static_configs:
+#     - targets: ['alfresco:8443']
       - targets: ['alfresco:8080']
     metrics_path: "/alfresco/s/alfred/telemetry/prometheus"
   - job_name: 'solr'
-    # comment out if SSL is disabled
-#    scheme: https
+    scheme: https
     static_configs:
-# comment out if SSL is disabled
-#      - targets: ['solr:8443']
-# comment out if SSL is enabled
-      - targets: ['solr:8080']
+      - targets: ['solr:8443']
+#      - targets: ['solr:8080']
     metrics_path: "/solr4/alfresco/metrics"
     params:
       wt: ['dummy']
