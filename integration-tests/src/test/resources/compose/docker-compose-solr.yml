@@ -3,15 +3,11 @@ version: '3.2'
 services:
   alfresco:
     environment:
-# comment out if SSL is enabled
-      - SOLR_SSL=none
       - INDEX
 
   solr:
     image: ${SOLR_DOCKER_IMAGE}
     environment:
-# comment out if SSL is enabled    
-      - ALFRESCO_SSL=none
       - SOLR_ENDPOINT
       - ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED
       - ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST
@@ -21,8 +17,10 @@ services:
       - DEBUG=true
       - JMX_ENABLED=true
     ports:
-      - target: 8080
+      - target: 8443
         mode: host
+#      - target: 8080
+#        mode: host
  #     - target: 8000
  #       mode: host
  #       published: 8001

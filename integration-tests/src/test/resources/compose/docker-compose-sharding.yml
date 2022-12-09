@@ -3,7 +3,6 @@ version: '3.2'
 services:
   alfresco:
     environment:
-      - SOLR_SSL=none
       - INDEX=solr6
       - DYNAMIC_SHARD_REGISTRATION=true
 
@@ -15,7 +14,6 @@ services:
     hostname: solr1
     environment:
       - SOLR_HOST=solr1
-      - ALFRESCO_SSL=none
       - ARCHIVE_ENABLE_ALFRESCO_TRACKING=false
       - ARCHIVE_INDEX_CONTENT=false
       - ALFRESCO_INDEX_CONTENT=false
@@ -34,7 +32,6 @@ services:
     hostname: solr2
     environment:
       - SOLR_HOST=solr2
-      - ALFRESCO_SSL=none
       - ARCHIVE_ENABLE_ALFRESCO_TRACKING=false
       - ARCHIVE_INDEX_CONTENT=false
       - ALFRESCO_INDEX_CONTENT=false

@@ -17,24 +17,23 @@ public class SolrPrometheusEndpointTest extends RestAssuredTestSolr {
     @Test
     void solrEndpoint() {
         try {
-            Thread.currentThread().sleep(20000);
-        } catch (InterruptedException e) {
-            logger.error("Fail to wait 20 sec", e);
-        }
-        ExtractableResponse<Response> response =
-                given()
-                        .log().ifValidationFails()
-                        .when()
-                        .get("/alfresco/metrics?wt=dummy")
-                        .then()
-                        .log().ifValidationFails()
-                        .statusCode(isOneOf(200))
-                        .extract();
+            ExtractableResponse<Response> response =
+                    given()
+                            .log().ifValidationFails()
+                            .when()
+                            .get("/alfresco/metrics?wt=dummy")
+                            .then()
+                            .log().ifValidationFails()
+                            .statusCode(isOneOf(200))
+                            .extract();
 
-        String responseBody = response.body().asString();
-        assertThat(responseBody, containsString("alfresco_nodes"));
-        assertThat(responseBody, containsString("application=\"solr\""));
-        assertThat(responseBody, containsString(",host=\""));
+            String responseBody = response.body().asString();
+            assertThat(responseBody, containsString("alfresco_nodes"));
+            assertThat(responseBody, containsString("application=\"solr\""));
+            assertThat(responseBody, containsString(",host=\""));
+        } catch(Exception e) {
+            throw e;
+        }
     }
 
 }
