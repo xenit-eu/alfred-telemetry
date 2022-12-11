@@ -19,9 +19,9 @@ import javax.sql.DataSource;
 public class DataSourceBeanPostProcessor implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceBeanPostProcessor.class);
 
-    private static final String DATASOURCE_BEAN_ID = "dataSource";
-    private static final String BASE_DEFAULT_DATASOURCE_BEAN_ID = "baseDefaultDataSource";
-    private static final String BASIC_DATASOURCE_BEAN_ID = "versionSpecificBasicDataSource";
+    static final String DATASOURCE_BEAN_ID = "dataSource";
+    static final String BASE_DEFAULT_DATASOURCE_BEAN_ID = "baseDefaultDataSource";
+    static final String BASIC_DATASOURCE_BEAN_ID = "versionSpecificBasicDataSource";
     private ApplicationContext applicationContext;
 
     @Override

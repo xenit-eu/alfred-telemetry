@@ -1,8 +1,11 @@
 package eu.xenit.alfred.telemetry.binder.dbcp;
 
+import eu.xenit.alfred.telemetry.annotation.GeneratedModel;
 import org.apache.commons.dbcp.BasicDataSource;
+
 import javax.sql.DataSource;
 
+@GeneratedModel
 public class DbcpBasicDataSource implements TelemetryBasicDataSource {
     private final BasicDataSource dataSource;
 
