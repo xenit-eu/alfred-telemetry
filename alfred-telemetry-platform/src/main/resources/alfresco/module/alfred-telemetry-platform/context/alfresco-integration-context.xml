@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
+    <bean id="dataSourceBeanPostProcessor" class="eu.xenit.alfred.telemetry.alfrescointegration.DataSourceBeanPostProcessor"/>
 
     <!--
         XML Context required to enable integration with the default Alfresco Micrometer metrics, which are only available
         since Alfresco Enterprise 6.1
         -->
-
     <bean class="eu.xenit.alfred.telemetry.alfrescointegration.MetricsControllerBeanPostProcessor"
             depends-on="log4JHierarchyInit">
         <constructor-arg index="0" ref="global-properties"/>

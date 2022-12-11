@@ -1,21 +1,13 @@
 package eu.xenit.alfred.telemetry.binder.dbcp;
 
 import org.apache.commons.dbcp.BasicDataSource;
-
 import javax.sql.DataSource;
 
-public class DbcpBasicDataSource extends AbstractBasicDataSource {
+public class DbcpBasicDataSource implements TelemetryBasicDataSource {
     private final BasicDataSource dataSource;
 
-    private DbcpBasicDataSource(BasicDataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public static AbstractBasicDataSource createIfSupported(DataSource dataSource) {
-        if(dataSource.getClass().isAssignableFrom(BasicDataSource.class)) {
-            return new DbcpBasicDataSource((BasicDataSource)dataSource);
-        }
-        return null;
+    public DbcpBasicDataSource(DataSource dataSource) {
+        this.dataSource = (BasicDataSource)dataSource;
     }
 
     @Override
