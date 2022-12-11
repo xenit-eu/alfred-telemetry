@@ -1,8 +1,8 @@
 plugins {
     id 'idea'
     id 'java'
-    id 'eu.xenit.alfresco' version "1.0.1"
-    id 'eu.xenit.amp' version "1.0.1"
+    id 'eu.xenit.alfresco' version "1.1.0"
+    id 'eu.xenit.amp' version "1.1.0"
 }
 
 description = "Alfred Telemetry Platform module which enables exposure of Metrics using Micrometer"
@@ -53,6 +53,7 @@ dependencies {
     alfrescoProvided "com.google.code.findbugs:jsr305:3.0.2"
 
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
