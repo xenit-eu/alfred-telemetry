@@ -44,7 +44,7 @@
     </bean>
 
     <bean class="eu.xenit.alfred.telemetry.binder.DataSourceMetrics">
-        <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="versionSpecificBasicDataSource"/>
     </bean>
 
     <bean class="eu.xenit.alfred.telemetry.binder.AlfrescoStatusMetrics">
