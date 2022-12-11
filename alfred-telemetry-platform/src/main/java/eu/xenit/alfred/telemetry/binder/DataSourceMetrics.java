@@ -48,7 +48,7 @@ public class DataSourceMetrics implements NamedMeterBinder {
                 .description("The minimum number of idle connections in the pool.")
                 .register(meterRegistry);
 
-        dataSourceGaugeBuilder("jdbc.connections.usage", this::getUsage)
+        dataSourceGaugeBuilder("jdbc.connections.usage", TelemetryBasicDataSource::getUsage)
                 .register(meterRegistry);
     }
 
@@ -56,17 +56,5 @@ public class DataSourceMetrics implements NamedMeterBinder {
                                                                            ToDoubleFunction<TelemetryBasicDataSource> function) {
         return Gauge.builder(metricName, basicDataSource, function)
                 .tags("name", "dbcp");
-    }
-
-    private double getUsage(TelemetryBasicDataSource dataSource) {
-        double maxSize = dataSource.getMaxActive();
-        double currentSize = dataSource.getNumActive();
-        if (maxSize < 0) {
-            return -1F;
-        }
-        if (currentSize == 0) {
-            return 0F;
-        }
-        return (float) currentSize / (float) maxSize;
     }
 }
