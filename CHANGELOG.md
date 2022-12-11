@@ -1,6 +1,6 @@
 ---
 title: Changelog - Alfred Telemetry
-date: 06 December 2022
+date: 12 December 2022
 report: true
 colorlinks: true
 ---
@@ -26,6 +26,7 @@ Version template:
 
 ### Fixed
 * Fixes broken Apache Commons dbcp dependencies [#132]
+* Fixes broken common tags not added to Alfrescos Prometheus registry [#134]
 
 ### Added
 * Added support Alfresco 7.1, 7.2 and 7.3

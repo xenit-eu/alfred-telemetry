@@ -63,7 +63,7 @@ class CommonTagFilterFactoryTest {
         @Lazy // make sure we can insert properties before actually creating the MeterFilter
         @SuppressWarnings("unused")
         public FactoryBean<MeterFilter> commonTagFilterFactory() {
-            return new CommonTagFilterFactory(properties());
+            return new CommonTagFilterFactory(properties(), null);
         }
     }
 }

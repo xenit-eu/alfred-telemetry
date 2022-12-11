@@ -31,7 +31,7 @@ public class PrometheusRegistryUtil {
         return castedRegistry.scrape();
     }
 
-    private static PrometheusMeterRegistry tryToExtractPrometheusRegistry(final MeterRegistry meterRegistry) {
+    public static PrometheusMeterRegistry tryToExtractPrometheusRegistry(final MeterRegistry meterRegistry) {
         if (meterRegistry instanceof PrometheusMeterRegistry) {
             return (PrometheusMeterRegistry) meterRegistry;
         }
