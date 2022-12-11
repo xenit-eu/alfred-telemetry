@@ -27,12 +27,8 @@ public class AlfrescoPrometheusEndpointTest extends RestAssuredTest {
                         .get("s/prometheus")
                         .then()
                         .log().ifValidationFails()
-                        .statusCode(isOneOf(200, 404))
+                        .statusCode(isOneOf(200))
                         .extract();
-
-        if (response.statusCode() == 404) {
-            return;
-        }
 
         String responseBody = response.body().asString();
 
