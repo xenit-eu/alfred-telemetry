@@ -24,7 +24,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: ./gradlew aggregateJacocoReport sonarqube
+        run: ./gradlew sonarqube
   integration-test:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/heads/master') || startsWith(github.base_ref, 'master') || startswith(github.ref, 'refs/heads/release') }}

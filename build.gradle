@@ -23,17 +23,6 @@ allprojects {
     group = 'eu.xenit.alfred.telemetry'
     version = '0.9.0'
 
-    apply plugin: 'java'
-    apply plugin: 'jacoco'
-
-    jacocoTestReport {
-        reports {
-            xml.enabled true
-            html.enabled true
-        }
-    }
-    test.finalizedBy jacocoTestReport
-
     boolean isRelease = ci.branch?.startsWith("release")
     if (!isRelease) {
         version += "-SNAPSHOT"
@@ -73,4 +62,21 @@ allprojects {
     }
 
     apply from: "${rootProject.projectDir}/publish.gradle"
+
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            html.enabled true
+        }
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: 'eu/xenit/alfred/telemetry/integrationtesting/**')
+            }))
+        }
+    }
+    test.finalizedBy jacocoTestReport
+    rootProject.tasks.sonarqube.dependsOn jacocoTestReport
 }
