@@ -5,15 +5,18 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import javax.annotation.Nonnull;
 import org.alfresco.enterprise.repo.cluster.core.ClusterService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClusteringMetrics implements MeterBinder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClusteringMetrics.class);
     private static final String CLUSTER_TYPE = "clustertype";
     public static final String GAUGE_NAME = "repository.cluster.nodes.count";
     public static final String GAUGE_DESCRIPTION = "The amount of repository cluster nodes";
 
-    private ClusterService clusterService;
+    private final ClusterService clusterService;
     private final AtomicBoolean clusterInitializationTriggered = new AtomicBoolean(false);
 
     public ClusteringMetrics(ClusterService clusterService) {
@@ -22,7 +25,6 @@ public class ClusteringMetrics implements MeterBinder {
 
     @Override
     public void bindTo(@Nonnull MeterRegistry registry) {
-        ensureClusterServiceInitialized();
         Gauge.builder(GAUGE_NAME, clusterService, this::getClusterMemberCount)
                 .description(GAUGE_DESCRIPTION)
                 .tags(CLUSTER_TYPE, "member")
@@ -65,8 +67,12 @@ public class ClusteringMetrics implements MeterBinder {
 
     private void ensureClusterServiceInitialized() {
         if (clusterService != null && !clusterService.isInitialised() && !clusterInitializationTriggered.get()) {
-            clusterService.initClusterService();
-            clusterInitializationTriggered.set(true);
+            try {
+                clusterInitializationTriggered.set(true);
+                clusterService.initClusterService();
+            } catch (Exception e) {
+                LOGGER.debug(e.getMessage(), e);
+            }
         }
     }
 }
