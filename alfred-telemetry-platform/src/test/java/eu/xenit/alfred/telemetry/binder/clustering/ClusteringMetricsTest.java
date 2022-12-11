@@ -64,9 +64,11 @@ class ClusteringMetricsTest {
     }
 
     @Test
-    void testNonClusterMembersWhenCLusterServiceIsNull() {
+    void testNonClusterMetricsWhenCLusterServiceIsNull() {
         initClusterMetricsWithoutClusterService();
-        Assertions.assertEquals(0, clusteringMetrics.getNonMemberCount(clusterService));
+        Assertions.assertEquals(0, clusteringMetrics.getClusterMemberCount(null));
+        Assertions.assertEquals(0, clusteringMetrics.getNonMemberCount(null));
+        Assertions.assertEquals(0, clusteringMetrics.getOfflineMemberCount(null));
     }
 
     @Test

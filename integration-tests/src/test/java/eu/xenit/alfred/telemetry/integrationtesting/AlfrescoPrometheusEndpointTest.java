@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.isOneOf;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
 public class AlfrescoPrometheusEndpointTest extends RestAssuredTest {
@@ -27,11 +28,14 @@ public class AlfrescoPrometheusEndpointTest extends RestAssuredTest {
                         .get("s/prometheus")
                         .then()
                         .log().ifValidationFails()
-                        .statusCode(isOneOf(200))
+                        .statusCode(isOneOf(getExpectedStatusCode()))
                         .extract();
 
-        String responseBody = response.body().asString();
+        if(getExpectedStatusCode() != HttpStatus.SC_OK) {
+            return;
+        }
 
+        String responseBody = response.body().asString();
         assertThat(responseBody, containsString("alfred_telemetry_registries_total"));
         // Does not work with integrated Alfresco Prometheus registry
 //        assertThat(responseBody, containsString("application=\"alfresco\""));
