@@ -21,7 +21,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 
 public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommonTagFilterFactory.class);
+    private static final Logger slf4jLogger = LoggerFactory.getLogger(CommonTagFilterFactory.class);
 
     static final String PROP_KEY_PREFIX_COMMONTAG = "alfred.telemetry.tags.";
     static final String PROP_KEY_EXPORT_PROMETHEUS = "alfred.telemetry.export.prometheus.enabled";
@@ -62,33 +62,37 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
     }
 
     private void addCommonTagsTo(MetricsController metricsController) {
-        LOGGER.debug("addCommonTagsTo >>>>>>");
+        slf4jLogger.debug("addCommonTagsTo >>>>>>");
+        if(globalProperties == null) {
+            return;
+        }
+
         if(metricsController == null) {
-            LOGGER.debug("metricsController is null");
+            slf4jLogger.debug("metricsController is null");
             return;
         }
 
         MeterRegistry registry = metricsController.getRegistry();
         if(registry == null) {
-            LOGGER.debug("registry is null");
+            slf4jLogger.debug("registry is null");
             return;
         }
 
         PrometheusMeterRegistry prometheusMeterRegistry =
                 PrometheusRegistryUtil.tryToExtractPrometheusRegistry(registry);
         if(!globalProperties.containsKey(PROP_KEY_EXPORT_PROMETHEUS)) {
-            LOGGER.debug("global props does not contain {}", PROP_KEY_EXPORT_PROMETHEUS);
+            slf4jLogger.debug("global props does not contain {}", PROP_KEY_EXPORT_PROMETHEUS);
             return;
         }
 
         String enableExport = globalProperties.getProperty(PROP_KEY_EXPORT_PROMETHEUS);
         if(Boolean.FALSE.toString().equalsIgnoreCase(enableExport)) {
-            LOGGER.debug("{} is not enabled", PROP_KEY_EXPORT_PROMETHEUS);
+            slf4jLogger.debug("{} is not enabled", PROP_KEY_EXPORT_PROMETHEUS);
             return;
         }
 
         prometheusMeterRegistry.config().commonTags(getCommonTags());
-        LOGGER.debug("addCommonTagsTo <<<<<<");
+        slf4jLogger.debug("addCommonTagsTo <<<<<<");
     }
 
     private Iterable<Tag> getCommonTags() {
@@ -102,6 +106,9 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
 
     private Hashtable<String, String> extractCommonTagsFromProperties() {
         Hashtable<String, String> commonTags = new Hashtable<>();
+        if(globalProperties == null) {
+            return commonTags;
+        }
         globalProperties.stringPropertyNames()
                 .forEach(propKey -> this.addCommonTagTo(propKey, commonTags));
         return commonTags;
@@ -123,7 +130,7 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
         try {
             return InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            LOGGER.warn("Unable to retrieve name of local host", e);
+            slf4jLogger.warn("Unable to retrieve name of local host", e);
             return "unknown-host";
         }
 
