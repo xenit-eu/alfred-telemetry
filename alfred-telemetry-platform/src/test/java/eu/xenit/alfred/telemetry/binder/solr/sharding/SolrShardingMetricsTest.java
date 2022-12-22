@@ -38,11 +38,11 @@ class SolrShardingMetricsTest {
         shardInstance.setShard(shard);
         shardInstance.setHostName("myInstanceHost");
         shardState.setShardInstance(shardInstance);
-        Set<ShardState> shardStates = new HashSet<>();
+        HashSet<ShardState> shardStates = new HashSet<>();
         shardStates.add(shardState);
-        Map<Shard, Set<ShardState>> shardHashSetHashMap = new HashMap<>();
+        HashMap<Shard, HashSet<ShardState>> shardHashSetHashMap = new HashMap<>();
         shardHashSetHashMap.put(shard, shardStates);
-        Map<Floc, Map<Shard, Set<ShardState>>> metricsInformation = new HashMap<>();
+        HashMap<Floc, HashMap<Shard, HashSet<ShardState>>> metricsInformation = new HashMap<>();
         metricsInformation.put(floc, shardHashSetHashMap);
 
         ShardRegistry shardRegistry = Mockito.mock(ShardRegistry.class);
@@ -68,11 +68,11 @@ class SolrShardingMetricsTest {
         ShardInstance shardInstance = new ShardInstance();
         shardInstance.setShard(shard);
         shardInstance.setHostName("myInstanceHost");
-        Set<ShardState> shardStates = new HashSet<>();
+        HashSet<ShardState> shardStates = new HashSet<>();
         shardStates.add(null);
-        Map<Shard, Set<ShardState>> shardHashSetHashMap = new HashMap<>();
+        HashMap<Shard, HashSet<ShardState>> shardHashSetHashMap = new HashMap<>();
         shardHashSetHashMap.put(shard, shardStates);
-        Map<Floc, Map<Shard, Set<ShardState>>> metricsInformation = new HashMap<>();
+        HashMap<Floc, HashMap<Shard, HashSet<ShardState>>> metricsInformation = new HashMap<>();
         metricsInformation.put(floc, shardHashSetHashMap);
         ShardRegistry shardRegistry = Mockito.mock(ShardRegistry.class);
         MeterRegistry meterRegistry = new SimpleMeterRegistry();

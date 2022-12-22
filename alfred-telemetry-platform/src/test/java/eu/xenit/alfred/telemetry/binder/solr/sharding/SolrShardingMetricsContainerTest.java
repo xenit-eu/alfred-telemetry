@@ -35,7 +35,7 @@ class SolrShardingMetricsContainerTest {
     @Test
     void refresh() {
         Floc floc = new Floc();
-        Map<Floc, Map<Shard, Set<ShardState>>> flocs = new HashMap<>();
+        HashMap<Floc, HashMap<Shard, HashSet<ShardState>>> flocs = new HashMap<>();
         flocs.put(floc, new HashMap<>());
         when(shardRegistry.getFlocs()).thenReturn(flocs);
 
