@@ -28,6 +28,7 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         flavour: [ "community", "enterprise" ]
         version: [ "61", "62", "70", "71", "72", "73" ]
