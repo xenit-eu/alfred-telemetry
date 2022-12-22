@@ -14,7 +14,6 @@ import org.alfresco.enterprise.repo.cluster.core.ClusterServiceInitialisedEvent;
 import org.alfresco.enterprise.repo.cluster.core.ClusteredObjectProxyFactory.ClusteredObjectProxyInvoker;
 import org.alfresco.repo.cache.DefaultSimpleCache;
 import org.alfresco.repo.cache.SimpleCache;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -22,6 +21,8 @@ import org.springframework.context.ApplicationEvent;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +35,7 @@ public class EnterpriseCacheMetrics implements EventTriggeredMeterBinder, NamedM
 
 
     EnterpriseCacheMetrics(ApplicationContext ctx
-                          ) {
+    ) {
         this.ctx = ctx;
 
     }
@@ -88,7 +89,8 @@ public class EnterpriseCacheMetrics implements EventTriggeredMeterBinder, NamedM
 
         if (!(invocationHandler instanceof ClusteredObjectProxyInvoker)) {
             LOGGER.warn(
-                    "Cache '{}': cannot resolve proxy because invocation handler of type '{}' is not an instance of 'ClusteredObjectProxyInvoker'",
+                    "Cache '{}': cannot resolve proxy because invocation handler" +
+                            " of type '{}' is not an instance of 'ClusteredObjectProxyInvoker'",
                     cacheBeanName, invocationHandler.getClass());
             return object;
         }
@@ -99,7 +101,33 @@ public class EnterpriseCacheMetrics implements EventTriggeredMeterBinder, NamedM
     private void monitorCache(final HazelcastSimpleCache cache, final MeterRegistry registry)
             throws NoSuchFieldException, IllegalAccessException {
         IMap<?, ?> cacheMap = ReflectionUtil.extractField(cache, "map");
-        HazelcastCacheMetrics.monitor(registry, cacheMap, "type", cache.getClass().getSimpleName());
+        Method method =
+                ReflectionUtil.getMethod(
+                        HazelcastCacheMetrics.class,
+                        "monitor",
+                        MeterRegistry.class,
+                        Object.class,
+                        Iterable.class
+                );
+        if (method == null) {
+            method = ReflectionUtil.getMethod(
+                    HazelcastCacheMetrics.class,
+                    "monitor",
+                    MeterRegistry.class,
+                    IMap.class,
+                    Iterable.class
+            );
+        }
+        if (method == null) {
+            LOGGER.warn("could not acquire HazelcastCacheMetrics.monitor method, {} will not be monitored",
+                    cache.getClass().getSimpleName());
+            return;
+        }
+        try {
+            method.invoke(null, registry, cacheMap, Tags.of("type", cache.getClass().getSimpleName()));
+        } catch (InvocationTargetException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
 
