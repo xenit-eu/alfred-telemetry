@@ -22,7 +22,7 @@ ext {
     // * Some MeterBinder implementations monitor Enterprise only components (e.g. Hazelcast caches)
     // * Alfresco's Micrometer integration, (MetricsController, MetricsReporter) classes only available as of 6.1.
     // Compatibility with 5.x should be covered with integration tests
-    alfrescoVersion = '6.1.0.5'
+    alfrescoVersion = '6.1.1.11'
 }
 
 dependencies {
@@ -32,10 +32,7 @@ dependencies {
 
     // 'alfresco-enterprise-repository' not transitive because it will try to download a bunch of unreachable artifacts
     alfrescoProvided('org.alfresco:alfresco-enterprise-repository') { transitive = false }
-    alfrescoProvided('com.hazelcast:hazelcast:2.4') {
-        force = true
-        transitive = false
-    }
+    alfrescoProvided('com.hazelcast:hazelcast:3.12')
 
     alfrescoProvided("io.micrometer:micrometer-core:${micrometerVersion}") {
         exclude group: "org.slf4j", module: "*"
