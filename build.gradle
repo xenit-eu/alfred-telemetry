@@ -40,8 +40,8 @@ allprojects {
     }
 
     ext {
-        micrometerVersion = '1.0.6'
-        jvmExtrasVersion = '0.1.2'
+        micrometerVersion = '1.6.1'
+        jvmExtrasVersion = '0.2.2'
 
         junitJupiterVersion = '5.4.2'
         mockitoVersion = '2.27.0'
