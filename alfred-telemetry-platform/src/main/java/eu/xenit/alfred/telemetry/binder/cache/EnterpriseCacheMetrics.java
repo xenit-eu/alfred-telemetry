@@ -8,34 +8,35 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-import java.util.Collections;
-import java.util.List;
-import javax.annotation.Nonnull;
 import org.alfresco.enterprise.repo.cluster.cache.HazelcastSimpleCache;
 import org.alfresco.enterprise.repo.cluster.cache.InvalidatingCache;
 import org.alfresco.enterprise.repo.cluster.core.ClusterServiceInitialisedEvent;
 import org.alfresco.enterprise.repo.cluster.core.ClusteredObjectProxyFactory.ClusteredObjectProxyInvoker;
 import org.alfresco.repo.cache.DefaultSimpleCache;
 import org.alfresco.repo.cache.SimpleCache;
-import org.alfresco.service.descriptor.DescriptorService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
+
+import javax.annotation.Nonnull;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.List;
 
 public class EnterpriseCacheMetrics implements EventTriggeredMeterBinder, NamedMeterBinder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseCacheMetrics.class);
 
     private ApplicationContext ctx;
-    private DescriptorService descriptorService;
 
-    EnterpriseCacheMetrics(ApplicationContext ctx,
-            DescriptorService descriptorService) {
+
+    EnterpriseCacheMetrics(ApplicationContext ctx
+                          ) {
         this.ctx = ctx;
-        this.descriptorService = descriptorService;
+
     }
 
     @Override
@@ -98,17 +99,9 @@ public class EnterpriseCacheMetrics implements EventTriggeredMeterBinder, NamedM
     private void monitorCache(final HazelcastSimpleCache cache, final MeterRegistry registry)
             throws NoSuchFieldException, IllegalAccessException {
         IMap<?, ?> cacheMap = ReflectionUtil.extractField(cache, "map");
-
-        if (getAlfrescoMajorVersion() <= 5) {
-            Hazelcast2CacheMetrics.monitor(registry, cacheMap, "type", cache.getClass().getSimpleName());
-        } else {
-            HazelcastCacheMetrics.monitor(registry, cacheMap, "type", cache.getClass().getSimpleName());
-        }
+        HazelcastCacheMetrics.monitor(registry, cacheMap, "type", cache.getClass().getSimpleName());
     }
 
-    private int getAlfrescoMajorVersion() {
-        return Integer.valueOf(descriptorService.getServerDescriptor().getVersionMajor());
-    }
 
     private void monitorCache(final String cacheBeanName, final InvalidatingCache cache, final MeterRegistry registry)
             throws NoSuchFieldException, IllegalAccessException {
