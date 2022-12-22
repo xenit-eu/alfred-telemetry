@@ -1,12 +1,7 @@
 package eu.xenit.alfred.telemetry.binder.solr.sharding;
 
-import static org.mockito.Mockito.when;
-
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 import org.alfresco.repo.index.shard.Floc;
 import org.alfresco.repo.index.shard.Shard;
 import org.alfresco.repo.index.shard.ShardInstance;
@@ -19,12 +14,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.mockito.Mockito.when;
+
 class SolrShardingMetricsTest {
 
     @Test
     void testUpdateMetrics() {
         Floc floc = new Floc();
-        HashSet<StoreRef> storeRefs = new HashSet();
+        HashSet<StoreRef> storeRefs = new HashSet<>();
         storeRefs.add(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
         floc.setStoreRefs(storeRefs);
         Shard shard = new Shard();
@@ -35,11 +38,11 @@ class SolrShardingMetricsTest {
         shardInstance.setShard(shard);
         shardInstance.setHostName("myInstanceHost");
         shardState.setShardInstance(shardInstance);
-        HashSet<ShardState> shardStates = new HashSet<>();
+        Set<ShardState> shardStates = new HashSet<>();
         shardStates.add(shardState);
-        HashMap<Shard, HashSet<ShardState>> shardHashSetHashMap = new HashMap<>();
+        Map<Shard, Set<ShardState>> shardHashSetHashMap = new HashMap<>();
         shardHashSetHashMap.put(shard, shardStates);
-        HashMap<Floc, HashMap<Shard, HashSet<ShardState>>> metricsInformation = new HashMap<>();
+        Map<Floc, Map<Shard, Set<ShardState>>> metricsInformation = new HashMap<>();
         metricsInformation.put(floc, shardHashSetHashMap);
 
         ShardRegistry shardRegistry = Mockito.mock(ShardRegistry.class);
@@ -55,9 +58,9 @@ class SolrShardingMetricsTest {
     }
 
     @Test
-    void testShardingStateNull(){
+    void testShardingStateNull() {
         Floc floc = new Floc();
-        HashSet<StoreRef> storeRefs = new HashSet();
+        HashSet<StoreRef> storeRefs = new HashSet<>();
         storeRefs.add(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
         floc.setStoreRefs(storeRefs);
         Shard shard = new Shard();
@@ -65,11 +68,11 @@ class SolrShardingMetricsTest {
         ShardInstance shardInstance = new ShardInstance();
         shardInstance.setShard(shard);
         shardInstance.setHostName("myInstanceHost");
-        HashSet<ShardState> shardStates = new HashSet<>();
+        Set<ShardState> shardStates = new HashSet<>();
         shardStates.add(null);
-        HashMap<Shard, HashSet<ShardState>> shardHashSetHashMap = new HashMap<>();
+        Map<Shard, Set<ShardState>> shardHashSetHashMap = new HashMap<>();
         shardHashSetHashMap.put(shard, shardStates);
-        HashMap<Floc, HashMap<Shard, HashSet<ShardState>>> metricsInformation = new HashMap<>();
+        Map<Floc, Map<Shard, Set<ShardState>>> metricsInformation = new HashMap<>();
         metricsInformation.put(floc, shardHashSetHashMap);
         ShardRegistry shardRegistry = Mockito.mock(ShardRegistry.class);
         MeterRegistry meterRegistry = new SimpleMeterRegistry();

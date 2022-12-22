@@ -22,7 +22,7 @@ ext {
     // * Some MeterBinder implementations monitor Enterprise only components (e.g. Hazelcast caches)
     // * Alfresco's Micrometer integration, (MetricsController, MetricsReporter) classes only available as of 6.1.
     // Compatibility with 5.x should be covered with integration tests
-    alfrescoVersion = '6.1.1.11'
+    alfrescoVersion = '7.1.0'
 }
 
 dependencies {
@@ -33,14 +33,12 @@ dependencies {
     // 'alfresco-enterprise-repository' not transitive because it will try to download a bunch of unreachable artifacts
     alfrescoProvided('org.alfresco:alfresco-enterprise-repository') { transitive = false }
     alfrescoProvided('com.hazelcast:hazelcast:3.12')
-
     alfrescoProvided("io.micrometer:micrometer-core:${micrometerVersion}") {
         exclude group: "org.slf4j", module: "*"
     }
     alfrescoProvided("io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}") {
         exclude group: "org.slf4j", module: "*"
     }
-
     alfrescoProvided "io.micrometer:micrometer-registry-graphite:${micrometerVersion}"
     alfrescoProvided "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
     alfrescoProvided "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
@@ -48,7 +46,6 @@ dependencies {
     alfrescoProvided "commons-dbcp:commons-dbcp:1.4"
     alfrescoProvided "org.apache.commons:commons-dbcp2:2.9.0"
     alfrescoProvided "com.google.code.findbugs:jsr305:3.0.2"
-
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
