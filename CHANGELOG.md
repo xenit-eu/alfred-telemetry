@@ -21,6 +21,10 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
+## [0.9.1] - 2022-12-23
+
+### Fixed
+* Fix hazel cast metrics with micrometer [#137]
 
 ## [0.9.0] - 2022-12-01
 

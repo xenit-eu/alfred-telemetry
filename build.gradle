@@ -20,7 +20,7 @@ def copyPropertyValueIfExists(sourcePropertyName, targetPropertyName) {
 
 allprojects {
     group = 'eu.xenit.alfred.telemetry'
-    version = '0.9.0'
+    version = '0.9.1'
 
     apply plugin: 'java'
     apply plugin: 'jacoco'
