@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-  pull_request:
 
 env:
   ORG_GRADLE_PROJECT_alfresco_nexus_username: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}

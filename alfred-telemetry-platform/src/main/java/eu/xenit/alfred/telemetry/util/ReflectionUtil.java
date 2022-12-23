@@ -1,6 +1,5 @@
 package eu.xenit.alfred.telemetry.util;
 
-import eu.xenit.alfred.telemetry.binder.cache.EnterpriseCacheMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -12,7 +12,7 @@ tasks.withType(JavaCompile) {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_1_9
     withJavadocJar()
     withSourcesJar()
 }
@@ -54,7 +54,7 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
     testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
-
+    testImplementation "org.mockito:mockito-inline:${mockitoVersion}"
     testRuntimeOnly 'org.alfresco:alfresco-remote-api'
 }
 
@@ -89,3 +89,4 @@ publishing {
     }
 }
 
+targetCompatibility = JavaVersion.VERSION_1_9
