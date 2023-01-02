@@ -30,7 +30,7 @@ public class CacheMetricsFactory extends AbstractFactoryBean<MeterBinder> implem
     @Nonnull
     protected MeterBinder createInstance() {
         return isEnterpriseEdition()
-                ? new EnterpriseCacheMetrics(ctx, descriptorService)
+                ? new EnterpriseCacheMetrics(ctx)
                 : new CommunityCacheMetrics(ctx);
     }
 

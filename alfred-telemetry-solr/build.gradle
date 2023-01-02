@@ -1,6 +1,6 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.1.0' apply false
-    id 'eu.xenit.alfresco' version '1.0.1' apply false
+    id 'com.github.johnrengelman.shadow' version '7.1.2' apply false
+    id 'eu.xenit.alfresco' version '1.1.0' apply false
     id 'base'
     id 'idea'
 }

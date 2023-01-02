@@ -1,6 +1,6 @@
 ---
 title: Changelog - Alfred Telemetry
-date: 11 July 2019
+date: 12 December 2022
 report: true
 colorlinks: true
 ---
@@ -21,18 +21,43 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
+## [0.9.1] - 2022-12-23
+
+### Fixed
+* Fix hazel cast metrics with micrometer [#137]
+
+## [0.9.0] - 2022-12-01
+
+### Fixed
+* Fixes broken Apache Commons dbcp dependencies [#132]
+* Fixes broken common tags not added to Alfrescos Prometheus registry [#134]
+
+### Added
+* Added support Alfresco 7.1, 7.2 and 7.3
+
+### Removed
+* Dropped support for Alfresco 5.x and 6.0 
 
 ## [0.8.0] - 2022-01-28
 
 ### BREAKING
 
 * Alfred Telemetry declares `micrometer-core` and `micrometer-jvm-extras` as a provided-dependency [#129]
+[#129]: https://github.com/xenit-eu/alfred-telemetry/pull/129
 
 ### Fixed
 * Fixes bug when tracker is explicitly disabled [#125]
 
+
+## [0.7.2] - 2021-10-07
+
+### Added
+* Added Common tags to Alfred Telemetry Solr
+
+### Fixed
+* Bug appearing when tracker is explicitly disabled [#125]
+
 [#125]: https://github.com/xenit-eu/alfred-telemetry/pull/125
-[#129]: https://github.com/xenit-eu/alfred-telemetry/pull/129
 
 ### Added
 * Support more flexible Graphite step duration configuration [#123]

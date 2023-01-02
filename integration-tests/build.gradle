@@ -19,6 +19,7 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+    testImplementation "org.apache.httpcomponents:httpclient:4.5.12"
 
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
@@ -119,10 +120,10 @@ subprojects {
         captureContainersOutput = false
 
         // Uncomment for quick iterations when developing integration tests
-        // stopContainers = false
+//         stopContainers = false
 
         // expose alfresco/inflow on a random port, comment to use default port (8080)
-        environment.put 'ALFRESCO_TCP_8080', '8080'
+//        environment.put 'ALFRESCO_TCP_8080', '8080'
 
         dev {
             useComposeFiles = [

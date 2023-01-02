@@ -1,7 +1,9 @@
 package eu.xenit.alfred.telemetry.config;
 
+import eu.xenit.alfred.telemetry.util.PrometheusRegistryUtil;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Meter.Id;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.config.MeterFilter;
 import java.net.InetAddress;
@@ -10,6 +12,9 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+
+import io.micrometer.prometheus.PrometheusMeterRegistry;
+import org.alfresco.enterprise.metrics.MetricsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
@@ -19,11 +24,14 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
     private static final Logger slf4jLogger = LoggerFactory.getLogger(CommonTagFilterFactory.class);
 
     static final String PROP_KEY_PREFIX_COMMONTAG = "alfred.telemetry.tags.";
+    static final String PROP_KEY_EXPORT_PROMETHEUS = "alfred.telemetry.export.prometheus.enabled";
 
     private final Properties globalProperties;
 
-    public CommonTagFilterFactory(Properties globalProperties) {
+    public CommonTagFilterFactory(Properties globalProperties,
+                                  MetricsController metricsController) {
         this.globalProperties = globalProperties;
+        addCommonTagsTo(metricsController);
     }
 
     @Override
@@ -53,38 +61,69 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
         };
     }
 
+    private void addCommonTagsTo(MetricsController metricsController) {
+        slf4jLogger.debug("addCommonTagsTo >>>>>>");
+        if(globalProperties == null) {
+            return;
+        }
+
+        if(metricsController == null) {
+            slf4jLogger.debug("metricsController is null");
+            return;
+        }
+
+        MeterRegistry registry = metricsController.getRegistry();
+        if(registry == null) {
+            slf4jLogger.debug("registry is null");
+            return;
+        }
+
+        PrometheusMeterRegistry prometheusMeterRegistry =
+                PrometheusRegistryUtil.tryToExtractPrometheusRegistry(registry);
+        if(!globalProperties.containsKey(PROP_KEY_EXPORT_PROMETHEUS)) {
+            slf4jLogger.debug("global props does not contain {}", PROP_KEY_EXPORT_PROMETHEUS);
+            return;
+        }
+
+        String enableExport = globalProperties.getProperty(PROP_KEY_EXPORT_PROMETHEUS);
+        if(Boolean.FALSE.toString().equalsIgnoreCase(enableExport)) {
+            slf4jLogger.debug("{} is not enabled", PROP_KEY_EXPORT_PROMETHEUS);
+            return;
+        }
+
+        prometheusMeterRegistry.config().commonTags(getCommonTags());
+        slf4jLogger.debug("addCommonTagsTo <<<<<<");
+    }
+
     private Iterable<Tag> getCommonTags() {
         Hashtable<String, String> commonTags = extractCommonTagsFromProperties();
-
         if (!commonTags.containsKey("host")) {
             commonTags.put("host", tryToRetrieveHostName());
         }
-
         commonTags.put("application", "alfresco");
-
         return toTags(commonTags);
     }
 
     private Hashtable<String, String> extractCommonTagsFromProperties() {
         Hashtable<String, String> commonTags = new Hashtable<>();
-
-        for (final String propertyKey : globalProperties.stringPropertyNames()) {
-
-            if (!propertyKey.startsWith(PROP_KEY_PREFIX_COMMONTAG)) {
-                continue;
-            }
-
-            final String propertyValue = globalProperties.getProperty(propertyKey);
-
-            if (propertyValue == null || propertyValue.trim().isEmpty()) {
-                continue;
-            }
-
-            final String tagKey = propertyKey.replace(PROP_KEY_PREFIX_COMMONTAG, "");
-            commonTags.put(tagKey, propertyValue);
+        if(globalProperties == null) {
+            return commonTags;
         }
-
+        globalProperties.stringPropertyNames()
+                .forEach(propKey -> this.addCommonTagTo(propKey, commonTags));
         return commonTags;
+    }
+
+    private void addCommonTagTo(String propertyKey, Hashtable<String, String> commonTags) {
+        if (!propertyKey.startsWith(PROP_KEY_PREFIX_COMMONTAG)) {
+            return;
+        }
+        final String propertyValue = globalProperties.getProperty(propertyKey);
+        if (propertyValue == null || propertyValue.trim().isEmpty()) {
+            return;
+        }
+        final String tagKey = propertyKey.replace(PROP_KEY_PREFIX_COMMONTAG, "");
+        commonTags.put(tagKey, propertyValue);
     }
 
     private String tryToRetrieveHostName() {

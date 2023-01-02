@@ -1,8 +1,8 @@
 plugins {
     id 'idea'
     id 'java'
-    id 'eu.xenit.alfresco' version "1.0.1"
-    id 'eu.xenit.amp' version "1.0.1"
+    id 'eu.xenit.alfresco' version "1.1.0"
+    id 'eu.xenit.amp' version "1.1.0"
 }
 
 description = "Alfred Telemetry Platform module which enables exposure of Metrics using Micrometer"
@@ -12,7 +12,7 @@ tasks.withType(JavaCompile) {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
     withJavadocJar()
     withSourcesJar()
 }
@@ -22,7 +22,7 @@ ext {
     // * Some MeterBinder implementations monitor Enterprise only components (e.g. Hazelcast caches)
     // * Alfresco's Micrometer integration, (MetricsController, MetricsReporter) classes only available as of 6.1.
     // Compatibility with 5.x should be covered with integration tests
-    alfrescoVersion = '6.1.0.5'
+    alfrescoVersion = '6.1.1.11'
 }
 
 dependencies {
@@ -32,11 +32,7 @@ dependencies {
 
     // 'alfresco-enterprise-repository' not transitive because it will try to download a bunch of unreachable artifacts
     alfrescoProvided('org.alfresco:alfresco-enterprise-repository') { transitive = false }
-    alfrescoProvided('com.hazelcast:hazelcast:2.4') {
-        force = true
-        transitive = false
-    }
-
+    alfrescoProvided('com.hazelcast:hazelcast:3.12')
     alfrescoProvided("io.micrometer:micrometer-core:${micrometerVersion}") {
         exclude group: "org.slf4j", module: "*"
     }
@@ -48,12 +44,17 @@ dependencies {
     alfrescoProvided "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
     alfrescoProvided "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
 
+    alfrescoProvided "commons-dbcp:commons-dbcp:1.4"
+    alfrescoProvided "org.apache.commons:commons-dbcp2:2.9.0"
+    alfrescoProvided "com.google.code.findbugs:jsr305:3.0.2"
+
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitJupiterVersion}"
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
     testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
-
+    testImplementation "org.mockito:mockito-inline:${mockitoVersion}"
     testRuntimeOnly 'org.alfresco:alfresco-remote-api'
 }
 
@@ -88,3 +89,4 @@ publishing {
     }
 }
 
+targetCompatibility = JavaVersion.VERSION_11

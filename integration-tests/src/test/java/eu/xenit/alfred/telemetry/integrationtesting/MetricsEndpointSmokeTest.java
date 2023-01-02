@@ -61,7 +61,15 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
                 "license.cluster.enabled",
                 "license.encryption.enabled",
                 "license.heartbeat.enabled",
-                "repository.cluster.nodes.count"
+                "repository.cluster.nodes.count",
+                "cache.entries",
+                "cache.entry.memory",
+                "cache.gets.latency",
+                "cache.near.evictions",
+                "cache.near.persistences",
+                "cache.near.requests",
+                "cache.puts.latency",
+                "cache.removals.latency"
         );
     }
 
@@ -86,7 +94,7 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
     }
 
     @Test
-    @EnabledIfSystemProperty(named="alfrescoEdition",matches = "Enterprise")
+    @EnabledIfSystemProperty(named = "alfrescoEdition", matches = "Enterprise")
     void metersEnterpriseListedInMetricsEndpoint() {
         final List<String> availableMeters = given()
                 .log().ifValidationFails()
@@ -121,7 +129,7 @@ class MetricsEndpointSmokeTest extends RestAssuredTest {
 
     @ParameterizedTest
     @MethodSource("expectedMetersEnterprise")
-    @EnabledIfSystemProperty(named="alfrescoEdition",matches = "Enterprise")
+    @EnabledIfSystemProperty(named = "alfrescoEdition", matches = "Enterprise")
     void meterEnterpriseOverview(String expectedMeter) {
         given()
                 .log().ifValidationFails()

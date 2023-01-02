@@ -2,6 +2,8 @@ package eu.xenit.alfred.telemetry.alfrescointegration;
 
 import java.util.Properties;
 import javax.annotation.Nonnull;
+
+import eu.xenit.alfred.telemetry.config.CommonTagFilterFactory;
 import org.alfresco.enterprise.metrics.MetricsController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -77,6 +80,13 @@ public class MetricsControllerBeanPostProcessor implements BeanDefinitionRegistr
         LOGGER.info("Bean '{}' overwritten with custom '{}' implementation", METRICS_CONTROLLER_BEAN_ID,
                 AlfredTelemetryMetricsController.class.getCanonicalName());
 
+        BeanDefinition commonTagsBeanDefinition = BeanDefinitionBuilder
+                .genericBeanDefinition(CommonTagFilterFactory.class)
+                .addConstructorArgReference("global-properties")
+                .addConstructorArgReference(METRICS_CONTROLLER_BEAN_ID)
+                .getBeanDefinition();
+
+        registry.registerBeanDefinition("commonTags", commonTagsBeanDefinition);
     }
 
     @Override

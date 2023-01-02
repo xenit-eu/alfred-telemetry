@@ -5,13 +5,19 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import javax.annotation.Nonnull;
 import org.alfresco.enterprise.repo.cluster.core.ClusterService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClusteringMetrics implements MeterBinder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClusteringMetrics.class);
     private static final String CLUSTER_TYPE = "clustertype";
     public static final String GAUGE_NAME = "repository.cluster.nodes.count";
     public static final String GAUGE_DESCRIPTION = "The amount of repository cluster nodes";
 
-    private ClusterService clusterService;
+    private final ClusterService clusterService;
+    private final AtomicBoolean clusterInitializationTriggered = new AtomicBoolean(false);
 
     public ClusteringMetrics(ClusterService clusterService) {
         this.clusterService = clusterService;
@@ -34,34 +40,39 @@ public class ClusteringMetrics implements MeterBinder {
     }
 
     protected int getClusterMemberCount(final ClusterService clusterService) {
-        if (clusterService != null) {
-            initClusterServiceIfNeeded();
-            return clusterService.isClusteringEnabled() ? clusterService.getNumActiveClusterMembers() : 0;
+        if (clusterService == null) {
+            return 0;
         }
-        return 0;
+        ensureClusterServiceInitialized();
+        return clusterService.isClusteringEnabled() ? clusterService.getNumActiveClusterMembers() : 0;
     }
 
     protected int getNonMemberCount(final ClusterService clusterService) {
-        if (clusterService != null) {
-            initClusterServiceIfNeeded();
-            final String ipAddress = clusterService.getMemberIP();
-            final Integer port = clusterService.getMemberPort();
-            return clusterService.getRegisteredNonMembers(ipAddress, port).size();
+        if (clusterService == null) {
+            return 0;
         }
-        return 0;
+        ensureClusterServiceInitialized();
+        final String ipAddress = clusterService.getMemberIP();
+        final Integer port = clusterService.getMemberPort();
+        return clusterService.getRegisteredNonMembers(ipAddress, port).size();
     }
 
     protected int getOfflineMemberCount(final ClusterService clusterService) {
-        if (clusterService != null) {
-            initClusterServiceIfNeeded();
-            return clusterService.isClusteringEnabled() ? clusterService.getOfflineMembers().size() : 0;
+        if (clusterService == null) {
+            return 0;
         }
-        return 0;
+        ensureClusterServiceInitialized();
+        return clusterService.isClusteringEnabled() ? clusterService.getOfflineMembers().size() : 0;
     }
 
-    private void initClusterServiceIfNeeded() {
-        if (clusterService != null && !clusterService.isInitialised()) {
-            clusterService.initClusterService();
+    private void ensureClusterServiceInitialized() {
+        if (clusterService != null && !clusterService.isInitialised() && !clusterInitializationTriggered.get()) {
+            try {
+                clusterInitializationTriggered.set(true);
+                clusterService.initClusterService();
+            } catch (Exception e) {
+                LOGGER.debug(e.getMessage(), e);
+            }
         }
     }
 }

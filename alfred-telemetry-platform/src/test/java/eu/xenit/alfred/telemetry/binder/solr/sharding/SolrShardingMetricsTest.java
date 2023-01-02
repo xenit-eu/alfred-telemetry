@@ -1,12 +1,7 @@
 package eu.xenit.alfred.telemetry.binder.solr.sharding;
 
-import static org.mockito.Mockito.when;
-
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 import org.alfresco.repo.index.shard.Floc;
 import org.alfresco.repo.index.shard.Shard;
 import org.alfresco.repo.index.shard.ShardInstance;
@@ -19,12 +14,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.mockito.Mockito.when;
+
 class SolrShardingMetricsTest {
 
     @Test
     void testUpdateMetrics() {
         Floc floc = new Floc();
-        HashSet<StoreRef> storeRefs = new HashSet();
+        HashSet<StoreRef> storeRefs = new HashSet<>();
         storeRefs.add(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
         floc.setStoreRefs(storeRefs);
         Shard shard = new Shard();
@@ -55,9 +58,9 @@ class SolrShardingMetricsTest {
     }
 
     @Test
-    void testShardingStateNull(){
+    void testShardingStateNull() {
         Floc floc = new Floc();
-        HashSet<StoreRef> storeRefs = new HashSet();
+        HashSet<StoreRef> storeRefs = new HashSet<>();
         storeRefs.add(StoreRef.STORE_REF_WORKSPACE_SPACESSTORE);
         floc.setStoreRefs(storeRefs);
         Shard shard = new Shard();
