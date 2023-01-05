@@ -4,26 +4,34 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import java.lang.reflect.Field;
+import org.alfresco.solr.AlfrescoCoreAdminHandler;
+import org.apache.solr.common.params.MapSolrParams;
+import org.apache.solr.common.params.SolrParams;
+import org.apache.solr.common.util.NamedList;
+import org.apache.solr.core.SolrCore;
+import org.apache.solr.handler.ReplicationHandler;
+import org.apache.solr.handler.RequestHandlerBase;
+import org.apache.solr.request.LocalSolrQueryRequest;
+import org.apache.solr.request.SolrRequestHandler;
+import org.apache.solr.response.SolrQueryResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.TimeZone;
-import org.alfresco.solr.AlfrescoCoreAdminHandler;
-import org.apache.solr.common.util.NamedList;
-import org.apache.solr.core.SolrCore;
-import org.apache.solr.handler.ReplicationHandler;
-import org.apache.solr.request.SolrRequestHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SolrSnapshootMetrics implements MeterBinder {
+    public static final String CMD_DETAILS = "details";
+    static final String COMMAND = "command";
+    public static final String CMD_BACKUP = "backup";
 
     private AlfrescoCoreAdminHandler coreAdminHandler;
     private MeterRegistry registry;
 
     private static final Logger logger = LoggerFactory.getLogger(SolrSnapshootMetrics.class);
-    private static final Map<String,String> statusMapping = Map.of(
+    private static final Map<String, String> statusMapping = Map.of(
             "success", "1",
             "failed", "0"
     );
@@ -34,65 +42,59 @@ public class SolrSnapshootMetrics implements MeterBinder {
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
-    private void registerSnapshootMetrics() {
+    private void registerSnapshootMetrics() throws Exception {
         logger.info("Registering snapshoot metrics");
         SolrCore core = coreAdminHandler.getCoreContainer().getCore("alfresco");
         SolrRequestHandler handler = core.getRequestHandler(ReplicationHandler.PATH);
-        ReplicationHandler replication = (ReplicationHandler) handler;
-        Tags  tags = Tags.of("core", core.getName());
-        Gauge.builder("snapshot.start", replication, x -> getValueFromReport(replication, "startTime"))
-                .tags(tags)
-                .register(registry);
-        Gauge.builder("snapshot.completed", replication, x -> getValueFromReport(replication, "snapshotCompletedAt"))
-                .tags(tags)
-                .register(registry);
-        Gauge.builder("snapshot.file.count", replication, x -> getValueFromReport(replication, "fileCount"))
-                .tags(tags)
-                .register(registry);
-        Gauge.builder("snapshot.status", replication, x -> getValueFromReport(replication, "status"))
-                .tags(tags)
-                .register(registry);
-
+        RequestHandlerBase replication = (RequestHandlerBase) handler;
+        Tags tags = Tags.of("core", core.getName());
+        NamedList<?> snapshotStats = getSnapshotStats(replication, core);
+        buildGauge(replication, tags, snapshotStats, "snapshot.start", "startTime");
+        buildGauge(replication, tags, snapshotStats, "snapshot.completed", "snapshotCompletedAt");
+        buildGauge(replication, tags, snapshotStats, "snapshot.file.count", "fileCount");
+        buildGauge(replication, tags, snapshotStats, "snapshot.status", "status");
     }
 
-    private long getValueFromReport(ReplicationHandler replication, String key) {
-        Field snapField = null;
-        try {
-            snapField = ReplicationHandler.class.getDeclaredField("snapShootDetails");
-        } catch (NoSuchFieldException e) {
-            logger.error("No snapShootDetails field in the ReplicationHandler",e);
-	    return -1;
-        }
-        snapField.setAccessible(true);
-        NamedList<?> snapValue = null;
-        try {
-            snapValue = (NamedList<?>) snapField.get(replication);
-        } catch (IllegalAccessException e) {
-            logger.info("No backup taken yet",e);
-        }
-        if(snapValue==null)
-            return -1;
+    private NamedList<?> getSnapshotStats(RequestHandlerBase replication, SolrCore core) throws Exception {
+        SolrParams solrParams = new MapSolrParams(Map.of(COMMAND, CMD_DETAILS));
+        SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
+        replication.handleRequestBody(new LocalSolrQueryRequest(core, solrParams), solrQueryResponse);
+        solrQueryResponse.getValues().get(CMD_DETAILS);
+        return (NamedList<?>) ((NamedList<?>) solrQueryResponse.
+                getValues()
+                .get(CMD_DETAILS))
+                .get(CMD_BACKUP);
+    }
 
-        Object value = snapValue.get(key);
-        if(value instanceof Integer)
-            return ((Integer)value).longValue();
-        if("status".equals(key))
+    private long getValueFromReport(NamedList<?> snapshotStats, String key) {
+        Object value = snapshotStats.get(key);
+        if (value instanceof Integer)
+            return ((Integer) value).longValue();
+        if ("status".equals(key))
             return Long.parseLong(statusMapping.get(value));
-        if("startTime".equals(key) || "snapshotCompletedAt".equals(key)) {
+        if ("startTime".equals(key) || "snapshotCompletedAt".equals(key)) {
             try {
-                return formatter.parse((String)value).getTime();
+                return formatter.parse((String) value).getTime();
             } catch (ParseException e) {
-                logger.error("Start time or completed time of snapshoot not in correct format",e);
+                logger.error("Start time or completed time of snapshoot not in correct format", e);
             }
         }
-
         return -1;
     }
 
+    private void buildGauge(RequestHandlerBase replication, Tags tags, NamedList<?> snapshotStats, String name, String key) {
+        Gauge.builder(name, replication, x -> getValueFromReport(snapshotStats, key))
+                .tags(tags)
+                .register(registry);
+    }
 
     @Override
     public void bindTo(MeterRegistry registry) {
         this.registry = registry;
-        registerSnapshootMetrics();
+        try {
+            registerSnapshootMetrics();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
