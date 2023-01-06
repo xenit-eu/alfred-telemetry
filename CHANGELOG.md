@@ -24,7 +24,7 @@ Version template:
 ## [0.9.2] - 2022-12-23
 
 ### Fixed
-* First call to Alfred Telemetry endpoint Solr always failing,Fix SolrSnapShoot Metrics [#140]
+* First call to Alfred Telemetry endpoint Solr always failing,Fix SolrSnapShot Metrics [#140]
 
 ## [0.9.1] - 2022-12-23
 
