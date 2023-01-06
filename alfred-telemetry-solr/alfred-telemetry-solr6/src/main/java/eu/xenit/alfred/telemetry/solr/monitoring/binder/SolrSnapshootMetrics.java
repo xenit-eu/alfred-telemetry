@@ -31,10 +31,7 @@ public class SolrSnapshootMetrics implements MeterBinder {
     private MeterRegistry registry;
 
     private static final Logger logger = LoggerFactory.getLogger(SolrSnapshootMetrics.class);
-    private static final Map<String, String> statusMapping = Map.of(
-            "success", "1",
-            "failed", "0"
-    );
+    private static final Map<String, Long> statusMapping = Map.of("success", 1L, "failed", 0L);
     private SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss 'UTC' yyyy");
 
     public SolrSnapshootMetrics(AlfrescoCoreAdminHandler coreAdminHandler) {
@@ -49,29 +46,29 @@ public class SolrSnapshootMetrics implements MeterBinder {
         RequestHandlerBase replication = (RequestHandlerBase) handler;
         Tags tags = Tags.of("core", core.getName());
         NamedList<?> snapshotStats = getSnapshotStats(replication, core);
-        buildGauge(replication, tags, snapshotStats, "snapshot.start", "startTime");
-        buildGauge(replication, tags, snapshotStats, "snapshot.completed", "snapshotCompletedAt");
-        buildGauge(replication, tags, snapshotStats, "snapshot.file.count", "fileCount");
-        buildGauge(replication, tags, snapshotStats, "snapshot.status", "status");
+        if (snapshotStats != null) {
+            buildGauge(replication, tags, snapshotStats, "snapshot.start", "startTime");
+            buildGauge(replication, tags, snapshotStats, "snapshot.completed", "snapshotCompletedAt");
+            buildGauge(replication, tags, snapshotStats, "snapshot.file.count", "fileCount");
+            buildGauge(replication, tags, snapshotStats, "snapshot.status", "status");
+        }
     }
 
     private NamedList<?> getSnapshotStats(RequestHandlerBase replication, SolrCore core) throws Exception {
         SolrParams solrParams = new MapSolrParams(Map.of(COMMAND, CMD_DETAILS));
         SolrQueryResponse solrQueryResponse = new SolrQueryResponse();
         replication.handleRequestBody(new LocalSolrQueryRequest(core, solrParams), solrQueryResponse);
-        solrQueryResponse.getValues().get(CMD_DETAILS);
-        return (NamedList<?>) ((NamedList<?>) solrQueryResponse.
-                getValues()
-                .get(CMD_DETAILS))
-                .get(CMD_BACKUP);
+        NamedList<?> values = solrQueryResponse.getValues();
+        if (values == null) return null;
+        NamedList<?> details = (NamedList<?>) values.get(CMD_DETAILS);
+        if (details == null) return null;
+        return (NamedList<?>) details.get(CMD_BACKUP);
     }
 
     private long getValueFromReport(NamedList<?> snapshotStats, String key) {
         Object value = snapshotStats.get(key);
-        if (value instanceof Integer)
-            return ((Integer) value).longValue();
-        if ("status".equals(key))
-            return Long.parseLong(statusMapping.get(value));
+        if (value instanceof Integer) return ((Integer) value).longValue();
+        if ("status".equals(key)) return statusMapping.get(value);
         if ("startTime".equals(key) || "snapshotCompletedAt".equals(key)) {
             try {
                 return formatter.parse((String) value).getTime();
@@ -83,9 +80,7 @@ public class SolrSnapshootMetrics implements MeterBinder {
     }
 
     private void buildGauge(RequestHandlerBase replication, Tags tags, NamedList<?> snapshotStats, String name, String key) {
-        Gauge.builder(name, replication, x -> getValueFromReport(snapshotStats, key))
-                .tags(tags)
-                .register(registry);
+        Gauge.builder(name, replication, x -> getValueFromReport(snapshotStats, key)).tags(tags).register(registry);
     }
 
     @Override
