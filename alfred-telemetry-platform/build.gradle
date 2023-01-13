@@ -39,7 +39,8 @@ dependencies {
     alfrescoProvided("io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}") {
         exclude group: "org.slf4j", module: "*"
     }
-
+    alfrescoProvided 'javax.servlet:javax.servlet-api'
+    compileOnly 'org.apache.tomcat:tomcat-catalina:7.0.92'
     alfrescoProvided "io.micrometer:micrometer-registry-graphite:${micrometerVersion}"
     alfrescoProvided "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
     alfrescoProvided "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"

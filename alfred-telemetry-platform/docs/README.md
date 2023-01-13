@@ -143,6 +143,13 @@ Metrics provided
 | tomcat.servlet.request.max           |
 | tomcat.threads.busy                  |
 | tomcat.threads.config.max            |
+| tomcat.sessions.active.current       |
+| tomcat.sessions.active.max           |
+| tomcat.sessions.alive.max            |
+| tomcat.sessions.created              |
+| tomcat.sessions.expired              |
+| tomcat.sessions.rejected             |
+| tomcat.threads.current               |
 
 ## Jvm metrics
 The JVM metrics bindings will provide several jvm metrics.
