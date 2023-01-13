@@ -10,7 +10,9 @@
         <property name="enabled" value="${alfred.telemetry.binder.enabled}"/>
     </bean>
 
-    <bean class="eu.xenit.alfred.telemetry.binder.JvmMetrics"/>
+    <bean class="eu.xenit.alfred.telemetry.binder.JvmMetrics">
+        <constructor-arg ref="alfrescoMBeanServer"/>
+    </bean>
     <bean class="eu.xenit.alfred.telemetry.binder.FilesMetrics"/>
     <bean class="eu.xenit.alfred.telemetry.binder.ProcessMetrics"/>
     <bean class="eu.xenit.alfred.telemetry.binder.AlfrescoNodeMeterBinder">

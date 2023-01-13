@@ -21,6 +21,10 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
+## [0.9.3] - 2023-01-13
+### Added
+* Added TomcatMetrics [#142]
+
 ## [0.9.2] - 2022-12-23
 
 ### Fixed
