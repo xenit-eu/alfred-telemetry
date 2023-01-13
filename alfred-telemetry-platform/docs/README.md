@@ -120,6 +120,36 @@ alfred.telemetry.export.prometheus.max-requests=1
 ```
 
 # Supported metrics
+## Tomcat metrics
+The Tomcat metrics bindings will provide several tomcat metrics.
+
+**Control Property**: `alfred.telemetry.binder.tomcat.enabled`
+Metrics provided
+
+| Name                                 |
+|:-------------------------------------|
+| tomcat.cache.access                  |
+| tomcat.cache.hit                     |
+| tomcat.connections.config.max        |
+| tomcat.connections.current           |
+| tomcat.connections.keepalive.current |
+| tomcat.global.error                  |
+| tomcat.global.received               |
+| tomcat.global.request                |
+| tomcat.global.request.max            |
+| tomcat.global.sent                   |
+| tomcat.servlet.error                 |
+| tomcat.servlet.request               |
+| tomcat.servlet.request.max           |
+| tomcat.threads.busy                  |
+| tomcat.threads.config.max            |
+| tomcat.sessions.active.current       |
+| tomcat.sessions.active.max           |
+| tomcat.sessions.alive.max            |
+| tomcat.sessions.created              |
+| tomcat.sessions.expired              |
+| tomcat.sessions.rejected             |
+| tomcat.threads.current               |
 
 ## Jvm metrics
 The JVM metrics bindings will provide several jvm metrics.
