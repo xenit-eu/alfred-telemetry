@@ -2,8 +2,8 @@ version: '3.2'
 
 services:
   grafana:
-    image: hub.xenit.eu/public/grafana:5
+    image: grafana/grafana
     volumes:
     - ./grafana:/etc/grafana:z
     ports:
-    - 3000:3000
+    - "3000:3000"

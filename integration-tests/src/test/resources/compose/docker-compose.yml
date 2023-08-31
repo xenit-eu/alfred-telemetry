@@ -4,16 +4,8 @@ services:
   alfresco:
     image: ${DOCKER_IMAGE}
     ports:
-      - target: 8080
-        mode: host
-      - target: 8443
-        mode: host
-#      - target: 8000
-#        mode: host
-#        published: 8000
- #     - target: 5000
- #       mode: host
- #       published: 5000
+      - "8080:8080"
+      - "8443:8443"
     environment:
       - DEBUG=true
       - JMX_ENABLED=true
@@ -21,8 +13,9 @@ services:
       - ENABLE_CLUSTERING=true
       - GLOBAL_metrics.enabled=true
       - GLOBAL_alfred.telemetry.alfresco-integration.enabled=true
-      # Expose AT metrics in the Alfresco endpoint:
+          # Expose AT metrics in the Alfresco endpoint:
       - GLOBAL_alfred.telemetry.alfresco-integration.use-default-alfresco-registry=true
+      - GLOBAL_metrics.tomcatMetricsReporter.enabled=true
       # Enable Alfresco cache metrics:
       - GLOBAL_alfred.telemetry.binder.cache.enabled=true
 

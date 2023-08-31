@@ -56,7 +56,7 @@ subprojects {
         dockerFile {
             dockerFile = createDockerFile.getDestFile()
             dockerBuild {
-                repository = "hub.xenit.eu/alfred-telemetry/solr-alfred-telemetry-${solrFlavor}"
+                repository = "private.docker.xenit.eu/alfred-telemetry/solr-alfred-telemetry-${solrFlavor}"
                 automaticTags = false
                 tags = ["${version}"]
             }
