@@ -37,7 +37,8 @@ pluginManager.withPlugin('maven-publish') {
                     developers {
                         developer {
                             id = "xenit"
-                            name = "Xenit Solutions NV"
+                            name = "Xenit"
+                            description = "Xenit Solutions NV"
                         }
                     }
 
