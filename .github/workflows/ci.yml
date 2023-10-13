@@ -2,41 +2,47 @@ name: CI
 
 on:
   push:
-
+  workflow_dispatch:
 env:
-  ORG_GRADLE_PROJECT_alfresco_nexus_username: ${{ secrets.ALFRESCO_NEXUS_USERNAME }}
-  ORG_GRADLE_PROJECT_alfresco_nexus_password: ${{ secrets.ALFRESCO_NEXUS_PASSWORD }}
-
+  GRADLE_OPTS: >-
+    -Dorg.gradle.project.org.alfresco.maven.nexus.username=${{ secrets.ALFRESCO_NEXUS_USERNAME }} 
+    -Dorg.gradle.project.org.alfresco.maven.nexus.password=${{ secrets.ALFRESCO_NEXUS_PASSWORD }}
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
         with:
-          fetch-depth: 0
-      - uses: actions/setup-java@v1
-        with:
+          distribution: temurin
           java-version: 11
       - name: Test
-        run: ./gradlew test
+        uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: false
+          arguments: test
       - name: Upload analysis to sonarcloud
+        uses: gradle/gradle-build-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: ./gradlew sonarqube
+        with:
+          cache-read-only: false
+          arguments: sonarqube
   integration-test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         flavour: [ "community", "enterprise" ]
-        version: [ "61", "62", "70", "71", "72", "73" ]
+        version: [ "61", "62", "70", "71", "72", "73","74" ]
     steps:
       - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
         with:
-          fetch-depth: 0
-      - uses: actions/setup-java@v1
-        with:
+          distribution: temurin
           java-version: 11
       - name: Login to Docker
         env:
@@ -45,36 +51,34 @@ jobs:
           DOCKER_CLOUDSMITH_USER: ${{ secrets.CLOUDSMITH_USER }}
           DOCKER_CLOUDSMITH_PASSWORD: ${{ secrets.CLOUDSMITH_APIKEY }}
         run: |
-          echo "$DOCKER_HUB_PASSWORD" | docker login hub.xenit.eu --username "$DOCKER_HUB_USER" --password-stdin
           echo "$DOCKER_CLOUDSMITH_PASSWORD" | docker login private.docker.xenit.eu --username "$DOCKER_CLOUDSMITH_USER" --password-stdin
-      - name: Test
-        run: ./gradlew :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest
-        env:
-          ORG_GRADLE_PROJECT_xenit_docker_registry_url: ${{ secrets.XENIT_DOCKER_REGISTRY_URL }}
-          ORG_GRADLE_PROJECT_xenit_docker_registry_username: ${{ secrets.XENIT_DOCKER_REGISTRY_USERNAME }}
-          ORG_GRADLE_PROJECT_xenit_docker_registry_password: ${{ secrets.XENIT_DOCKER_REGISTRY_PASSWORD }}
+      - name: Integration Test
+        uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: false
+          arguments: :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest
       - name: 'Upload Test Reports'
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: test-result
+          name: test-result-${{ matrix.flavour }}-${{ matrix.version }}
           path: /home/runner/**/build/reports
           retention-days: 14
   publish:
-    needs: [test, integration-test]
+    needs: [ test, integration-test ]
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/heads/master') || startswith(github.ref, 'refs/heads/release') }}
     steps:
       - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
         with:
-          fetch-depth: 0
-      - uses: actions/setup-java@v1
-        with:
+          distribution: temurin
           java-version: 11
       - name: Publish
         env:
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
-          ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-        run: ./gradlew publish -PsigningKeyId=CDE3528F
+          ORG_GRADLE_PROJECT_sonatype_username: ${{ secrets.SONATYPE_S01_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatype_password: ${{ secrets.SONATYPE_S01_PASSWORD }}
+          SIGNING_PRIVATE_KEY: ${{ secrets.MAVEN_CENTRAL_GPG_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.MAVEN_CENTRAL_GPG_PASSWORD }}
+        run: ./gradlew publish --info

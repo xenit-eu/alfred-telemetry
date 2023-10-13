@@ -1,7 +1,27 @@
-apply plugin: 'maven-publish'
 apply plugin: 'signing'
+apply plugin: 'maven-publish'
 
 publishing {
+
+    repositories {
+        if ("${project.version}".endsWith('-SNAPSHOT')) {
+            sonatypeSnapshots {
+                url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                credentials {
+                    username = project.findProperty('sonatype_username')
+                    password = project.findProperty('sonatype_password')
+                }
+            }
+        } else {
+            sonatypeMavenCentral {
+                url = "https://s01.oss.sonatype.org/service/local/"
+                credentials {
+                    username = project.findProperty('sonatype_username')
+                    password = project.findProperty('sonatype_password')
+                }
+            }
+        }
+    }
     publications {
         all {
             pom {
@@ -17,7 +37,8 @@ publishing {
                 developers {
                     developer {
                         id = "xenit"
-                        name = "Xenit Solutions NV"
+                        name = "Xenit"
+                        description = "Xenit Solutions NV"
                     }
                 }
 
@@ -30,23 +51,4 @@ publishing {
             }
         }
     }
-
-    repositories {
-        maven {
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            url = version.toString().endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-            credentials {
-                username = project.findProperty('sonatype_username')
-                password = project.findProperty('sonatype_password')
-            }
-        }
-    }
-}
-
-signing {
-    required { !version.toString().endsWith("SNAPSHOT") }
-    useInMemoryPgpKeys(findProperty("signingKeyId"), findProperty("signingKey"), findProperty("signingPassword"))
-    sign publishing.publications
 }

@@ -1,16 +1,15 @@
 package eu.xenit.alfred.telemetry.integrationtesting;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.isOneOf;
-
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 
-public class AlfrescoPrometheusEndpointTest extends RestAssuredTest {
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
+class AlfrescoPrometheusEndpointTest extends RestAssuredTest {
 
     @Test
     void alfrescoEndpointExposesAlfredTelemetryMetrics() {
@@ -21,6 +20,7 @@ public class AlfrescoPrometheusEndpointTest extends RestAssuredTest {
         // ERROR: cannot execute nextval() in a read-only transaction
         given().when().get("s/prometheus");
         // Actual test
+        //enterprise will return 200 and community will not have this endpoint
         ExtractableResponse<Response> response =
                 given()
                         .log().ifValidationFails()
@@ -28,10 +28,9 @@ public class AlfrescoPrometheusEndpointTest extends RestAssuredTest {
                         .get("s/prometheus")
                         .then()
                         .log().ifValidationFails()
-                        .statusCode(isOneOf(getExpectedStatusCode()))
+                        .statusCode(getExpectedStatusCode())
                         .extract();
-
-        if(getExpectedStatusCode() != HttpStatus.SC_OK) {
+        if (getExpectedStatusCode() != HttpStatus.SC_OK) {
             return;
         }
 

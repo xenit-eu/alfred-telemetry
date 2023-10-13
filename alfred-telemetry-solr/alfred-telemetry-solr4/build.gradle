@@ -5,6 +5,8 @@ plugins {
     id 'eu.xenit.alfresco'
 }
 
+description = "Alfred Telemetry Solr4 module which enables exposure of Metrics using Micrometer"
+
 java {
     sourceCompatibility = JavaVersion.VERSION_11
 }
