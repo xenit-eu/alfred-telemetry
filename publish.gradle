@@ -1,52 +1,51 @@
-pluginManager.withPlugin('maven-publish') {
-    apply plugin: 'signing'
+apply plugin: 'signing'
+apply plugin: 'maven-publish'
 
-    publishing {
+publishing {
 
-        repositories {
-            if ("${project.version}".endsWith('-SNAPSHOT')) {
-                sonatypeSnapshots {
-                    url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-                    credentials {
-                        username = project.findProperty('sonatype_username')
-                        password = project.findProperty('sonatype_password')
-                    }
+    repositories {
+        if ("${project.version}".endsWith('-SNAPSHOT')) {
+            sonatypeSnapshots {
+                url = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                credentials {
+                    username = project.findProperty('sonatype_username')
+                    password = project.findProperty('sonatype_password')
                 }
-            } else {
-                sonatypeMavenCentral {
-                    url = "https://s01.oss.sonatype.org/service/local/"
-                    credentials {
-                        username = project.findProperty('sonatype_username')
-                        password = project.findProperty('sonatype_password')
-                    }
+            }
+        } else {
+            sonatypeMavenCentral {
+                url = "https://s01.oss.sonatype.org/service/local/"
+                credentials {
+                    username = project.findProperty('sonatype_username')
+                    password = project.findProperty('sonatype_password')
                 }
             }
         }
-        publications {
-            all {
-                pom {
-                    url = 'https://github.com/xenit-eu/alfred-telemetry'
-                    name = "alfred-telemetry"
-                    description = project.description
+    }
+    publications {
+        all {
+            pom {
+                url = 'https://github.com/xenit-eu/alfred-telemetry'
+                name = "alfred-telemetry"
+                description = project.description
 
-                    scm {
-                        connection = 'scm:git:git@github.com:xenit-eu/alfred-telemetry.git'
-                        developerConnection = 'scm:git:git@github.com:xenit-eu/alfred-telemetry.git'
-                        url = 'https://github.com/xenit-eu/alfred-telemetry.git'
+                scm {
+                    connection = 'scm:git:git@github.com:xenit-eu/alfred-telemetry.git'
+                    developerConnection = 'scm:git:git@github.com:xenit-eu/alfred-telemetry.git'
+                    url = 'https://github.com/xenit-eu/alfred-telemetry.git'
+                }
+                developers {
+                    developer {
+                        id = "xenit"
+                        name = "Xenit"
+                        description = "Xenit Solutions NV"
                     }
-                    developers {
-                        developer {
-                            id = "xenit"
-                            name = "Xenit"
-                            description = "Xenit Solutions NV"
-                        }
-                    }
+                }
 
-                    licenses {
-                        license {
-                            name = 'GNU Lesser General Public License v3.0'
-                            url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                        }
+                licenses {
+                    license {
+                        name = 'GNU Lesser General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
                     }
                 }
             }
