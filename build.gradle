@@ -15,7 +15,7 @@ sonarqube {
 
 allprojects {
     group = 'eu.xenit.alfred.telemetry'
-    version = '0.10.0'
+    version = '0.10.1'
 
     apply plugin: 'java'
     apply plugin: 'jacoco'

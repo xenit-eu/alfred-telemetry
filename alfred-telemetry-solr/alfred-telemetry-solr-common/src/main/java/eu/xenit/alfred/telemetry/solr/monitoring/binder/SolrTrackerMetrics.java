@@ -4,7 +4,6 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.MeterBinder;
-import java.util.Set;
 import org.alfresco.solr.AlfrescoCoreAdminHandler;
 import org.alfresco.solr.TrackerState;
 import org.alfresco.solr.tracker.AclTracker;
@@ -13,101 +12,103 @@ import org.alfresco.solr.tracker.TrackerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SolrTrackerMetrics implements MeterBinder {
+import java.util.Set;
 
-    private AlfrescoCoreAdminHandler coreAdminHandler;
-    private MeterRegistry registry;
+public class SolrTrackerMetrics extends AbstractSolrMetrics implements MeterBinder {
 
     private static final Logger logger = LoggerFactory.getLogger(SolrTrackerMetrics.class);
 
     public SolrTrackerMetrics(AlfrescoCoreAdminHandler coreAdminHandler) {
-        this.coreAdminHandler = coreAdminHandler;
+        super(coreAdminHandler);
     }
 
-
-    private void registerTrackerMetrics() {
-        logger.info("Registering tracker metrics");
-        TrackerRegistry trackerRegistry = coreAdminHandler.getTrackerRegistry();
-
-        while (trackerRegistry.getCoreNames().size() == 0) {
-            logger.error("Solr did not start tracking yet, waiting 10sec");
-            try {
-                Thread.currentThread().sleep(10_000);
-                trackerRegistry = coreAdminHandler.getTrackerRegistry();
-            } catch (InterruptedException e) {
-                logger.error("Fail to wait 10 sec", e);
-            }
-        }
+    @Override
+    protected void registerMetrics() {
+        TrackerRegistry trackerRegistry = getTrackerRegistryWhenAvailable();
 
         Set<String> coreNames = trackerRegistry.getCoreNames();
         for (String coreName : coreNames) {
-            if(trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class) == null || trackerRegistry.getTrackerForCore(coreName, AclTracker.class) == null) {
-                logger.error("No tracker found for {}, might have been explicitelly disabled", coreName);
+            if (trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class) == null || trackerRegistry.getTrackerForCore(coreName, AclTracker.class) == null) {
+                logger.error("No tracker found for {}, might have been explicitly disabled", coreName);
                 continue;
             }
-            TrackerState metadataTrackerState = trackerRegistry.getTrackerForCore(coreName, MetadataTracker.class)
-                    .getTrackerState();
-            TrackerState aclsTrackerState = trackerRegistry.getTrackerForCore(coreName, AclTracker.class)
-                    .getTrackerState();
+
 
             // technically these metrics are not per core, but in order to filter in grafana the core is added as a tag
             Tags tags = Tags.of("core", coreName, "state", "Remaining");
-            Gauge.builder("alfresco.transactions.nodes", metadataTrackerState,
-                    x -> getTransactionsRemaining(metadataTrackerState))
+            Gauge.builder("alfresco.transactions.nodes", coreAdminHandler,
+                            x -> getTransactionsRemaining(x, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName);
-            Gauge.builder("alfresco.transactions.nodes.lag", metadataTrackerState, x -> getTxLag(metadataTrackerState))
+            Gauge.builder("alfresco.transactions.nodes.lag", coreAdminHandler, x -> getTxLag(x, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName);
-            Gauge.builder("alfresco.transactions.nodes.lastIndexCommitTime", metadataTrackerState,
-                    x -> getLastIndexTxCommitTime(metadataTrackerState))
+            Gauge.builder("alfresco.transactions.nodes.lastIndexCommitTime", coreAdminHandler,
+                            x -> getLastIndexTxCommitTime(x, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName, "state", "Remaining");
-            Gauge.builder("alfresco.transactions.acls", aclsTrackerState, x -> getChangeSetsRemaining(aclsTrackerState))
+            Gauge.builder("alfresco.transactions.acls", coreAdminHandler, x -> getChangeSetsRemaining(x, coreName))
                     .tags(tags).register(registry);
 
             tags = Tags.of("core", coreName);
-            Gauge.builder("alfresco.transactions.acls.lag", aclsTrackerState, x -> getChangeSetsLag(aclsTrackerState))
+            Gauge.builder("alfresco.transactions.acls.lag", coreAdminHandler, x -> getChangeSetsLag(x, coreName))
                     .tags(tags)
                     .register(registry);
 
             tags = Tags.of("core", coreName);
-            Gauge.builder("alfresco.transactions.acls.lastIndexCommitTime", aclsTrackerState,
-                    x -> getLastIndexChangeSetCommitTime(aclsTrackerState))
+            Gauge.builder("alfresco.transactions.acls.lastIndexCommitTime", coreAdminHandler,
+                            x -> getLastIndexChangeSetCommitTime(x, coreName))
                     .tags(tags)
                     .register(registry);
         }
     }
 
-    private long getLastIndexChangeSetCommitTime(TrackerState aclsTrackerState) {
-        return aclsTrackerState.getLastIndexedChangeSetCommitTime();
+
+    private static TrackerState getAclsTrackerState(AlfrescoCoreAdminHandler coreAdminHandler, String coreName) {
+        return coreAdminHandler.getTrackerRegistry()
+                .getTrackerForCore(coreName, AclTracker.class)
+                .getTrackerState();
     }
 
-    private long getChangeSetsLag(TrackerState aclsTrackerState) {
+    private static TrackerState getMetadataTrackerState(AlfrescoCoreAdminHandler coreAdminHandler, String coreName) {
+        return coreAdminHandler.getTrackerRegistry()
+                .getTrackerForCore(coreName, MetadataTracker.class)
+                .getTrackerState();
+    }
+
+    private static long getLastIndexChangeSetCommitTime(AlfrescoCoreAdminHandler coreAdminHandler, String coreName) {
+        return getAclsTrackerState(coreAdminHandler, coreName).getLastIndexedChangeSetCommitTime();
+    }
+
+    private static long getChangeSetsLag(AlfrescoCoreAdminHandler coreAdminHandler, String coreName) {
+        TrackerState aclsTrackerState = getAclsTrackerState(coreAdminHandler, coreName);
         long lastIndexChangeSetCommitTime = aclsTrackerState.getLastIndexedChangeSetCommitTime();
         long lastChangeSetCommitTimeOnServer = aclsTrackerState.getLastChangeSetCommitTimeOnServer();
         long changeSetLagSeconds = (lastChangeSetCommitTimeOnServer - lastIndexChangeSetCommitTime) / 1000;
         return ((changeSetLagSeconds < 0) ? 0 : changeSetLagSeconds);
     }
 
-    private long getChangeSetsRemaining(TrackerState aclsTrackerState) {
+    private static long getChangeSetsRemaining(AlfrescoCoreAdminHandler coreAdminHandler, String coreName) {
+        TrackerState aclsTrackerState = getAclsTrackerState(coreAdminHandler, coreName);
         long lastIndexedChangeSetId = aclsTrackerState.getLastIndexedChangeSetId();
         long lastChangeSetIdOnServer = aclsTrackerState.getLastChangeSetIdOnServer();
         long changeSetsToDo = lastChangeSetIdOnServer - lastIndexedChangeSetId;
         return ((changeSetsToDo < 0) ? 0 : changeSetsToDo);
     }
 
-    private long getLastIndexTxCommitTime(TrackerState metadataTrackerState) {
-        return metadataTrackerState.getLastIndexedTxCommitTime();
+    private static long getLastIndexTxCommitTime(AlfrescoCoreAdminHandler coreAdminHandler, String coreName) {
+        return getMetadataTrackerState(coreAdminHandler, coreName)
+                .getLastIndexedTxCommitTime();
     }
 
-    private long getTxLag(TrackerState metadataTrackerState) {
+    private static long getTxLag(AlfrescoCoreAdminHandler coreAdminHandler, String coreName) {
+        TrackerState metadataTrackerState = getMetadataTrackerState(coreAdminHandler, coreName);
         long lastTxCommitTimeOnServer = metadataTrackerState.getLastTxCommitTimeOnServer();
         long lastIndexTxCommitTime = metadataTrackerState.getLastIndexedTxCommitTime();
 
@@ -115,16 +116,13 @@ public class SolrTrackerMetrics implements MeterBinder {
         return ((txLagSeconds < 0) ? 0 : txLagSeconds);
     }
 
-    private long getTransactionsRemaining(TrackerState metadataTrackerState) {
+    private static long getTransactionsRemaining(AlfrescoCoreAdminHandler coreAdminHandler, String coreName) {
+        TrackerState metadataTrackerState = getMetadataTrackerState(coreAdminHandler, coreName);
         long lastIndexedTxId = metadataTrackerState.getLastIndexedTxId();
         long lastTxIdOnServer = metadataTrackerState.getLastTxIdOnServer();
         long transactionsToDo = lastTxIdOnServer - lastIndexedTxId;
         return (transactionsToDo < 0 ? 0 : transactionsToDo);
     }
 
-    @Override
-    public void bindTo(MeterRegistry registry) {
-        this.registry = registry;
-        registerTrackerMetrics();
-    }
+
 }

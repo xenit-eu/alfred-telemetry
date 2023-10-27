@@ -21,28 +21,46 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
+## [0.10.1] - 2023-10-27
+### Fixed
+* re-fetch trackers on each call [[#153]]
+
+[#153]: https://github.com/xenit-eu/alfred-telemetry/pull/153
+
 ## [0.10.0] - 2023-08-31
 ### Added
-* Added support for alfresco 7.4 [#146]
+* Added support for alfresco 7.4 [[#146]]
+
+[#146]: https://github.com/xenit-eu/alfred-telemetry/pull/146
+
 ## [0.9.3] - 2023-01-13
 ### Added
-* Added TomcatMetrics [#142]
+* Added TomcatMetrics [[#142]]
+
+[#142]: https://github.com/xenit-eu/alfred-telemetry/pull/142
 
 ## [0.9.2] - 2022-12-23
 
 ### Fixed
-* First call to Alfred Telemetry endpoint Solr always failing,Fix SolrSnapShot Metrics [#140]
+* First call to Alfred Telemetry endpoint Solr always failing,Fix SolrSnapShot Metrics [[#140]]
+
+[#140]: https://github.com/xenit-eu/alfred-telemetry/pull/140
 
 ## [0.9.1] - 2022-12-23
 
 ### Fixed
-* Fix hazel cast metrics with micrometer [#137]
+* Fix hazel cast metrics with micrometer [[#137]]
+
+[#137]: https://github.com/xenit-eu/alfred-telemetry/pull/137
 
 ## [0.9.0] - 2022-12-01
 
 ### Fixed
-* Fixes broken Apache Commons dbcp dependencies [#132]
-* Fixes broken common tags not added to Alfrescos Prometheus registry [#134]
+* Fixes broken Apache Commons dbcp dependencies [[#132]]
+* Fixes broken common tags not added to Alfrescos Prometheus registry [[#134]]
+
+[#132]: https://github.com/xenit-eu/alfred-telemetry/pull/132
+[#134]: https://github.com/xenit-eu/alfred-telemetry/pull/134
 
 ### Added
 * Added support Alfresco 7.1, 7.2 and 7.3
@@ -54,11 +72,12 @@ Version template:
 
 ### BREAKING
 
-* Alfred Telemetry declares `micrometer-core` and `micrometer-jvm-extras` as a provided-dependency [#129]
+* Alfred Telemetry declares `micrometer-core` and `micrometer-jvm-extras` as a provided-dependency [[#129]]
+
 [#129]: https://github.com/xenit-eu/alfred-telemetry/pull/129
 
 ### Fixed
-* Fixes bug when tracker is explicitly disabled [#125]
+* Fixes bug when tracker is explicitly disabled [[#125]]
 
 
 ## [0.7.2] - 2021-10-07
@@ -67,13 +86,13 @@ Version template:
 * Added Common tags to Alfred Telemetry Solr
 
 ### Fixed
-* Bug appearing when tracker is explicitly disabled [#125]
+* Bug appearing when tracker is explicitly disabled [[#125]]
 
 [#125]: https://github.com/xenit-eu/alfred-telemetry/pull/125
 
 ### Added
-* Support more flexible Graphite step duration configuration [#123]
-* Add metrics for solr backup [#124]
+* Support more flexible Graphite step duration configuration [[#123]]
+* Add metrics for solr backup [[#124]]
 
 [#123]: https://github.com/xenit-eu/alfred-telemetry/pull/123
 [#124]: https://github.com/xenit-eu/alfred-telemetry/pull/124
