@@ -17,6 +17,7 @@ services:
       - DEBUG=true
       - JMX_ENABLED=true
     ports:
+      - "8444:8443"
       - target: 8443
         mode: host
 #      - target: 8080
