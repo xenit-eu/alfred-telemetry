@@ -8,9 +8,9 @@ ext {
     extraDependencies = []
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-}
+//java {
+//    sourceCompatibility = JavaVersion.VERSION_11
+//}
 
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
