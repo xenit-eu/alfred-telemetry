@@ -76,8 +76,8 @@ Please consult the official Alfresco documentation on how to install Simple Modu
 ### Supported Alfresco versions
 
 Alfred Telemetry is systematically integration tested against:
-* Alfresco Enterprise 5.2, 6.0, 6.1, 6.2 and 7.0
-* Alfresco Community 5.2, 6.0, 6.1, 6.2 and 7.0
+* Alfresco Enterprise 6.1, 6.2, 7.0, 7.1, 7.2, 7.3 and 7.4
+* Alfresco Community 6.1, 6.2, 7.0, 7.1, 7.2, 7.3 and 7.4
 
 
 ## Configuration
