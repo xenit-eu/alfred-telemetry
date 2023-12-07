@@ -75,11 +75,11 @@ subprojects {
         alfrescoSM project.extraDependencies
 
         baseAlfrescoWar "${alfrescoBaseWar}"
+        alfrescoSM  group: 'org.postgresql', name: 'postgresql', version: '42.4.0'
     }
 
     dockerAlfresco {
         baseImage = "${alfrescoBaseImage}"
-        leanImage = true
 
         dockerBuild {
             repository = "private.docker.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"

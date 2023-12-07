@@ -1,6 +1,6 @@
 ext {
-    alfrescoBaseWarBom = 'org.alfresco:acs-packaging:6.2.2.19'
+    alfrescoBaseWarBom = 'org.alfresco:acs-packaging:6.2.2.25'
     alfrescoBaseWar = 'org.alfresco:content-services@war'
-    alfrescoBaseImage = 'private.docker.xenit.eu/alfresco-enterprise/alfresco-repository-enterprise:6.2.2.19'
+    alfrescoBaseImage = 'xenit/alfresco-repository-skeleton:6.2'
     solrFlavor = 'solr6'
 }

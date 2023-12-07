@@ -1,7 +1,7 @@
 ext {
-    alfrescoBaseWarBom = 'org.alfresco:acs-community-packaging:7.0.0'
+    alfrescoBaseWarBom = 'org.alfresco:acs-community-packaging:7.0.1-A7'
     alfrescoBaseWar = 'org.alfresco:content-services-community@war'
-    alfrescoBaseImage = 'xenit/alfresco-repository-community:7.0.0'
+    alfrescoBaseImage = 'xenit/alfresco-repository-skeleton:7.0'
     solrFlavor = 'solr6'
 
     extraDependencies = [
