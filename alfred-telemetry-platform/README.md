@@ -67,7 +67,10 @@ In the latter case, you need to add the dependencies yourself:
 
 ```groovy
 alfrescoSM "io.micrometer:micrometer-core:${micrometerVersion}"
-alfrescoSM "io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}"
+alfrescoSM(group: 'io.github.mweirauch', name: 'micrometer-jvm-extras', version: "${jvmExtrasVersion}")
+{
+  exclude group: "org.slf4j", module: "*"
+}
 ```
 
 ### Manual download and install
