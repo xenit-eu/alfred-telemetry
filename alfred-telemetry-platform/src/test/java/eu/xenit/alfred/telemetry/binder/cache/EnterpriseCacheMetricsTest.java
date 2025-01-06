@@ -1,6 +1,6 @@
 package eu.xenit.alfred.telemetry.binder.cache;
 
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import eu.xenit.alfred.telemetry.util.ReflectionUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;

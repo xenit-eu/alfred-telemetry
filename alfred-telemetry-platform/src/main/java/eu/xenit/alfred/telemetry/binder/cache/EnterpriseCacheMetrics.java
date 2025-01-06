@@ -1,6 +1,6 @@
 package eu.xenit.alfred.telemetry.binder.cache;
 
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import eu.xenit.alfred.telemetry.binder.EventTriggeredMeterBinder;
 import eu.xenit.alfred.telemetry.binder.NamedMeterBinder;
 import eu.xenit.alfred.telemetry.util.ReflectionUtil;

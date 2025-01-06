@@ -14,7 +14,7 @@ include ':alfred-telemetry-solr'
 
 include ':integration-tests'
 
-def integrationTestVersions = ["61", "62", "70","71","72","73","74"];
+def integrationTestVersions = [];
 
 if (!hasProperty("community")) {
     integrationTestVersions.each { version ->

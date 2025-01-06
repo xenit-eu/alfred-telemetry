@@ -1,6 +1,6 @@
 package eu.xenit.alfred.telemetry.alfrescointegration;
 
-import org.apache.camel.spring.GenericBeansException;
+import org.apache.camel.NoSuchBeanException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -131,7 +131,7 @@ class DataSourceBeanPostProcessorTest {
     private void setupNullBeans() {
         beanDefinitionRegistry_null = new SimpleBeanDefinitionRegistry();
         context_null = mock(ApplicationContext.class);
-        when(context_null.getBean(DATASOURCE_BEAN_ID)).thenThrow(new GenericBeansException(DATASOURCE_BEAN_ID));
+        when(context_null.getBean(DATASOURCE_BEAN_ID)).thenThrow(new NoSuchBeanException(DATASOURCE_BEAN_ID));
     }
 
     private DataSourceBeanPostProcessor createProcessor(ApplicationContext applicationContext) {

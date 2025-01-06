@@ -8,7 +8,7 @@ plugins {
 description = "Alfred Telemetry Solr6 module which enables exposure of Metrics using Micrometer"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 apply from: './overload.gradle'
