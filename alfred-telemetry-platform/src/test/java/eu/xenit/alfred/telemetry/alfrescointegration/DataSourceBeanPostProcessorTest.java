@@ -91,7 +91,7 @@ class DataSourceBeanPostProcessorTest {
         if(hasDataSource) {
             assertNotNull(context.getBean(DATASOURCE_BEAN_ID));
         } else {
-            assertThrows(BeansException.class, () -> context.getBean(DATASOURCE_BEAN_ID));
+            assertThrows(NoSuchBeanException.class, () -> context.getBean(DATASOURCE_BEAN_ID));
         }
 
         assertThat(registry.containsBeanDefinition(BASIC_DATASOURCE_BEAN_ID), is(hasBasicDataSource));
