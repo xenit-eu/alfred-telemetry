@@ -36,7 +36,7 @@ jobs:
       fail-fast: false
       matrix:
         flavour: [ "community", "enterprise" ]
-        version: [ "61", "62", "70", "71", "72", "73","74" ]
+        version: [ "231" ]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 17
