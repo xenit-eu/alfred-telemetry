@@ -17,6 +17,13 @@ java {
     withSourcesJar()
 }
 
+compileJava {
+    options.release = 17
+}
+compileTestJava {
+    options.release = 17
+}
+
 ext {
     alfrescoVersion = '23.1.0'
 }
