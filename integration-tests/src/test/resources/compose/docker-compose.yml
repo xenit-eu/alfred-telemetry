@@ -15,7 +15,6 @@ services:
       - GLOBAL_alfred.telemetry.alfresco-integration.enabled=true
           # Expose AT metrics in the Alfresco endpoint:
       - GLOBAL_alfred.telemetry.alfresco-integration.use-default-alfresco-registry=true
-      - GLOBAL_metrics.tomcatMetricsReporter.enabled=true
       # Enable Alfresco cache metrics:
       - GLOBAL_alfred.telemetry.binder.cache.enabled=true
 
