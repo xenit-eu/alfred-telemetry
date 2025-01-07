@@ -21,6 +21,15 @@ Version template:
  -->
  
 # Alfred Telemetry Changelog
+
+## [1.0.0] - 2025-01-07
+### Added
+* Added support for Alfresco 23.1 [[#159]]
+### Removed
+* Dropped support for Alfresco 6.x and 7.x due to source incompatibility [[#159]]
+
+[#159]: https://github.com/xenit-eu/alfred-telemetry/pull/159
+
 ## [0.10.1] - 2023-10-27
 ### Fixed
 * re-fetch trackers on each call [[#153]]
