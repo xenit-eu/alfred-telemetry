@@ -33,7 +33,7 @@ public abstract class RestAssuredTestSolr {
 
         final String baseURI = "https://" + System.getProperty("solr.host", "localhost");
         RestAssured.baseURI = baseURI;
-        int port = Integer.parseInt(System.getProperty("solr.tcp.8443", "8443"));
+        int port = Integer.parseInt(System.getProperty("solr.tcp.8443", "8444"));
         RestAssured.port = port;
         final String solrFlavor = System.getProperty("solrFlavor","/solr");
         final String basePath = ("solr4".equals(solrFlavor))? "/solr4" : "/solr";

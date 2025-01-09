@@ -12,17 +12,20 @@ tasks.withType(JavaCompile) {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
     withJavadocJar()
     withSourcesJar()
 }
 
+compileJava {
+    options.release = 17
+}
+compileTestJava {
+    options.release = 17
+}
+
 ext {
-    // Compiling against AEE 6.1 because:
-    // * Some MeterBinder implementations monitor Enterprise only components (e.g. Hazelcast caches)
-    // * Alfresco's Micrometer integration, (MetricsController, MetricsReporter) classes only available as of 6.1.
-    // Compatibility with 5.x should be covered with integration tests
-    alfrescoVersion = '6.1.1.11'
+    alfrescoVersion = '23.1.0'
 }
 
 dependencies {
@@ -39,7 +42,7 @@ dependencies {
     alfrescoProvided("io.github.mweirauch:micrometer-jvm-extras:${jvmExtrasVersion}") {
         exclude group: "org.slf4j", module: "*"
     }
-    alfrescoProvided 'javax.servlet:javax.servlet-api'
+    alfrescoProvided 'jakarta.servlet:jakarta.servlet-api'
     compileOnly 'org.apache.tomcat:tomcat-catalina:7.0.92'
     alfrescoProvided "io.micrometer:micrometer-registry-graphite:${micrometerVersion}"
     alfrescoProvided "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
@@ -55,7 +58,6 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
     testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
-    testImplementation "org.mockito:mockito-inline:${mockitoVersion}"
     testRuntimeOnly 'org.alfresco:alfresco-remote-api'
 }
 
@@ -90,4 +92,4 @@ publishing {
     }
 }
 
-targetCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_17

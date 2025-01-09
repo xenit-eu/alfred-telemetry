@@ -2,6 +2,7 @@ package eu.xenit.alfred.telemetry.binder;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.tomcat.TomcatMetrics;
+import jakarta.servlet.ServletContext;
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.apache.catalina.Manager;
 import org.apache.catalina.core.ApplicationContext;
@@ -9,7 +10,6 @@ import org.apache.catalina.core.StandardContext;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.annotation.Nonnull;
-import javax.servlet.ServletContext;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 

@@ -12,10 +12,10 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.isEmptyString;
-import static org.junit.Assert.assertThat;
 
 import eu.xenit.alfred.telemetry.webscripts.console.AdminConsoleWebscriptResponseModel.TelemetryRegistryModel;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
