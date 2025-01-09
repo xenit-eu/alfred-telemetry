@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.util.Properties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
@@ -19,7 +20,7 @@ class ClusteringMetricsBeanPostProcessorTest {
     ClusteringMetricsBeanPostProcessor clusteringMetricsBeanPostProcessor;
 
     @BeforeEach
-    private void init() {
+    public void init() {
         clusteringMetricsBeanPostProcessor = new ClusteringMetricsBeanPostProcessor();
     }
 
@@ -39,6 +40,5 @@ class ClusteringMetricsBeanPostProcessorTest {
         clusteringMetricsBeanPostProcessor.postProcessBeanDefinitionRegistry(beanDefinitionRegistry);
         verify(beanDefinitionRegistry, times(0))
                 .registerBeanDefinition(eq(ClusteringMetricsBeanPostProcessor.CLUSTERING_METRICS_BEAN_ID), any());
-        ;
     }
 }

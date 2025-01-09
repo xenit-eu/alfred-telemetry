@@ -1,11 +1,12 @@
 package eu.xenit.alfred.telemetry.binder.cache;
 
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 import eu.xenit.alfred.telemetry.util.ReflectionUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics;
 import org.alfresco.enterprise.repo.cluster.cache.HazelcastSimpleCache;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -41,6 +42,15 @@ class EnterpriseCacheMetricsTest {
         when(context.getBeansOfType(org.alfresco.repo.cache.SimpleCache.class,
                 false, false))
                 .thenReturn(Map.of("test", hazelcastSimpleCache));
+    }
+
+    @AfterEach
+    void teardown() {
+        /*
+        Don't remove this code.
+        We have no idea why this is necessary, or what it exactly does, or why it fixes all broken tests, but it does.
+        */
+        Mockito.clearAllCaches();
     }
 
     @Test

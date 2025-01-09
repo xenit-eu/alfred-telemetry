@@ -11,6 +11,13 @@ java {
     withSourcesJar()
 }
 
+compileJava {
+    options.release = 11
+}
+compileTestJava {
+    options.release = 11
+}
+
 dependencies {
     // Micrometer libraries.
     // API dependencies implementations are used by alfred-telemetry-solr4 and alfred-telemetry-solr6

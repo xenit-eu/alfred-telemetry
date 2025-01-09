@@ -2,7 +2,7 @@ package eu.xenit.alfred.telemetry.webscripts.stubs;
 
 import static eu.xenit.alfred.telemetry.webscripts.stubs.ServerModelStub.enterprise_52;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.extensions.webscripts.DeclarativeRegistry.WEBSCRIPT_DESC_XML;
