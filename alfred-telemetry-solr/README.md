@@ -278,11 +278,6 @@ and in solr-jetty-context.xml make sure server classes are available to the weba
       
 Restart solr.
 
-**Docker**
-
-Following docker images are created following the steps above:
-
-    docker.xenit.eu/alfred-telemetry/solr-alfred-telemetry-<solrFlavor>:<version>
 
 # How to check that it is working
 

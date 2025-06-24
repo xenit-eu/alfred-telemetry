@@ -44,12 +44,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Login to Docker
-        env:
-          DOCKER_HUB_USER: ${{ secrets.XENIT_DOCKER_REGISTRY_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.XENIT_DOCKER_REGISTRY_PASSWORD }}
-        run: |
-          echo '${{ secrets.HARBOR_PASSWORD }}' | docker login docker.xenit.eu --username '${{ secrets.HARBOR_USER }}' --password-stdin
       - name: Integration Test
         uses: gradle/gradle-build-action@v2
         with:
@@ -57,7 +51,7 @@ jobs:
           arguments: :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest
       - name: 'Upload Test Reports'
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: test-result-${{ matrix.flavour }}-${{ matrix.version }}
           path: /home/runner/**/build/reports
