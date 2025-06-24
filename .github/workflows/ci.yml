@@ -48,10 +48,8 @@ jobs:
         env:
           DOCKER_HUB_USER: ${{ secrets.XENIT_DOCKER_REGISTRY_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ secrets.XENIT_DOCKER_REGISTRY_PASSWORD }}
-          DOCKER_CLOUDSMITH_USER: ${{ secrets.CLOUDSMITH_USER }}
-          DOCKER_CLOUDSMITH_PASSWORD: ${{ secrets.CLOUDSMITH_APIKEY }}
         run: |
-          echo "$DOCKER_CLOUDSMITH_PASSWORD" | docker login private.docker.xenit.eu --username "$DOCKER_CLOUDSMITH_USER" --password-stdin
+          echo '${{ secrets.HARBOR_PASSWORD }}' | docker login docker.xenit.eu --username '${{ secrets.HARBOR_USER }}' --password-stdin
       - name: Integration Test
         uses: gradle/gradle-build-action@v2
         with:

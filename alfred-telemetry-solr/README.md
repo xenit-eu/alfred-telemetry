@@ -282,7 +282,7 @@ Restart solr.
 
 Following docker images are created following the steps above:
 
-    private.docker.xenit.eu/alfred-telemetry/solr-alfred-telemetry-<solrFlavor>:<version>
+    docker.xenit.eu/alfred-telemetry/solr-alfred-telemetry-<solrFlavor>:<version>
 
 # How to check that it is working
 
