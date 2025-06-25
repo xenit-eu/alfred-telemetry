@@ -82,7 +82,7 @@ subprojects {
         baseImage = "${alfrescoBaseImage}"
 
         dockerBuild {
-            repository = "private.docker.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"
+            repository = "docker.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"
             tags = ["${version}"]
             automaticTags = false
         }

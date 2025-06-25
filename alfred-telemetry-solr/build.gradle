@@ -52,18 +52,6 @@ subprojects {
         }
     }
 
-    plugins.withId('eu.xenit.docker') {
-        dockerFile {
-            dockerFile = createDockerFile.getDestFile()
-            dockerBuild {
-                repository = "private.docker.xenit.eu/alfred-telemetry/solr-alfred-telemetry-${solrFlavor}"
-                automaticTags = false
-                tags = ["${version}"]
-            }
-
-        }
-    }
-
     plugins.withId('com.github.johnrengelman.shadow') {
         jar {
             archiveClassifier = 'internal-jar'

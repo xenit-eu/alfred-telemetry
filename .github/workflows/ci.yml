@@ -44,14 +44,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Login to Docker
-        env:
-          DOCKER_HUB_USER: ${{ secrets.XENIT_DOCKER_REGISTRY_USERNAME }}
-          DOCKER_HUB_PASSWORD: ${{ secrets.XENIT_DOCKER_REGISTRY_PASSWORD }}
-          DOCKER_CLOUDSMITH_USER: ${{ secrets.CLOUDSMITH_USER }}
-          DOCKER_CLOUDSMITH_PASSWORD: ${{ secrets.CLOUDSMITH_APIKEY }}
-        run: |
-          echo "$DOCKER_CLOUDSMITH_PASSWORD" | docker login private.docker.xenit.eu --username "$DOCKER_CLOUDSMITH_USER" --password-stdin
       - name: Integration Test
         uses: gradle/gradle-build-action@v2
         with:
@@ -59,7 +51,7 @@ jobs:
           arguments: :integration-tests:alfresco-${{ matrix.flavour }}-${{ matrix.version }}:integrationTest
       - name: 'Upload Test Reports'
         if: success() || failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: test-result-${{ matrix.flavour }}-${{ matrix.version }}
           path: /home/runner/**/build/reports
