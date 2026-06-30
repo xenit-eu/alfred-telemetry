@@ -22,6 +22,10 @@ Version template:
  
 # Alfred Telemetry Changelog
 
+## [1.1.0] - 2026-06-30
+### Added
+* Added support for Alfresco 23.6 and 25.3
+
 ## [1.0.0] - 2025-01-07
 ### Added
 * Added support for Alfresco 23.1 [[#159]]
