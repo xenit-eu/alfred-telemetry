@@ -11,8 +11,11 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+// ACS 23.x+ requires Java 17 at runtime; pin the toolchain so compilation matches regardless of system JDK.
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
     withJavadocJar()
     withSourcesJar()
 }
@@ -91,5 +94,3 @@ publishing {
         }
     }
 }
-
-targetCompatibility = JavaVersion.VERSION_17

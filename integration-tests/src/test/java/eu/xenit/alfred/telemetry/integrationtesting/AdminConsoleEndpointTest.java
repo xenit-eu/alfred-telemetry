@@ -13,6 +13,8 @@ class AdminConsoleEndpointTest extends RestAssuredTest {
 
     @Test
     void adminConsolePageRenders() {
+        // The /enterprise/admin/ prefix is a legacy namespace — the admin console is accessible
+        // on both community and enterprise editions in ACS 23.x+.
         ExtractableResponse<Response> response =
                 given()
                         .log().ifValidationFails()
@@ -20,12 +22,8 @@ class AdminConsoleEndpointTest extends RestAssuredTest {
                         .get("s/enterprise/admin/alfred-telemetry")
                         .then()
                         .log().ifValidationFails()
-                        .statusCode(getExpectedStatusCode())
+                        .statusCode(HttpStatus.SC_OK)
                         .extract();
-
-        if (getExpectedStatusCode() != HttpStatus.SC_OK) {
-            return;
-        }
 
         // Verify the page rendered successfully, including the help link which requires
         // the documentationUrl FreeMarker method (introduced in ACS 25.3 admin-template.ftl).

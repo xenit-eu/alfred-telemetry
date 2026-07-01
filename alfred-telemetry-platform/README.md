@@ -140,6 +140,17 @@ org.alfresco.maven.nexus.password
 Gradle provides several mechanisms to provide these properties, which are thoroughly described in the
 [official Gradle documentation](https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_configuration_properties).
 
+The build uses [Gradle Java toolchains](https://docs.gradle.org/current/userguide/toolchains.html) to pin each
+module to a specific JDK for compilation, independent of whatever JDK is active on the system:
+
+* **alfred-telemetry-platform** compiles to **Java 17** — ACS 23.x and later require Java 17 at runtime, so the
+  AMP must target Java 17 bytecode.
+* **alfred-telemetry-solr** modules compile to **Java 11** — they compile against old Alfresco Search Services
+  (2.x) and Apache Solr (4.x / 6.x), which run on Java 11 JVMs.
+
+Gradle will automatically locate the appropriate JDK installation. You can run the build wrapper with any system
+JDK (11, 17, 21, …) as long as both a JDK 11 and a JDK 17 are available on the machine.
+
 ### Local build
 
 The Gradle `assemble` task can be used to build the Simple Module and AMP artifact:
