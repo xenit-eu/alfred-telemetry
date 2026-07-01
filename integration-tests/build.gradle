@@ -150,7 +150,7 @@ subprojects {
         }
 
         solr {
-            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor) ? 'solr4' : 'solr')
+            environment.put 'SOLR_ENDPOINT', 'solr'
             environment.put 'INDEX', solrFlavor
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
 
@@ -162,32 +162,23 @@ subprojects {
         }
 
         solrPrometheus {
-            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor) ? 'solr4' : 'solr')
-            environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor) ? 'true' : 'false')
-            environment.put 'METRICS_JETTY_ENABLED', ('solr6'.equals(solrFlavor) ? 'true' : 'false')
+            environment.put 'SOLR_ENDPOINT', 'solr'
+            environment.put 'METRICS_TOMCAT_ENABLED', 'false'
+            environment.put 'METRICS_JETTY_ENABLED', 'true'
             environment.put 'INDEX', solrFlavor
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
-            if ("solr4".equals(solrFlavor)) {
-                useComposeFiles = [
-                        '../src/test/resources/compose/docker-compose.yml',
-                        '../src/test/resources/compose/docker-compose-solr.yml',
-                        '../src/test/resources/compose/docker-compose-prometheus-solr4.yml',
-                        '../src/test/resources/compose/docker-compose-grafana.yml'
-                ]
-            } else if ("solr6".equals(solrFlavor)) {
-                useComposeFiles = [
-                        '../src/test/resources/compose/docker-compose.yml',
-                        '../src/test/resources/compose/docker-compose-solr.yml',
-                        '../src/test/resources/compose/docker-compose-prometheus-solr6.yml',
-                        '../src/test/resources/compose/docker-compose-grafana.yml'
-                ]
-            }
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-solr.yml',
+                    '../src/test/resources/compose/docker-compose-prometheus-solr6.yml',
+                    '../src/test/resources/compose/docker-compose-grafana.yml'
+            ]
         }
 
         solrGraphite {
-            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor) ? 'solr4' : 'solr')
-            environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor) ? 'true' : 'false')
-            environment.put 'METRICS_JETTY_ENABLED', ('solr6'.equals(solrFlavor) ? 'true' : 'false')
+            environment.put 'SOLR_ENDPOINT', 'solr'
+            environment.put 'METRICS_TOMCAT_ENABLED', 'false'
+            environment.put 'METRICS_JETTY_ENABLED', 'true'
             environment.put 'INDEX', solrFlavor
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'true'
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST', 'carbon'
