@@ -78,14 +78,12 @@ subprojects {
         alfrescoSM  group: 'org.postgresql', name: 'postgresql', version: '42.4.0'
     }
 
-    dockerAlfresco {
-        baseImage = "${alfrescoBaseImage}"
-
-        dockerBuild {
-            repository = "docker.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"
-            tags = ["${version}"]
-            automaticTags = false
+    dockerBuild {
+        alfresco {
+            baseImage = "${alfrescoBaseImage}"
         }
+        repositories = ["docker.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"]
+        tags = ["${version}"]
     }
 
     afterEvaluate {
