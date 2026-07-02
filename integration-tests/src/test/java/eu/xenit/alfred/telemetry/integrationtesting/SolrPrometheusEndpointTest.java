@@ -14,6 +14,11 @@ import org.slf4j.LoggerFactory;
 public class SolrPrometheusEndpointTest extends RestAssuredTestSolr {
     private static final Logger logger = LoggerFactory.getLogger(SolrPrometheusEndpointTest.class);
 
+    // This must stay the only call to this endpoint in the class: it doubles as a regression test
+    // for a bug where the FIRST call returned a 500 because binding SolrSnapshotMetrics threw a
+    // ClassCastException on the replication handler (fixed in ALFREDOPS-838 / v0.9.2). A second
+    // call would silently pass even if snapshot metric registration were broken again, since the
+    // handler only attempts to bind these metrics once per Solr core lifetime.
     @Test
     void solrEndpoint() {
         try {
@@ -31,6 +36,7 @@ public class SolrPrometheusEndpointTest extends RestAssuredTestSolr {
             assertThat(responseBody, containsString("alfresco_nodes"));
             assertThat(responseBody, containsString("application=\"solr\""));
             assertThat(responseBody, containsString(",host=\""));
+            assertThat(responseBody, containsString("snapshot_status"));
         } catch(Exception e) {
             throw e;
         }
