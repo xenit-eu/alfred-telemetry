@@ -14,7 +14,9 @@ Alfred Telemetry integrates various components of the Alfresco ecosystem with [M
 
 ### Note regarding Alfresco 6.x and 7.x
 Starting from version 1.0.0, Alfred Telemetry no longer supports Alfresco 6.x and 7.x due to source incompatibility.
-If you are using Alfresco 6.x or 7.x, please use version 0.x.x of Alfred Telemetry.
+If you are using Alfresco 6.x or 7.x, you must use a **PRE-1.0.0** tag of Alfred Telemetry — the last one being
+[v0.10.1](https://github.com/xenit-eu/alfred-telemetry/tree/v0.10.1). Version 1.0.0 itself is already the release
+that dropped this support, so it will not work for these older Alfresco versions.
 
 ## Alfred Telemetry for Alfresco
 

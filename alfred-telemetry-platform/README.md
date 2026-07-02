@@ -79,8 +79,9 @@ Alfred Telemetry is systematically integration tested against:
 * Alfresco Enterprise 23.1, 23.6 and 25.3
 * Alfresco Community 23.1 and 25.3
 
-> **Older Alfresco versions:** Support for Alfresco 6.x and 7.x (including the Solr4 extension) was last
-> available in [v1.0.0](https://github.com/xenit-eu/alfred-telemetry/tree/v1.0.0). To build or extend
+> **Older Alfresco versions:** Support for Alfresco 6.x and 7.x (including the Solr4 extension) was dropped
+> in v1.0.0, so a **PRE-1.0.0** tag must be used instead — the last one being
+> [v0.10.1](https://github.com/xenit-eu/alfred-telemetry/tree/v0.10.1). To build or extend
 > Alfred Telemetry for those versions, check out that tag and branch from it.
 
 
