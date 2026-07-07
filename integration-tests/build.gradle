@@ -75,7 +75,11 @@ subprojects {
         alfrescoSM project.extraDependencies
 
         baseAlfrescoWar "${alfrescoBaseWar}"
-        alfrescoSM  group: 'org.postgresql', name: 'postgresql', version: '42.4.0'
+        // Matches the postgresql driver version Alfresco 25.3 (our highest supported version) itself declares.
+        // This is slightly newer than what Alfresco 23.1 (our lowest supported version) declares (42.6.0), but
+        // the JDBC wire protocol is stable across these minor versions, so it stays compatible. It also picks
+        // up a lot of CVE fixes over the previous 42.4.0, e.g. CVE-2024-1597 (SQL injection), and others.
+        alfrescoSM  group: 'org.postgresql', name: 'postgresql', version: '42.7.5'
     }
 
     dockerBuild {
