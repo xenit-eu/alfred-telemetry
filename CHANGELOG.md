@@ -25,6 +25,9 @@ Version template:
 ## [1.1.0] - 2026-06-30
 ### Added
 * Added support for Alfresco 23.6 and 25.3
+### Removed
+* Removed obsolete SOLR4 support code
+* Removed old Alfresco version support code that was no longer in the build/test matrix of Alfresco versions of this project
 
 ## [1.0.0] - 2025-01-07
 ### Added
