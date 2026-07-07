@@ -188,5 +188,5 @@ make that work.
 To only run the integration tests for a specific Alfresco version, execute the task in the corresponding subproject:
 
 ```
-./gradlew :integration-tests:alfresco-community-61:integrationTest
+./gradlew :integration-tests:alfresco-community-231:integrationTest
 ```

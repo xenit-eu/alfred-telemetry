@@ -26,7 +26,6 @@ that dropped this support, so it will not work for these older Alfresco versions
 
 ## Alfred Telemetry for Solr
 
-[![Solr 4](https://img.shields.io/maven-central/v/eu.xenit.alfred.telemetry/alfred-telemetry-solr4.svg?label=Solr4)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.alfred.telemetry%22%20AND%20a%3A%22alfred-telemetry-solr4%22)
 [![Search Services](https://img.shields.io/maven-central/v/eu.xenit.alfred.telemetry/alfred-telemetry-solr6.svg?label=SearchServices)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.alfred.telemetry%22%20AND%20a%3A%22alfred-telemetry-solr6%22)
 
 [alfred-telemetry-solr](alfred-telemetry-solr)
