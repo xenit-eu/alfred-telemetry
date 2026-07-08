@@ -6,7 +6,9 @@ plugins {
 description = "Alfred Telemetry Common module which enables exposure of Metrics using Micrometer"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
     withJavadocJar()
     withSourcesJar()
 }
@@ -20,7 +22,7 @@ compileTestJava {
 
 dependencies {
     // Micrometer libraries.
-    // API dependencies implementations are used by alfred-telemetry-solr4 and alfred-telemetry-solr6
+    // API dependencies are used by alfred-telemetry-solr6
     api "io.micrometer:micrometer-core:1.6.1"
     api "io.micrometer:micrometer-registry-prometheus:1.6.1"
     implementation "io.github.mweirauch:micrometer-jvm-extras:0.1.2"

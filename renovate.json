@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "minimumReleaseAge": "14 days",
+  "packageRules": [
+    {
+      "description": "Show Xenit package updates immediately",
+      "matchSourceUrls": ["https://github.com/xenit-eu/*"],
+      "minimumReleaseAge": "0 days"
+    }
+  ]
+}

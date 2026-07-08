@@ -14,7 +14,9 @@ Alfred Telemetry integrates various components of the Alfresco ecosystem with [M
 
 ### Note regarding Alfresco 6.x and 7.x
 Starting from version 1.0.0, Alfred Telemetry no longer supports Alfresco 6.x and 7.x due to source incompatibility.
-If you are using Alfresco 6.x or 7.x, please use version 0.x.x of Alfred Telemetry.
+If you are using Alfresco 6.x or 7.x, you must use a **PRE-1.0.0** tag of Alfred Telemetry — the last one being
+[v0.10.1](https://github.com/xenit-eu/alfred-telemetry/tree/v0.10.1). Version 1.0.0 itself is already the release
+that dropped this support, so it will not work for these older Alfresco versions.
 
 ## Alfred Telemetry for Alfresco
 
@@ -24,7 +26,6 @@ If you are using Alfresco 6.x or 7.x, please use version 0.x.x of Alfred Telemet
 
 ## Alfred Telemetry for Solr
 
-[![Solr 4](https://img.shields.io/maven-central/v/eu.xenit.alfred.telemetry/alfred-telemetry-solr4.svg?label=Solr4)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.alfred.telemetry%22%20AND%20a%3A%22alfred-telemetry-solr4%22)
 [![Search Services](https://img.shields.io/maven-central/v/eu.xenit.alfred.telemetry/alfred-telemetry-solr6.svg?label=SearchServices)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22eu.xenit.alfred.telemetry%22%20AND%20a%3A%22alfred-telemetry-solr6%22)
 
 [alfred-telemetry-solr](alfred-telemetry-solr)

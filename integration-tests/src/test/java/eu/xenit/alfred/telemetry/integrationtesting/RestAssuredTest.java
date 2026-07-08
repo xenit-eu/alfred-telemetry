@@ -28,7 +28,7 @@ public abstract class RestAssuredTest {
         RestAssured.basePath = basePath;
 
         final String alfrescoEdition = System.getProperty("alfrescoEdition");
-        if(!"enterprise".equalsIgnoreCase(alfrescoEdition)) {
+        if (!"enterprise".equalsIgnoreCase(alfrescoEdition)) {
             expectedStatusCode = HttpStatus.SC_NOT_FOUND;
         }
 

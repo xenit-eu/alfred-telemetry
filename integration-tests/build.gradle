@@ -75,17 +75,19 @@ subprojects {
         alfrescoSM project.extraDependencies
 
         baseAlfrescoWar "${alfrescoBaseWar}"
-        alfrescoSM  group: 'org.postgresql', name: 'postgresql', version: '42.4.0'
+        // Matches the postgresql driver version Alfresco 25.3 (our highest supported version) itself declares.
+        // This is slightly newer than what Alfresco 23.1 (our lowest supported version) declares (42.6.0), but
+        // the JDBC wire protocol is stable across these minor versions, so it stays compatible. It also picks
+        // up a lot of CVE fixes over the previous 42.4.0, e.g. CVE-2024-1597 (SQL injection), and others.
+        alfrescoSM  group: 'org.postgresql', name: 'postgresql', version: '42.7.5'
     }
 
-    dockerAlfresco {
-        baseImage = "${alfrescoBaseImage}"
-
-        dockerBuild {
-            repository = "docker.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"
-            tags = ["${version}"]
-            automaticTags = false
+    dockerBuild {
+        alfresco {
+            baseImage = "${alfrescoBaseImage}"
         }
+        repositories = ["docker.xenit.eu/alfred-telemetry/alfresco-alfred-telemetry-${alfrescoVersion}"]
+        tags = ["${version}"]
     }
 
     afterEvaluate {
@@ -152,7 +154,7 @@ subprojects {
         }
 
         solr {
-            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor) ? 'solr4' : 'solr')
+            environment.put 'SOLR_ENDPOINT', 'solr'
             environment.put 'INDEX', solrFlavor
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
 
@@ -164,32 +166,23 @@ subprojects {
         }
 
         solrPrometheus {
-            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor) ? 'solr4' : 'solr')
-            environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor) ? 'true' : 'false')
-            environment.put 'METRICS_JETTY_ENABLED', ('solr6'.equals(solrFlavor) ? 'true' : 'false')
+            environment.put 'SOLR_ENDPOINT', 'solr'
+            environment.put 'METRICS_TOMCAT_ENABLED', 'false'
+            environment.put 'METRICS_JETTY_ENABLED', 'true'
             environment.put 'INDEX', solrFlavor
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'false'
-            if ("solr4".equals(solrFlavor)) {
-                useComposeFiles = [
-                        '../src/test/resources/compose/docker-compose.yml',
-                        '../src/test/resources/compose/docker-compose-solr.yml',
-                        '../src/test/resources/compose/docker-compose-prometheus-solr4.yml',
-                        '../src/test/resources/compose/docker-compose-grafana.yml'
-                ]
-            } else if ("solr6".equals(solrFlavor)) {
-                useComposeFiles = [
-                        '../src/test/resources/compose/docker-compose.yml',
-                        '../src/test/resources/compose/docker-compose-solr.yml',
-                        '../src/test/resources/compose/docker-compose-prometheus-solr6.yml',
-                        '../src/test/resources/compose/docker-compose-grafana.yml'
-                ]
-            }
+            useComposeFiles = [
+                    '../src/test/resources/compose/docker-compose.yml',
+                    '../src/test/resources/compose/docker-compose-solr.yml',
+                    '../src/test/resources/compose/docker-compose-prometheus-solr6.yml',
+                    '../src/test/resources/compose/docker-compose-grafana.yml'
+            ]
         }
 
         solrGraphite {
-            environment.put 'SOLR_ENDPOINT', ('solr4'.equals(solrFlavor) ? 'solr4' : 'solr')
-            environment.put 'METRICS_TOMCAT_ENABLED', ('solr4'.equals(solrFlavor) ? 'true' : 'false')
-            environment.put 'METRICS_JETTY_ENABLED', ('solr6'.equals(solrFlavor) ? 'true' : 'false')
+            environment.put 'SOLR_ENDPOINT', 'solr'
+            environment.put 'METRICS_TOMCAT_ENABLED', 'false'
+            environment.put 'METRICS_JETTY_ENABLED', 'true'
             environment.put 'INDEX', solrFlavor
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_ENABLED', 'true'
             environment.put 'ALFRED_TELEMETRY_EXPORT_GRAPHITE_HOST', 'carbon'

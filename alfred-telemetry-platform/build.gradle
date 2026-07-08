@@ -11,8 +11,11 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+// ACS 23.x+ requires Java 17 at runtime; pin the toolchain so compilation matches regardless of system JDK.
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
     withJavadocJar()
     withSourcesJar()
 }
@@ -25,6 +28,8 @@ compileTestJava {
 }
 
 ext {
+    // Compile against the lowest supported Alfresco version so the compiler catches APIs that
+    // don't exist there yet, instead of only finding out via integration tests on newer versions.
     alfrescoVersion = '23.1.0'
 }
 
@@ -91,5 +96,3 @@ publishing {
         }
     }
 }
-
-targetCompatibility = JavaVersion.VERSION_17

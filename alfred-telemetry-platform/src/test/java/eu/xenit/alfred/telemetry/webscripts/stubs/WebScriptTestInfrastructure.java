@@ -14,6 +14,7 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.file.Paths;
+import freemarker.template.TemplateMethodModelEx;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,6 +83,12 @@ public class WebScriptTestInfrastructure {
         params.put("xmldate", new org.springframework.extensions.webscripts.ISO8601DateFormatMethod());
         params.put("jsonUtils", new org.springframework.extensions.webscripts.json.JSONUtils());
         params.put("stringUtils", new org.springframework.extensions.webscripts.ScriptableUtils());
+        // ACS 25.3 replaced the msg()-based help link in admin-template.ftl with a call to documentationUrl()
+        // (org.alfresco.repo.template.DocumentationURLMethod). The stub is only invoked on 25.3+ templates;
+        // older templates never reference it, so extra model entries are silently ignored by FreeMarker.
+        // Note: testRenderTemplate only asserts the template renders without error, not the URL value,
+        // so this stub cannot mask a regression in the actual URL produced at runtime.
+        params.put("documentationUrl", (TemplateMethodModelEx) args -> "https://docs.alfresco.com");
 
         return Collections.unmodifiableMap(params);
     }

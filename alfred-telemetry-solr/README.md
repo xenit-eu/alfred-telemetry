@@ -240,17 +240,15 @@ This was done to be compatible with the public grafana dashboards.
 
 # How to build 
 
-    ./gradlew alfred-telemetry-solr:solr4:bDI
+    ./gradlew alfred-telemetry-solr:alfred-telemetry-solr6:build
 
-    ./gradlew alfred-telemetry-solr:solr6:bDI
-    
-Note: the jar built for each version of solr contains also necessary runtime dependencies.
+Note: the jar built contains also necessary runtime dependencies.
 
 # How to deploy
 
 **No docker** 
 
-Copy alfred-telemetry-solr/alfred-telemetry-<solrFlavor>/build/libs/alfred-telemetry-<solrFlavor>-<version>.jar into solr's instance lib folder (solr4/lib or alfresco-search-services/solrhome/lib/).
+Copy `alfred-telemetry-solr/alfred-telemetry-solr6/build/libs/alfred-telemetry-solr6-<version>.jar` into Alfresco Search Services' lib folder (`alfresco-search-services/solrhome/lib/`).
 
 Add to solrconfig.xml for each cores the RequestHandler:
 
@@ -285,16 +283,14 @@ Restart solr.
 
 Call an url similar to:
 
-    http://localhost:8080/solr4/alfresco/metrics?wt=dummy
-    
+    http://localhost:8983/solr/alfresco/metrics?wt=dummy
+
 **Docker**
 
 Start the whole stack with:
-    
-    ./gradlew integration-tests:alfresco-community-52:solrComposeUp
-    
-    ./gradlew integration-tests:alfresco-community-61:solrComposeUp
-    
+
+    ./gradlew :integration-tests:alfresco-community-231:solrComposeUp
+
 Verify in Prometheus (http://localhost:9090/) that targets are up and running. Verify in grafana (http://localhost:3000/) that Solr dashboard has data.
 
 # Integration tests

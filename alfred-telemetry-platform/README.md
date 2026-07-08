@@ -76,8 +76,13 @@ Please consult the official Alfresco documentation on how to install Simple Modu
 ### Supported Alfresco versions
 
 Alfred Telemetry is systematically integration tested against:
-* Alfresco Enterprise 6.1, 6.2, 7.0, 7.1, 7.2, 7.3 and 7.4
-* Alfresco Community 6.1, 6.2, 7.0, 7.1, 7.2, 7.3 and 7.4
+* Alfresco Enterprise 23.1, 23.6 and 25.3
+* Alfresco Community 23.1 and 25.3
+
+> **Older Alfresco versions:** Support for Alfresco 6.x and 7.x (including the Solr4 extension) was dropped
+> in v1.0.0, so a **PRE-1.0.0** tag must be used instead — the last one being
+> [v0.10.1](https://github.com/xenit-eu/alfred-telemetry/tree/v0.10.1). To build or extend
+> Alfred Telemetry for those versions, check out that tag and branch from it.
 
 
 ## Configuration
@@ -140,6 +145,17 @@ org.alfresco.maven.nexus.password
 Gradle provides several mechanisms to provide these properties, which are thoroughly described in the
 [official Gradle documentation](https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_configuration_properties).
 
+The build uses [Gradle Java toolchains](https://docs.gradle.org/current/userguide/toolchains.html) to pin each
+module to a specific JDK for compilation, independent of whatever JDK is active on the system:
+
+* **alfred-telemetry-platform** compiles to **Java 17** — ACS 23.x and later require Java 17 at runtime, so the
+  AMP must target Java 17 bytecode.
+* **alfred-telemetry-solr** modules compile to **Java 11** — they compile against old Alfresco Search Services
+  (2.x) and Apache Solr (4.x / 6.x), which run on Java 11 JVMs.
+
+Gradle will automatically locate the appropriate JDK installation. You can run the build wrapper with any system
+JDK (11, 17, 21, …) as long as both a JDK 11 and a JDK 17 are available on the machine.
+
 ### Local build
 
 The Gradle `assemble` task can be used to build the Simple Module and AMP artifact:
@@ -172,5 +188,5 @@ make that work.
 To only run the integration tests for a specific Alfresco version, execute the task in the corresponding subproject:
 
 ```
-./gradlew :integration-tests:alfresco-community-61:integrationTest
+./gradlew :integration-tests:alfresco-community-231:integrationTest
 ```
