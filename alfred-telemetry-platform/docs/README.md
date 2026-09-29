@@ -503,10 +503,10 @@ An overview of the configurable parameters and their default value. These values
     Alfresco provides a `PrometheusMeterRegistry`. With this property it is possible to indicate that Alfred Telemetry
     should use the registry provided by Alfresco as it's Prometheus registry.  
     The only advantage of using the default Alfresco registry is that metrics registered by Alfred Telemetry will
-    be available in the Alfresco scrape endpoint (`/alfresco/s/prometheus`). However this default 
+    be available in the Alfresco scrape endpoint (`/alfresco/s/prometheus`). However, this default 
     registry is managed by Alfresco, hence that means no customizations like e.g. common tags are 
     applied to the Prometheus metrics.  
-    If the default Alfresco registry is used, the prometheus registry initialized by Alfred Telemetry must be disabled
+    If the default Alfresco registry is used, the Prometheus registry initialized by Alfred Telemetry must be disabled
     (`alfred.telemetry.export.prometheus.enabled=false`). 
 
 ## Known limitations

@@ -80,6 +80,13 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
 
         PrometheusMeterRegistry prometheusMeterRegistry =
                 PrometheusRegistryUtil.tryToExtractPrometheusRegistry(registry);
+
+        // Safely bypass if native registry isn't present (e.g. use-default-alfresco-registry=false)
+        if (prometheusMeterRegistry == null) {
+            slf4jLogger.warn("PrometheusMeterRegistry is null; skipping direct injection into Alfresco registry.");
+            return;
+        }
+
         if(!globalProperties.containsKey(PROP_KEY_EXPORT_PROMETHEUS)) {
             slf4jLogger.debug("global props does not contain {}", PROP_KEY_EXPORT_PROMETHEUS);
             return;
