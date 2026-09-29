@@ -83,7 +83,7 @@ public class CommonTagFilterFactory extends AbstractFactoryBean<MeterFilter> {
 
         // Safely bypass if native registry isn't present (e.g. use-default-alfresco-registry=false)
         if (prometheusMeterRegistry == null) {
-            slf4jLogger.debug("PrometheusMeterRegistry is null; skipping direct injection into Alfresco registry.");
+            slf4jLogger.warn("PrometheusMeterRegistry is null; skipping direct injection into Alfresco registry.");
             return;
         }
 
