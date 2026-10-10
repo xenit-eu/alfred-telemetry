@@ -40,7 +40,7 @@ dependencies {
 
     // 'alfresco-enterprise-repository' not transitive because it will try to download a bunch of unreachable artifacts
     alfrescoProvided('org.alfresco:alfresco-enterprise-repository') { transitive = false }
-    alfrescoProvided('com.hazelcast:hazelcast:3.12')
+    alfrescoProvided('com.hazelcast:hazelcast:3.12.13')
     alfrescoProvided("io.micrometer:micrometer-core:${micrometerVersion}") {
         exclude group: "org.slf4j", module: "*"
     }
