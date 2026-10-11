@@ -15,7 +15,7 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
     testImplementation "org.hamcrest:hamcrest-all:${hamcrestVersion}"
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
-    testImplementation "org.apache.httpcomponents:httpclient:4.5.12"
+    testImplementation "org.apache.httpcomponents:httpclient:4.5.14"
 
     testImplementation group: 'org.slf4j', name: 'slf4j-api', version: "${slf4jVersion}"
     testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "${slf4jVersion}"
