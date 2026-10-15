@@ -48,7 +48,7 @@ dependencies {
         exclude group: "org.slf4j", module: "*"
     }
     alfrescoProvided 'jakarta.servlet:jakarta.servlet-api'
-    compileOnly 'org.apache.tomcat:tomcat-catalina:7.0.92'
+    compileOnly 'org.apache.tomcat:tomcat-catalina:7.0.109'
     alfrescoProvided "io.micrometer:micrometer-registry-graphite:${micrometerVersion}"
     alfrescoProvided "io.micrometer:micrometer-registry-jmx:${micrometerVersion}"
     alfrescoProvided "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
